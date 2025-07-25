@@ -1,0 +1,79 @@
+{% extends "jobs/base.html" %}
+{% block title %}Omeiat - job-detail{% endblock %}
+
+{% block content %}
+<div class="card job-card p-4 bg-white">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="job-details">
+      <strong>Type</strong>
+      <h2 class="job-title text-primary">{{ job_post.title }}</h2>
+      <strong>Salary</strong>
+      <p class="mb-1">
+        <i class="fa-solid fa-indian-rupee-sign me-1" style="font-size: 14px!important;"></i>{{ job_post.salary_min }}
+        -
+        <i class="fa-solid fa-indian-rupee-sign me-1" style="font-size: 14px!important;"></i>{{ job_post.salary_max }}
+      </p>
+      <strong>Company</strong>
+      <p class="mb-1 text-capitalize">{{ job_post.organization }}</p>
+    </div>
+    <div class="company-details">
+      <strong>Category</strong>
+      <p class="mb-1">{{ job_post.category }} - {{ job_post.subcategory }}</p>
+      <strong>Location</strong>
+      <p class="mb-1">Chennai</p>
+      <strong>Type</strong>
+      <p class="mb-1">Full-Time, Fresher</p>
+    </div>
+  </div>
+
+  <div class="description-text">
+    <strong>Description</strong>
+    <p>{{ job_post.description }}</p>
+  </div>
+
+  <div class="d-flex justify-content-end align-items-center gap-2">
+    <div class="back-block mx-1">
+      <a href="javascript:history.back()" class="btn btn-base w-100">Back</a>
+    </div>
+    <div class="apply-block">
+      <!-- Button that opens the modal -->
+      <a href="#" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#applyModal">Apply Now</a>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap Modal -->
+<!-- Bootstrap Modal - Confirmation Box -->
+<!-- Modal: Confirm Apply for Job -->
+<div class="modal fade" id="applyModal" tabindex="-1" aria-labelledby="applyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="applyModalLabel">Confirm Application</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body text-center">
+        <p>Are you sure you want to apply for <strong>{{ job_post.title }}</strong> at <strong>{{ job_post.organization }}</strong>?</p>
+      </div>
+
+      <div class="modal-footer justify-content-center">
+        <form method="post" action="{% url 'apply_job' job_post.id %}">
+          {% csrf_token %}
+          
+          <!-- Remove resume and cover letter since backend doesn't accept them -->
+          <!-- You can re-add them when view supports those fields -->
+
+          <button type="submit" class="btn btn-primary">Yes, Apply</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+{% endblock %}

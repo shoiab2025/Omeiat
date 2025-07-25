@@ -1,0 +1,37 @@
+{% extends "../jobs/base.html" %}
+{% block title %}Omeiat - LOGIN{% endblock %}
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'STYLES/main.css' %}">
+{% endblock %}
+
+{% block content %}
+<form id="login-form" method="post" action="{% url 'login_user' %}">
+    {% csrf_token %}
+    <div class="omega-container">
+        <div class="omega-image">
+            <h1 class="text-white">Welcome To <br>OMEIAT EMPLOYMENT PORTAL</h1>
+        </div>
+        <div class="omega-content">
+            <h1 class="omega-title">Login</h1>
+
+            <div class="omega-form-group">
+                <label class="omega-label" for="omega-username">Username</label><br>
+                <input type="text" class="omega-input" name="username" id="omega-username" placeholder="Username" required>
+            </div>
+
+            <div class="omega-form-group">
+                <label class="omega-label" for="omega-password">Password</label><br>
+                <input type="password" class="omega-input" name="password" id="omega-password" placeholder="Password" required>
+            </div>
+
+            <a class="omega-link" href="=">Forgot Password?</a>
+
+            <button type="submit" class="omega-button">Submit</button>
+
+            <a class="omega-link text-center text-underline" href="{% url 'register' %}">Don't have an account?</a>
+        </div>
+    </div>
+</form>
+{% endblock %}

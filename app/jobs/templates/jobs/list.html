@@ -1,0 +1,176 @@
+{% extends "jobs/base.html" %}
+{% block title %}Omeiat - JOBS{% endblock %}
+{% block content %}
+
+<section class="py-4">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+            <h1 class="h4 mb-2 mb-md-0">Available Job Opportunities</h1>
+            <div class="d-flex flex-grow-1 justify-content-end gap-2">
+                <input type="text" class="form-control w-50" id="search" name="search"
+                    placeholder="Job title, company...">
+                <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal"
+                    data-bs-target="#filterSearchModal">
+                    Filter & Search
+                </button>
+            </div>
+        </div>
+
+        <!-- Filter & Search Modal -->
+        <div class="modal fade" id="filterSearchModal" tabindex="-1" aria-labelledby="filterSearchModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="get" action="">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="filterSearchModalLabel">Filter & Search Jobs</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Location -->
+                            <div class="mb-3">
+                                <label for="location" class="form-label">Location</label>
+                                <input type="text" class="form-control" id="location" name="location"
+                                    placeholder="City, State">
+                                {% if location_ratio %}
+                                <div class="mt-1">
+                                    <small class="text-muted">Jobs in this location: {{ location_ratio }}%</small>
+                                    <div class="progress mt-1" style="height: 6px;">
+                                        <div class="progress-bar bg-info" role="progressbar"
+                                            style="width: {{ location_ratio }}%;" aria-valuenow="{{ location_ratio }}"
+                                            aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Job Type -->
+                            <div class="mb-3">
+                                <label for="job_type" class="form-label">Job Type</label>
+                                <div id="job_type" class="d-block flex-wrap gap-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="job_type" value="full-time" id="jobTypeFullTime">
+                                        <label class="form-check-label" for="jobTypeFullTime">Full-Time</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="job_type" value="part-time" id="jobTypePartTime">
+                                        <label class="form-check-label" for="jobTypePartTime">Part-Time</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="job_type" value="internship" id="jobTypeInternship">
+                                        <label class="form-check-label" for="jobTypeInternship">Internship</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="job_type" value="contract" id="jobTypeContract">
+                                        <label class="form-check-label" for="jobTypeContract">Contract</label>
+                                    </div>
+                                </div>
+                                {% if job_type_ratio %}
+                                <div class="mt-1">
+                                    <small class="text-muted">Selected job type: {{ job_type_ratio }}%</small>
+                                    <div class="progress mt-1" style="height: 6px;">
+                                        <div class="progress-bar bg-success" role="progressbar"
+                                            style="width: {{ job_type_ratio }}%;" aria-valuenow="{{ job_type_ratio }}"
+                                            aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <!-- Experience Type -->
+                            <div class="mb-3">
+                                <label for="experience_level" class="form-label">Experience Level</label>
+                                <div id="experience_level" class="d-block flex-wrap gap-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="experience_level" value="fresher" id="experienceFresher">
+                                        <label class="form-check-label" for="experienceFresher">Fresher</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="experience_level" value="entry_level" id="experienceFresher">
+                                        <label class="form-check-label" for="experienceFresher">Entry level</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="experience_level" value="intermidiate" id="experienceFresher">
+                                        <label class="form-check-label" for="experienceFresher">Intermidiate</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="experience_level" value="senior" id="experienceSenior">
+                                        <label class="form-check-label" for="experienceSenior">Senior</label>
+                                    </div>
+                                </div>
+                                {% if experience_level_ratio %}
+                                <div class="mt-1">
+                                    <small class="text-muted">Selected experience level: {{ experience_level_ratio }}%</small>
+                                    <div class="progress mt-1" style="height: 6px;">
+                                        <div class="progress-bar bg-warning" role="progressbar"
+                                            style="width: {{ experience_level_ratio }}%;" aria-valuenow="{{ experience_level_ratio }}"
+                                            aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Salary Range -->
+                            <div class="mb-3">
+                                <label class="form-label">Salary Range (₹)</label>
+                                <div class="input-group mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <span id="selectedSalary" class="fw-bold">₹5,000</span>
+                                    </div>
+
+                                    <input type="range" name="salary_min" id="salaryRange" class="form-range mx-2" min="5000"
+                                        max="100000" step="1000" value="5000"
+                                        oninput="document.getElementById('selectedSalary').textContent = '₹' + this.value.toLocaleString();">
+                                    <span id="maxSalary">₹1,00,000</span>
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Apply</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Job Cards -->
+        <div class="row">
+            {% for job in job_posts %}
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <h5 class="card-title fw-bold">{{ job.title }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ job.organization.name }}</h6>
+                            <p class="mb-1 text-capitalize">
+                                <i class="fa-solid fa-location-crosshairs me-2 text-primary"></i> {{ job.location }}
+                            </p>
+                            <p class="mb-1 text-capitalize">
+                                <i class="fa-solid fa-briefcase me-2 text-success"></i>
+                                {{ job.job_type }}, {{ job.experience_level }}
+                            </p>
+                            <p class="mb-1 text-capitalize">
+                                <i class="fa-solid fa-layer-group me-2 text-warning"></i>
+                                {{ job.category }} | {{ job.subcategory }}
+                            </p>
+                            <p class="mb-3">
+                                <i class="fa-solid fa-indian-rupee-sign me-1"></i> {{ job.salary_min }} - {{ job.salary_max }}
+                            </p>
+                        </div>
+                        <a href="{% url 'job_detail' job.id %}" class="btn btn-outline-primary w-100 mt-2">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-center text-muted">No job posts available at the moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}

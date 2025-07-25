@@ -1,0 +1,181 @@
+{% extends "../jobs/base.html" %}
+{% block title %}Omeiat - REGISTER{% endblock %}
+{% load static %}
+
+{% block content %}
+<h1 class="omega-title text-center mb-4">Register</h1>
+<div class="omega-container p-3">
+
+    <!-- Tabs navigation -->
+    <ul class="nav nav-tabs mb-3" id="registerTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personal"
+                type="button" role="tab" aria-controls="personal" aria-selected="true">Personal Info</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="experience-tab" data-bs-toggle="tab" data-bs-target="#experience"
+                type="button" role="tab" aria-controls="experience" aria-selected="false">Professional</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="more-tab" data-bs-toggle="tab" data-bs-target="#more"
+                type="button" role="tab" aria-controls="more" aria-selected="false">Educational  Details</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="visible-tab" data-bs-toggle="tab" data-bs-target="#visible"
+                type="button" role="tab" aria-controls="visible" aria-selected="false">Visibility</button>
+        </li>
+    </ul>
+
+    <!-- Tabs content -->
+    <form method="POST" id="registerForm">
+        {% csrf_token %}
+        <div class="tab-content" id="registerTabContent">
+            <!-- Personal Info -->
+            <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
+                <div class="omega-content">
+                    <div class="omega-form-group">
+                        <label class="omega-label" for="omega-username">Name</label>
+                        <input type="text" class="omega-input form-control" name="username" id="omega-username">
+                    </div>
+                    <div class="omega-form-group">
+                        <label class="omega-label" for="omega-phone">Phone</label>
+                        <input type="text" class="omega-input form-control" name="phone" id="omega-phone">
+                    </div>
+                    <div class="omega-form-group">
+                        <label class="omega-label" for="omega-dob">DOB</label>
+                        <input type="text" class="omega-input form-control" name="dob" id="omega-dob">
+                    </div>
+                    <div class="omega-form-group">
+                        <label class="omega-label" for="omega-email">Email</label>
+                        <input type="text" class="omega-input form-control" name="email" id="omega-email">
+                    </div>
+                    <div class="d-flex justify-content-end mt-3">
+                        <button type="button" class="btn btn-primary next-tab">Next</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Professional -->
+            <div class="tab-pane fade" id="experience" role="tabpanel" aria-labelledby="experience-tab">
+                <div class="omega-content">
+                    <div class="omega-form-group">
+                        <label class="omega-label" for="omega-experience">Experience</label>
+                        <input type="text" class="omega-input form-control" name="experience" id="omega-experience">
+                    </div>
+                    <div class="omega-form-group">
+                        <label class="omega-label" for="omega-skills">Skills</label>
+                        <textarea class="omega-input form-control" name="skills" id="omega-skills"></textarea>
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                        <button type="button" class="btn btn-secondary prev-tab">Previous</button>
+                        <button type="button" class="btn btn-primary next-tab">Next</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Educational -->
+            <div class="tab-pane fade" id="more" role="tabpanel" aria-labelledby="more-tab">
+                <div class="omega-content">
+                    <div class="omega-form-group">
+                        <label class="omega-label" for="omega-edlevel">Educational Level</label>
+                        <select class="omega-input form-control" name="edlevel" id="omega-edlevel">
+                            <option value="" disabled selected>Select Educational Level</option>
+                            <option value="graduated">Graduated</option>
+                            <option value="studying">Studying</option>
+                            <option value="diploma">Diploma</option>
+                        </select>
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                        <button type="button" class="btn btn-secondary prev-tab">Previous</button>
+                        <button type="button" class="btn btn-primary next-tab">Next</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visibility -->
+            <div class="tab-pane fade" id="visible" role="tabpanel" aria-labelledby="visible-tab">
+                <div class="omega-content">
+                    <div class="omega-form-group">
+                        <label class="omega-label" for="omega-profile_visibility">Profile Visibility</label>
+                        <input type="text" class="omega-input form-control" name="profile_visibility" id="omega-profile_visibility">
+                    </div>
+                    <div class="omega-form-group">
+                        <label class="omega-label" for="omega-password">Password</label>
+                        <input type="password" class="omega-input form-control" name="password" id="omega-password">
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                        <button type="button" class="btn btn-secondary prev-tab">Previous</button>
+                        <button type="submit" class="btn btn-success">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Tab navigation
+    const nextBtns = document.querySelectorAll(".next-tab");
+    const prevBtns = document.querySelectorAll(".prev-tab");
+    const tabs = Array.from(document.querySelectorAll("#registerTab .nav-link"));
+
+    function switchToTab(index) {
+        if (index >= 0 && index < tabs.length) {
+            tabs[index].click();
+        }
+    }
+
+    nextBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const currentTab = tabs.findIndex(tab => tab.classList.contains("active"));
+            switchToTab(currentTab + 1);
+        });
+    });
+
+    prevBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const currentTab = tabs.findIndex(tab => tab.classList.contains("active"));
+            switchToTab(currentTab - 1);
+        });
+    });
+
+    // AJAX form submission
+    const form = document.getElementById("registerForm");
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const data = {
+            username: document.getElementById("omega-username").value,
+            phone: document.getElementById("omega-phone").value,
+            dob: document.getElementById("omega-dob").value,
+            email: document.getElementById("omega-email").value,
+            experience: document.getElementById("omega-experience").value,
+            skills: document.getElementById("omega-skills").value,
+            edlevel: document.getElementById("omega-edlevel").value,
+            profile_visibility: document.getElementById("omega-profile_visibility").value,
+            password: document.getElementById("omega-password").value,
+            csrfmiddlewaretoken: document.querySelector('[name=csrfmiddlewaretoken]').value
+        };
+
+        fetch("{% url 'register_user' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value  // ✅ CSRF header
+            },
+            body: new URLSearchParams(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            alert(result.message);
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred during registration.");
+        });
+    });
+});
+</script>
+{% endblock %}
