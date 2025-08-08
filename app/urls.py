@@ -1,24 +1,42 @@
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from rest_framework.routers import DefaultRouter
-from . import views
-from .views import UserViewSet, JobPostViewSet, OrganizationViewSet, JobCategoryViewSet, JobSubCategoryViewSet
+from django.views.generic import TemplateView
+
+# from .views import UserViewSet, JobPostViewSet, OrganizationViewSet, JobCategoryViewSet, JobSubCategoryViewSet
 
 # Create a router and register our viewsets with it
-router = DefaultRouter()
-router.register(r'users', UserViewSet)
-router.register(r'jobposts', JobPostViewSet)
-router.register(r'organizations', OrganizationViewSet)
-router.register(r'jobcategories', JobCategoryViewSet)
-router.register(r'jobsubcategories', JobSubCategoryViewSet)
+# router = DefaultRouter()
+# router.register(r'users', UserViewSet)
+# router.register(r'jobposts', JobPostViewSet)
+# router.register(r'organizations', OrganizationViewSet)
+# router.register(r'jobcategories', JobCategoryViewSet)
+# router.register(r'jobsubcategories', JobSubCategoryViewSet)
 
 urlpatterns = [
-    path('', views.home, name='list'),
-    path('job-detail/<int:id>/', views.job_view, name='job_detail'),
-    path('login/', auth_views.LoginView.as_view(template_name='authentication/login.html'), name='login'),
-    path('register/', auth_views.LoginView.as_view(template_name='authentication/register.html'), name='register'),
-    path('register_user/', views.register_user, name='register_user'),
-    path('login_user/', views.login_user, name='login_user'),
-    path('job/<int:job_id>/apply/', views.apply_job, name='apply_job'),
-    path('api/', include(router.urls)),
+    path('', TemplateView.as_view(template_name='dashboard.html'), name='home'),
+     path(
+        "jobs",
+        TemplateView.as_view(template_name="user_jobs.html"),
+        name="jobs",
+    ),
+    
+    path(
+        "jobs_details/<int:job_id>",
+        TemplateView.as_view(template_name="job_details.html"),
+        name="job_details",
+    ),
+    
+    path(
+        "applied_jobs",
+        TemplateView.as_view(template_name="applied_details.html"),
+        name="applied_jobs",
+    ),
+    
+    path(
+        "profile",
+        TemplateView.as_view(template_name="profile.html"),
+        name="profile",
+    ),
 ]
+
+

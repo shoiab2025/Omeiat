@@ -1,0 +1,128 @@
+/* vertical-menu.css */
+
+.layout-menu {
+  position: fixed;
+  top: 100px; /* Adjust this to match your header height */
+  bottom: 0;
+  left: 0;
+  width: 250px;
+  background-color: #fff;
+  z-index: 1000;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease-in-out;
+  overflow-y: auto;
+  padding-top: 1rem;
+}
+
+/* Scrollbar customization (optional) */
+.layout-menu::-webkit-scrollbar {
+  width: 6px;
+}
+.layout-menu::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
+
+/* App brand styles inside sidebar */
+.layout-menu .app-brand {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+}
+
+/* Sidebar logo */
+.app-brand img {
+  max-height: 40px;
+}
+
+/* Menu inner */
+.menu-inner {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-inner .menu-item {
+  display: block;
+}
+
+.menu-inner .menu-link {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: #333;
+  text-decoration: none;
+  transition: background-color 0.2s;
+  border-left: 4px solid transparent;
+}
+
+.menu-inner .menu-link:hover {
+  background-color: #f8f8f8b7;
+  border-left-color: #f7bfbd !important;
+  color: #f7bfbd !important;
+}
+
+.menu-inner .menu-item.active .menu-link {
+  background-color: #e9f2ff;
+  border-left-color: #f7bfbd !important;
+  color: #f7bfbd !important;
+}
+
+/* Menu icons */
+.menu-icon {
+  font-size: 1.2rem;
+  margin-right: 0.75rem;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Sidebar toggle button (if used) */
+.layout-menu-toggle {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #333;
+  cursor: pointer;
+}
+
+@media (max-width: 991px) {
+  .layout-menu {
+    left: -250px;
+  }
+  .collapsed-menu{
+    left: 0px;
+  }
+
+  body.sidebar-open .layout-menu {
+    left: 0;
+  }
+
+  .layout-page {
+    padding-left: 0;
+  }
+}
+
+/* Padding for page content */
+.layout-page {
+  padding-left: 250px;
+  transition: padding-left 0.3s;
+}
+
+.user-details {
+  display: none;
+}
+
+@media (max-width: 991px) {
+  .layout-page {
+    padding-left: 0;
+  }
+
+  .user-details {
+    display: block;
+  }
+}
+
+

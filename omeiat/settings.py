@@ -43,6 +43,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+STATIC_URL = '/static/'
+
+# If you're using STATICFILES_DIRS for local development:
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # or os.path.join(BASE_DIR, 'static')
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -68,6 +75,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',  # ✅ THIS LINE
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'app.context_processors.theme_context',  # Custom context processor
             ],
         },
     },
@@ -83,7 +91,7 @@ WSGI_APPLICATION = 'omeiat.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'omeiatDB',
+        'NAME': 'Omeiat_database',
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': 'localhost',
@@ -135,6 +143,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login/'
 
+AUTH_USER_MODEL = 'app.User'
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
+
 JAZZMIN_SETTINGS = {
     "site_title": "Omeiat Admin",
     "site_header": "Omeiat Dashboard",
@@ -168,4 +179,18 @@ JAZZMIN_SETTINGS = {
         {"app": "auth", "models": ["user", "group"]},
         {"app": "your_app", "models": ["jobpost", "organization"]},
     ],
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "WARNING",
+    },
 }
