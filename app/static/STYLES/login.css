@@ -1,0 +1,136 @@
+/* Import fonts */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+
+/* Reset margin and padding for all elements */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+  text-decoration: none;
+}
+
+/* Set background color and center the login form */
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 110vh;
+}
+
+/* Style the login card */
+.login-card {
+  width: 400px;
+  height: auto;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Header inside the card */
+.login-card h2 {
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Login/Signup options */
+.login-options {
+  display: flex;
+  width: 100%;
+  border: 1px solid rgba(221, 221, 221, 1);
+  border-radius: 15px;
+  margin: 20px 0;
+}
+
+/* Link buttons inside the login-options */
+.login-options a {
+  font-size: 1em;
+  padding: 10px 55px;
+  border: none;
+  width: 50%;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* Login button with a gradient */
+.login-options a.active {
+  border-radius: 15px;
+  background: linear-gradient(145deg, #e15954, #f7bfbd);
+  color: white;
+}
+
+/* Register button */
+.login-options a.register {
+  border-radius: 15px;
+  background-color: transparent;
+  color: black;
+}
+
+/* Form elements inside the card */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Styling input fields */
+.login-form input {
+  padding: 12px;
+  border-radius: 5px;
+  border: 1px solid #DDDDDD;
+  color: #A0A6A3;
+  font-family: "Roboto Mono", sans-serif;
+  box-shadow: 1px 5px 9px rgba(211, 211, 211, .7);
+  margin-bottom: 15px;
+}
+
+/* Styling email input */
+.login-form input.email {
+  margin-bottom: 15px;
+}
+
+/* Styling password input */
+.login-form input.pass {
+  margin-bottom: 20px;
+}
+
+/* Login button */
+.login-btn {
+  font-size: 20px;
+  color: white;
+  border-radius: 15px;
+  border: none;
+  background-color: #003A74;
+  width: 100%;
+  padding: 12px;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  background: linear-gradient(145deg, #e15954, #f7bfbd);
+  box-shadow: 1px 5px 9px rgba(211, 211, 211, .9);
+}
+
+/* Footer section of the login card */
+.login-footer {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin-top: 10px !important ;
+}
+
+.login-footer p {
+  margin-right: 0px !important;
+  font-size: 0.9em;
+}
+
+.login-footer a {
+  color: #5881D0;
+  font-size: 0.9em;
+  text-decoration: none;
+}

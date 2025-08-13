@@ -1,0 +1,107 @@
+{% extends "master_layout.html" %}
+{% load static %}
+
+{% block title %}{{ job.name }} - Job Details{% endblock title %}
+{% block meta_description %}Details for {{ job.name }} position at {{ job.posted_by.name }}.{% endblock meta_description %}
+{% block meta_keywords %}{{ job.category }}, {{ job.post }}, {{ job.job_type }}{% endblock meta_keywords %}
+
+{% block layout %}
+<section class="content-wrapper py-4">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb bg-light px-3 py-2 rounded shadow-sm">
+        <li class="breadcrumb-item"><a href="{% url 'jobs' %}">Jobs</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ job.name }}</li>
+      </ol>
+    </nav>
+
+    <!-- Title -->
+    <div class="mb-4">
+      <h1 class="fw-bold mb-1">{{ job.name }}</h1>
+      <span class="text-muted">{{ job.category }}{% if job.subcategory %} - {{ job.subcategory }}{% endif %}</span>
+    </div>
+
+    <!-- Job Details Card -->
+    <div class="card shadow-lg border-0 rounded-3">
+      <div class="card-body p-4">
+        <div class="row mb-4">
+          <div class="col-md-8">
+            <h4 class="fw-semibold">{{ job.post }}</h4>
+            {% if job.is_verified %}
+              <span class="badge bg-success px-4 py-2"><i class="bi bi-check-circle-fill me-1"></i> Verified</span>
+            {% else %}
+              <span class="badge bg-warning text-dark  px-4 py-2"><i class="bi bi-exclamation-circle-fill me-1"></i> Not Verified</span>
+            {% endif %}
+          </div>
+          <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            <small class="text-muted">Posted by: <strong>{{ job.posted_by.name }}</strong></small>
+          </div>
+        </div>
+
+        <!-- Info List -->
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <div class="p-3 bg-light rounded">
+              <strong>Job Type:</strong> {{ job.job_type }}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 bg-light rounded">
+              <strong>Experience Needed:</strong> {{ job.experience_needed }} years
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 bg-light rounded">
+              <strong>Location:</strong> {{ job.location }}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 bg-light rounded">
+              <strong>Salary:</strong> ₹{{ job.salary_min }} - ₹{{ job.salary_max }}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 bg-light rounded">
+              <strong>Application Deadline:</strong> {{ job.application_deadline|date:"F j, Y" }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-4">
+          <h5 class="fw-bold">Job Description</h5>
+          <p class="text-secondary">{{ job.description|linebreaks }}</p>
+        </div>
+
+        <!-- Skills -->
+        {% if job.skills_required %}
+        <div class="mb-4">
+          <h5 class="fw-bold">Skills Required</h5>
+          <p class="text-secondary">{{ job.skills_required|linebreaks }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Qualifications -->
+        {% if job.qualifications %}
+        <div class="mb-4">
+          <h5 class="fw-bold">Qualifications</h5>
+          <p class="text-secondary">{{ job.qualifications|linebreaks }}</p>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Apply Button -->
+      <div class="card-footer bg-white border-0 text-end p-4">
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-lg btn-primary shadow-sm px-4">
+            <i class="bi bi-send-fill me-2"></i> Apply Now
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock layout %}

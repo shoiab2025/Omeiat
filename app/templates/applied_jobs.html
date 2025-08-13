@@ -1,0 +1,31 @@
+{% extends "master_layout.html" %}
+
+{% load static %}
+
+{% block title %}Applied Jobs | Your Job Applications{% endblock title %}
+{% block meta_description %}View all the jobs you have applied for through the employment portal.{% endblock meta_description %}
+{% block meta_keywords %}applied jobs, job applications, employment portal, track applications{% endblock meta_keywords %}
+
+{% block layout %}
+<section class="content-wrapper">
+  <div class="container">
+    {% block h1 %}<h1>Jobs You've Applied To</h1>{% endblock h1 %}
+
+    <div class="row">
+      <div class="col-sm-6 mb-3 mb-sm-0">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h4 class="card-title font-weight-bold">Software Engineer</h4>
+            <p class="mb-1"><strong>Category:</strong> IT & Software</p>
+            <p class="mb-1"><strong>Company:</strong> Tech Solutions Pvt Ltd</p>
+            <p class="mb-1"><strong>Applied On:</strong> August 5, 2025</p>
+            <p class="mb-3"><strong>Status:</strong> Under Review</p>
+            <a href={% url 'job_detail' 123456 %} class="btn btn-outline-secondary">View Application</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock layout %}

@@ -2,10 +2,11 @@
 
 .layout-menu {
   position: fixed;
-  top: 100px; /* Adjust this to match your header height */
+  top: 100px;
+  /* Adjust this to match your header height */
   bottom: 0;
   left: 0;
-  width: 250px;
+  width: 280px;
   background-color: #fff;
   z-index: 1000;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
@@ -18,6 +19,7 @@
 .layout-menu::-webkit-scrollbar {
   width: 6px;
 }
+
 .layout-menu::-webkit-scrollbar-thumb {
   background-color: #ccc;
   border-radius: 4px;
@@ -42,6 +44,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  margin-right: 10px;
 }
 
 .menu-inner .menu-item {
@@ -56,18 +59,26 @@
   text-decoration: none;
   transition: background-color 0.2s;
   border-left: 4px solid transparent;
+  margin-bottom: 8px;
 }
 
 .menu-inner .menu-link:hover {
-  background-color: #f8f8f8b7;
+  background: linear-gradient(145deg, #e15954, #f7bfbd) !important;
   border-left-color: #f7bfbd !important;
-  color: #f7bfbd !important;
+  color: #ffffff !important;
+  font-weight: 700;
+
+  border-bottom-right-radius: 50px;
+  border-top-right-radius: 50px;
 }
 
 .menu-inner .menu-item.active .menu-link {
-  background-color: #e9f2ff;
+  background: linear-gradient(145deg, #e15954, #f7bfbd) !important;
   border-left-color: #f7bfbd !important;
-  color: #f7bfbd !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  border-bottom-right-radius: 50px;
+  border-top-right-radius: 50px;
 }
 
 /* Menu icons */
@@ -89,10 +100,14 @@
 }
 
 @media (max-width: 991px) {
-  .layout-menu {
-    left: -250px;
+  #layout-navbar .navbar-brand img {
+    max-height: 30px !important;
   }
-  .collapsed-menu{
+  .layout-menu {
+    left: -280px;
+  }
+
+  .collapsed-menu {
     left: 0px;
   }
 
@@ -107,7 +122,7 @@
 
 /* Padding for page content */
 .layout-page {
-  padding-left: 250px;
+  padding-left: 280px;
   transition: padding-left 0.3s;
 }
 
@@ -124,5 +139,3 @@
     display: block;
   }
 }
-
-

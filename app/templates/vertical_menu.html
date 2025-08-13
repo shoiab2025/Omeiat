@@ -34,7 +34,7 @@
       </div>
 
       <!-- Dashboard -->
-      <li class="menu-item {% if request.resolver_match.url_name == 'dashboard' %}active open{% endif %}">
+      <li class="menu-item {% if request.resolver_match.url_name == 'home' %}active open{% endif %}">
         <a href="{% url 'home' %}" class="menu-link">
           <i class="menu-icon tf-icons ri-dashboard-line"></i>
           <div class="text-truncate" data-i18n="Dashboard">Dashboard</div>
@@ -50,7 +50,7 @@
       </li>
 
       <!-- Applications -->
-      <li class="menu-item {% if request.resolver_match.url_name == 'applications' %}active open{% endif %}">
+      <li class="menu-item {% if request.resolver_match.url_name == 'applied_jobs' %}active open{% endif %}">
         <a href="{% url 'applied_jobs' %}" class="menu-link">
           <i class="menu-icon tf-icons ri-file-list-line"></i>
           <div class="text-truncate" data-i18n="Applications">Applications</div>

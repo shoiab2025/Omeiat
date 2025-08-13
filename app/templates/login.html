@@ -1,0 +1,47 @@
+{% extends "blank_layout.html" %}
+
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'STYLES/login.css' %}">
+{% endblock head %}
+
+{% block title %}Login{% endblock title %}
+{% block meta_description %}Login to your account.{% endblock meta_description %}
+{% block meta_keywords %}login, authentication, user account{% endblock meta_keywords %}
+{% block layout %}
+<div class="login-page">
+    <div class="login-card">
+        <!-- SE CONNECTER / S'INSCRIRE -->
+        <div class="logo_container">
+           <img src="{% static 'app/images/logo.png' %}" alt="Logo" style="height: 130px;" class="m-0">
+        </div>
+
+        <div class="login-options">
+            <a href={% url "login" %} class="login active">Login</a>
+            <a href={% url "register" %} class="register">Signup</a>
+        </div>
+        <!-- ICONE DE CONNEXION -->
+
+        <!-- FORMULAIRE -->
+        <form class="login-form">
+            <input type="email" placeholder="Email Address" class="email">
+            <input type="password" placeholder="Password" class="pass">
+        </form>
+
+        <!-- MOT DE PASSE OUBLIE ? -->
+        <a href="#" class="fp">Forgot password?</a>
+
+        <!-- BOUTTON LOGIN -->
+        <button type="button" class="login-btn">Login</button>
+
+        <!-- PIED DE LA CARD -->
+        <div class="login-footer">
+            <p>Not a member?</p>
+            <a href="#">Signup now</a>
+        </div>
+    </div>
+</div>
+
+
+{% endblock layout %}

@@ -25,7 +25,7 @@ class Institution(models.Model):
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
-    pincode = models.CharField(max_length=10)
+    pincode = models.PositiveIntegerField(default=0)  # or a valid number
     district = models.CharField(max_length=100)
     year_established = models.PositiveIntegerField()
     member_since = models.PositiveIntegerField()

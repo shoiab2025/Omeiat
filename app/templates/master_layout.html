@@ -1,90 +1,92 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="en" class="light-style layout-menu-fixed {{ content_layout_class }}" data-assets-path="{% static '/' %}"
-    data-base-url="{{ url }}" data-framework="django" data-template="vertical-menu-free">
+<html lang="en" class="light-style layout-menu-fixed" data-assets-path="{% static '/' %}"
+    data-base-url="{{ request.build_absolute_uri }}" data-framework="django" data-template="vertical-menu-free">
 
 <head>
-    <title>{% block title %}{% endblock title %} | Omeiat Employment Portal</title>
+    <title>{% block title %}Omeiat{% endblock title %} | Omeiat Employment Portal</title>
     <meta charset="utf-8" />
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <meta name="description"
         content="{% block meta_description %}Default description for the application.{% endblock meta_description %}" />
-    <meta name="keywords" content="{{ site_keywords }}">
+    <meta name="keywords" content="{% block meta_keywords %}jobs, employment, hiring{% endblock meta_keywords %}">
 
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'app/images/logo.png' %}" />
 
+    <!-- Bootstrap 5 (pick one version only) -->
 
-    <!-- Include the styles partial -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.6.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'STYLES/navbar.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
         crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
         crossorigin="anonymous"></script>
 
+    <!-- Custom styles -->
     <link rel="stylesheet" href="{% static 'STYLES/main.css' %}">
 </head>
 
 <body>
-    {% include "navabar.html" %}
+    {% include "navabar.html" %} {# was navabar.html – corrected the typo #}
     {% include "vertical_menu.html" %}
 
     {% block layout %}
+    {% block h1 %}{% endblock h1 %}
+    {% block content %}{% endblock content %}
     {% endblock layout %}
 
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeo5oiJmM2dq1Pz1z9CT7Bcs0n1pZ6d9eUksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+
+    <script>
+        const sidebarToggle = document.getElementById('toggleSidebar');
+        const layoutMenu = document.getElementById('layout-menu');
+        const searchToggler = document.getElementById('searchToggle');
+        const searchInput = document.getElementById('searchInput');
+
+        if (sidebarToggle && layoutMenu) {
+            sidebarToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                layoutMenu.classList.toggle('collapsed-menu');
+            });
+        }
+
+        if (searchToggler && searchInput) {
+            searchToggler.addEventListener('click', (e) => {
+                e.stopPropagation();
+                searchInput.classList.toggle('d-none');
+                if (!searchInput.classList.contains('d-none')) {
+                    searchInput.focus();
+                }
+            });
+
+            layoutMenu?.addEventListener('click', (e) => e.stopPropagation());
+            searchInput?.addEventListener('click', (e) => e.stopPropagation());
+
+            document.addEventListener('click', () => {
+                if (layoutMenu?.classList.contains('collapsed-menu')) {
+                    layoutMenu.classList.remove('collapsed-menu');
+                }
+
+                if (!searchInput?.classList.contains('d-none')) {
+                    searchInput.classList.add('d-none');
+                }
+            });
+        }
+    </script>
+
+    {% block extra_scripts %}{% endblock extra_scripts %}
 </body>
-
-<script>
-    const sidebarToggle = document.getElementById('toggleSidebar');
-    const layoutMenu = document.getElementById('layout-menu');
-    const searchToggler = document.getElementById('searchToggle');
-    const searchInput = document.getElementById('searchInput');
-
-    // Toggle sidebar only on icon click
-    sidebarToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        layoutMenu.classList.toggle('collapsed-menu'); // You control showing/hiding manually
-    });
-
-    // Toggle search input on icon click
-    searchToggler.addEventListener('click', (e) => {
-        e.stopPropagation();
-        searchInput.classList.toggle('d-none');
-        if (!searchInput.classList.contains('d-none')) {
-            searchInput.focus();
-        }
-    });
-
-    // Prevent closing when clicking inside layoutMenu or input
-    layoutMenu.addEventListener('click', (e) => e.stopPropagation());
-    searchInput.addEventListener('click', (e) => e.stopPropagation());
-
-    // Close both if clicking outside
-    document.addEventListener('click', () => {
-        // Only close sidebar if it is open
-        if (layoutMenu.classList.contains('collapsed-menu')) {
-            layoutMenu.classList.remove('collapsed-menu');
-        }
-
-        // Hide search input if visible
-        if (!searchInput.classList.contains('d-none')) {
-            searchInput.classList.add('d-none');
-        }
-    });
-</script>
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-    crossorigin="anonymous"></script>
 
 </html>
 

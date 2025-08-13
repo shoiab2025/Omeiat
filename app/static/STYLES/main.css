@@ -1,6 +1,7 @@
 :root {
     /* Colors */
     --primary-blue: #017414;
+    --primary-gradient: linear-gradient(145deg, #e15954, #f7bfbd) !important;
     --primary-purple: #9C27B0;
     --primary-purple-light: #9A9FF6;
     --primary_blue: #353745;
@@ -52,7 +53,7 @@
 
 body {
     font-family: var(--font-main);
-    background-color: #f4f4f4 !important;
+    background-color: #cbcbcb !important;
 }
 
 h1,
@@ -69,23 +70,75 @@ a {
     text-decoration: none !important;
     transition: color 0.3s ease;
 }
+h1 {
+    font-size: 1.7rem !important;
+    font-weight: 600;
+    color: var(--primary_blue);
+    line-height: 60px !important;
+}
 
 .content-wrapper {
     margin-top: 100px !important; /* height of navbar */
-    margin-left: 250px !important; /* width of sidebar */
+    margin-left: 280px !important; /* width of sidebar */
     padding: 2rem;
     min-height: calc(100vh - 100px); /* corrected: match margin-top */
-    background-color: #fefefe;
+    background-color: #f6f6f6 !important;
     overflow-x: hidden;
     overflow-y: auto; /* fixed: 'scroll' always shows scrollbar even if not needed */
     box-sizing: border-box; /* good practice for consistent padding/margin */
 }
+
+button, .btn {
+    cursor: pointer !important ;
+    font-family: var(--font-main) !important;
+    font-size: 1rem !important;
+    padding: 0.5rem 1rem  !important;
+    border: none  !important;
+    border-radius: var(--border-radius)  !important;
+    background: linear-gradient(145deg, #e15954, #f7bfbd) !important;
+    color: var(--white) !important;
+    transition: background-color 0.3s ease !important;
+}
+
+/* Inactive tab styles */
+.nav-tabs .nav-link {
+    background-color: #e0e0e0 !important; /* grey background */
+    color: #333 !important; /* dark text */
+    border: none !important;
+    margin-right: 5px;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    font-weight: 500;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Hover effect for inactive tabs */
+.nav-tabs .nav-link:hover {
+    background-color: #d5d5d5 !important;
+}
+
+/* Active tab styles */
+.nav-tabs .nav-link.active {
+    background: var(--primary-gradient) !important;
+    color: var(--white) !important;
+    border: none !important;
+    font-weight: 600;
+}
+
+/* Remove bottom border gap between tabs and content */
+.nav-tabs {
+    border-bottom: none !important;
+}
+
 
 /* Mobile first approach */
 @media (max-width: 767.98px) {
     .content-wrapper {
         margin-left: 0 !important;
         padding: 1rem;
+    }
+
+    h1 {
+        font-size: 1.5rem !important; /* smaller font size for mobile */
     }
 }
 
@@ -96,3 +149,5 @@ a {
         padding: 1rem;
     }
 }
+
+
