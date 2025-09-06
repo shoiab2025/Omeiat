@@ -19,7 +19,7 @@
         </div>
 
         <div class="bg-white rounded-3 shadow-lg p-4">
-            <form id="profileForm" method="post" enctype="multipart/form-data" class="p-4 mb-3">
+            <form id="profileForm" method="POST" enctype="multipart/form-data" class="p-4 mb-3" action="{% url 'update_profile' %}">
                 {% csrf_token %}
 
                 <!-- Tabs -->
@@ -47,41 +47,50 @@
                     <!-- Personal Info -->
                     <div class="tab-pane fade show active" id="personal" role="tabpanel">
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">First Name</label>
-                                <input type="text" class="form-control" name="first_name" value="{{ user.first_name }}">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Last Name</label>
-                                <input type="text" class="form-control" name="last_name" value="{{ user.last_name }}">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Spouse Name</label>
-                                <input type="text" class="form-control" name="spouse_name"
-                                    value="{{ user.spouse_name }}">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Date of Birth</label>
-                                <input type="date" class="form-control" name="dob" value="{{ user.dob|date:'Y-m-d' }}">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Mother Tongue</label>
-                                <input type="text" class="form-control" name="mother_tongue"
-                                    value="{{ user.mother_tongue }}">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Profile Picture</label>
-                                <input type="file" class="form-control" name="profile_picture">
-                                {% if user.profile_picture %}
-                                <div class="mt-2">
-                                    <small>Current:</small>
-                                    <img src="{{ user.profile_picture.url }}" height="50" class="rounded ms-2">
+                            <div class="col-md-4 mb-3 justify-content-center d-flex flex-column align-items-center">
+                                <label class="form-label d-block">Profile Picture</label>
+
+                                <!-- Hidden file input -->
+                                <input type="file" id="profile_picture_input" class="d-none" name="profile_picture"
+                                    accept="image/*">
+
+                                <!-- Clickable preview image -->
+                                <label for="profile_picture_input" style="cursor: pointer;">
+                                    <img id="profile_picture_preview"
+                                        src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'app/images/male_user.png' %}{% endif %}"
+                                        height="150" class="rounded" alt="Profile Picture">
+                                </label>
+
+                                <!-- Small hint -->
+                                <div class="text-muted mt-2" style="font-size: 0.9em;">
+                                    Click the picture to upload a new one.
                                 </div>
-                                {% endif %}
                             </div>
-                            <div class="col-12 mb-3">
-                                <label class="form-label">Address</label>
-                                <textarea class="form-control" name="address">{{ user.address }}</textarea>
+
+                            <div class="col-md-8 mb-3">
+                                <div class="form_group my-2">
+                                    <label class="form-label">User Name</label>
+                                    <input type="text" class="form-control" name="username" value="{{ user.username }}">
+                                </div>
+                                <div class="form_group my-2">
+                                    <label class="form-label">Spouse Name</label>
+                                    <input type="text" class="form-control" name="spouse_name"
+                                        value="{{ user.spouse_name }}">
+                                </div>
+                                <div class="form_group my-2">
+                                    <label class="form-label">Date of Birth</label>
+                                    <input type="date" class="form-control" name="dob"
+                                        value="{{ user.dob|date:'Y-m-d' }}">
+                                </div>
+                                <div class="form_group my-2">
+                                    <label class="form-label">Mother Tongue</label>
+                                    <input type="text" class="form-control" name="mother_tongue"
+                                        value="{{ user.mother_tongue }}">
+                                </div>
+                                <div class="form_group my-2">
+                                    <label class="form-label">Address</label>
+                                    <textarea class="form-control" name="address">{{ user.address }}</textarea>
+                                </div>
                             </div>
                         </div>
                         <button type="button" class="btn btn-primary float-end" onclick="nextTab('education-tab')">Save
@@ -196,5 +205,18 @@
 
     document.querySelectorAll('#profileForm input, #profileForm textarea, #profileForm select')
         .forEach(el => el.addEventListener('input', updateProgress));
+</script>
+
+<script>
+    document.getElementById('profile_picture_input').addEventListener('change', function (event) {
+        let file = event.target.files[0];
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('profile_picture_preview').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 </script>
 {% endblock layout %}

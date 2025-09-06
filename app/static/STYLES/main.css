@@ -53,7 +53,7 @@
 
 body {
     font-family: var(--font-main);
-    background-color: #cbcbcb !important;
+    background-color: #f7f7f7 !important;
 }
 
 h1,
@@ -76,6 +76,12 @@ h1 {
     color: var(--primary_blue);
     line-height: 60px !important;
 }
+h2 {
+    font-size: 1.5rem !important;
+    font-weight: 600;
+    color: var(--primary_blue);
+    line-height: 60px !important;
+}
 
 .content-wrapper {
     margin-top: 100px !important; /* height of navbar */
@@ -88,7 +94,7 @@ h1 {
     box-sizing: border-box; /* good practice for consistent padding/margin */
 }
 
-button, .btn {
+.btn-primary {
     cursor: pointer !important ;
     font-family: var(--font-main) !important;
     font-size: 1rem !important;
@@ -98,6 +104,27 @@ button, .btn {
     background: linear-gradient(145deg, #e15954, #f7bfbd) !important;
     color: var(--white) !important;
     transition: background-color 0.3s ease !important;
+}
+
+.bg-primary {
+    background: linear-gradient(145deg, #e15954, #f7bfbd) !important;
+}
+
+.btn-outline-primary {
+    background: transparent !important;
+    color: var(--primary_blue) !important;
+    border: 1px solid var(--primary_blue) !important;
+    cursor: pointer !important ;
+    font-family: var(--font-main) !important;
+    font-size: 1rem !important;
+    padding: 0.5rem 1rem  !important;
+    border-radius: var(--border-radius)  !important;
+    transition: background-color 0.3s ease !important;
+}
+.btn-outline-primary:hover {
+    background: linear-gradient(145deg, #e15954, #f7bfbd) !important;
+    border: none !important;
+    color: var(--white) !important;
 }
 
 /* Inactive tab styles */

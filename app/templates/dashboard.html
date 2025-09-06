@@ -1,42 +1,13 @@
 {% extends "master_layout.html" %}
-
-{% load static %}
-
-{% block title %}Dashboard{% endblock title %}
-{% block meta_description %}Dashboard for managing employment portal activities.{% endblock meta_description %}
-{% block meta_keywords %}dashboard, employment, portal, management, School Jobs, Teaching Jobs{% endblock meta_keywords %}
+{% block title %}Application Stats{% endblock %}
 
 {% block layout %}
-
-<section class="content-wrapper">
+<section class="content-wrapper py-5">
   <div class="container">
-    {% block h1 %} <h1>Dashboard</h1> {% endblock h1 %}
-    <div class="row">
-      <div class="col-sm-4 mb-3 mb-sm-0">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <h4 class="card-title font-weight-bold">Software Engineer</h4>
-            <p class="mb-1"><strong>Category:</strong> IT & Software</p>
-            <p class="mb-1"><strong>Company:</strong> Tech Solutions Pvt Ltd</p>
-            <p class="mb-3"><strong>Salary:</strong> ₹50,000 - ₹80,000 per month</p>
-            <a href="{% url 'job_detail' 123456 %}" class="btn btn-primary">Apply Now</a>  
-          </div>
-        </div>
-      </div>
-
-      <div class="col-sm-4">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <h4 class="card-title font-weight-bold">Marketing Executive</h4>
-            <p class="mb-1"><strong>Category:</strong> Sales & Marketing</p>
-            <p class="mb-1"><strong>Company:</strong> BrightMark Media</p>
-            <p class="mb-3"><strong>Salary:</strong> ₹30,000 - ₹50,000 per month</p>
-            <a href="#" class="btn btn-primary">Apply Now</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
+    {% include "application_chart.html" %}
+    {% include "latest_jobs.html" %}
   </div>
 </section>
-{% endblock layout %}
+
+
+{% endblock %}

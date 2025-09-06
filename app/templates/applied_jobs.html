@@ -1,31 +1,81 @@
 {% extends "master_layout.html" %}
-
 {% load static %}
 
-{% block title %}Applied Jobs | Your Job Applications{% endblock title %}
-{% block meta_description %}View all the jobs you have applied for through the employment portal.{% endblock meta_description %}
-{% block meta_keywords %}applied jobs, job applications, employment portal, track applications{% endblock meta_keywords %}
-
+{% block title %}Applied Jobs | Your Job Applications{% endblock %}
 {% block layout %}
-<section class="content-wrapper">
+<section class="content-wrapper py-4">
   <div class="container">
-    {% block h1 %}<h1>Jobs You've Applied To</h1>{% endblock h1 %}
+    <h1 class="mb-4">Jobs You've Applied To</h1>
 
-    <div class="row">
-      <div class="col-sm-6 mb-3 mb-sm-0">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <h4 class="card-title font-weight-bold">Software Engineer</h4>
-            <p class="mb-1"><strong>Category:</strong> IT & Software</p>
-            <p class="mb-1"><strong>Company:</strong> Tech Solutions Pvt Ltd</p>
-            <p class="mb-1"><strong>Applied On:</strong> August 5, 2025</p>
-            <p class="mb-3"><strong>Status:</strong> Under Review</p>
-            <a href={% url 'job_detail' 123456 %} class="btn btn-outline-secondary">View Application</a>
-          </div>
-        </div>
+    <!-- Filter Form -->
+    <form method="get" class="row g-3 mb-4">
+      <div class="col-md-4">
+        <select name="status" class="form-select" onchange="this.form.submit()">
+          <option value="">All Statuses</option>
+          <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+          <option value="shortlisted" {% if status_filter == 'shortlisted' %}selected{% endif %}>Shortlisted</option>
+          <option value="hired" {% if status_filter == 'hired' %}selected{% endif %}>Hired</option>
+          <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>Rejected</option>
+        </select>
       </div>
-    </div>
+    </form>
 
+    {% if page_obj %}
+      <div class="row row-cols-1 row-cols-md-2 g-4">
+        {% for application in page_obj %}
+          <div class="col">
+            <div class="card h-100 shadow-sm">
+              <div class="card-body">
+                <h4 class="card-title fw-bold">{{ application.job.name }}</h4>
+                <p class="mb-1"><strong>Category:</strong> {{ application.job.category }}</p>
+                <p class="mb-1"><strong>Company:</strong> {{ application.institution.name }}</p>
+                <p class="mb-1"><strong>Applied On:</strong> {{ application.applied_at|date:"F j, Y" }}</p>
+                <p class="mb-3">
+                  <strong>Status:</strong>
+                  {% if application.status == "pending" %}
+                    <span class="badge bg-warning">Pending</span>
+                  {% elif application.status == "shortlisted" %}
+                    <span class="badge bg-info text-dark">Shortlisted</span>
+                  {% elif application.status == "hired" %}
+                    <span class="badge bg-success">Hired</span>
+                  {% elif application.status == "rejected" %}
+                    <span class="badge bg-danger">Rejected</span>
+                  {% else %}
+                    {{ application.status }}
+                  {% endif %}
+                </p>
+                <a href="{% url 'job_detail' application.job.id %}" class="btn btn-outline-secondary">View Job</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination -->
+      <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}">Previous</a>
+            </li>
+          {% endif %}
+
+          {% for num in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+              <a class="page-link text-white" href="?page={{ num }}{% if status_filter %}&status={{ status_filter }}{% endif %}">{{ num }}</a>
+            </li>
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}">Next</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% else %}
+      <div class="alert alert-info mt-4">You haven't applied to any jobs yet.</div>
+    {% endif %}
   </div>
 </section>
-{% endblock layout %}
+{% endblock %}

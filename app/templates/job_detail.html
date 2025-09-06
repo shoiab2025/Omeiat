@@ -1,9 +1,9 @@
 {% extends "master_layout.html" %}
 {% load static %}
 
-{% block title %}{{ job.name }} - Job Details{% endblock title %}
-{% block meta_description %}Details for {{ job.name }} position at {{ job.posted_by.name }}.{% endblock meta_description %}
-{% block meta_keywords %}{{ job.category }}, {{ job.post }}, {{ job.job_type }}{% endblock meta_keywords %}
+{% block title %}{{ job.name }} - Job Details{% endblock %}
+{% block meta_description %}Details for {{ job.name }} position at {{ job.posted_by.get_full_name|default:job.posted_by }}.{% endblock %}
+{% block meta_keywords %}{{ job.category }}, {{ job.post }}, {{ job.job_type }}{% endblock %}
 
 {% block layout %}
 <section class="content-wrapper py-4">
@@ -20,7 +20,7 @@
     <!-- Title -->
     <div class="mb-4">
       <h1 class="fw-bold mb-1">{{ job.name }}</h1>
-      <span class="text-muted">{{ job.category }}{% if job.subcategory %} - {{ job.subcategory }}{% endif %}</span>
+      <span class="text-muted text-capitalize">{{ job.category }}{% if job.subcategory %} - {{ job.subcategory }}{% endif %}</span>
     </div>
 
     <!-- Job Details Card -->
@@ -30,13 +30,19 @@
           <div class="col-md-8">
             <h4 class="fw-semibold">{{ job.post }}</h4>
             {% if job.is_verified %}
-              <span class="badge bg-success px-4 py-2"><i class="bi bi-check-circle-fill me-1"></i> Verified</span>
+              <span class="badge bg-success px-4 py-2">
+                <i class="bi bi-check-circle-fill me-1"></i> Verified
+              </span>
             {% else %}
-              <span class="badge bg-warning text-dark  px-4 py-2"><i class="bi bi-exclamation-circle-fill me-1"></i> Not Verified</span>
+              <span class="badge bg-warning text-dark px-4 py-2">
+                <i class="bi bi-exclamation-circle-fill me-1"></i> Not Verified
+              </span>
             {% endif %}
           </div>
           <div class="col-md-4 text-md-end mt-3 mt-md-0">
-            <small class="text-muted">Posted by: <strong>{{ job.posted_by.name }}</strong></small>
+            <small class="text-muted">
+              Posted by: <strong>{{ job.posted_by.get_full_name|default:job.posted_by }}</strong>
+            </small>
           </div>
         </div>
 
@@ -59,7 +65,7 @@
           </div>
           <div class="col-md-6">
             <div class="p-3 bg-light rounded">
-              <strong>Salary:</strong> ₹{{ job.salary_min }} - ₹{{ job.salary_max }}
+              <strong>Salary:</strong> ₹{{ job.salary_min|floatformat:0 }} - ₹{{ job.salary_max|floatformat:0 }}
             </div>
           </div>
           <div class="col-md-6">
@@ -70,10 +76,12 @@
         </div>
 
         <!-- Description -->
+        {% if job.description %}
         <div class="mb-4">
           <h5 class="fw-bold">Job Description</h5>
           <p class="text-secondary">{{ job.description|linebreaks }}</p>
         </div>
+        {% endif %}
 
         <!-- Skills -->
         {% if job.skills_required %}
@@ -94,7 +102,7 @@
 
       <!-- Apply Button -->
       <div class="card-footer bg-white border-0 text-end p-4">
-        <form method="post">
+        <form method="post" action="{% url 'apply_job' job.id %}">
           {% csrf_token %}
           <button type="submit" class="btn btn-lg btn-primary shadow-sm px-4">
             <i class="bi bi-send-fill me-2"></i> Apply Now
@@ -104,4 +112,4 @@
     </div>
   </div>
 </section>
-{% endblock layout %}
+{% endblock %}

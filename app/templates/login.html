@@ -10,35 +10,57 @@
 {% block meta_description %}Login to your account.{% endblock meta_description %}
 {% block meta_keywords %}login, authentication, user account{% endblock meta_keywords %}
 {% block layout %}
-<div class="login-page">
-    <div class="login-card">
-        <!-- SE CONNECTER / S'INSCRIRE -->
-        <div class="logo_container">
-           <img src="{% static 'app/images/logo.png' %}" alt="Logo" style="height: 130px;" class="m-0">
+<div class="row">
+    <div class="col-lg-6 d-flex align-items-center bg-primary text-white min-vh-100">
+        <div class="w-100 px-4 py-5 text-center">
+
+            <!-- Welcome Heading -->
+            <h1 class="fw-bold mb-3">👋 Welcome Back!</h1>
+            <p class="lead mb-4">Please enter your credentials to continue.<br>
+                You can login either as a <strong>User</strong> or as an <strong>Institution</strong>.
+            </p>
+
+            <!-- Login Role Selection -->
+            <div class="d-flex justify-content-center gap-3 mb-4">
+                <a href="#"
+                    class="btn btn-outline-light fw-semibold px-4 py-2 rounded-pill">
+                    Login as Institution
+                </a>
+            </div>
+
+
         </div>
+    </div>
 
-        <div class="login-options">
-            <a href={% url "login" %} class="login active">Login</a>
-            <a href={% url "register" %} class="register">Signup</a>
-        </div>
-        <!-- ICONE DE CONNEXION -->
+    <div class="col-lg-6">
+        <div class="login-page">
+            <div class="login-card">
+                <div class="logo_container">
+                    <img src="{% static 'app/images/logo.png' %}" alt="Logo" style="height: 130px;" class="m-0">
+                </div>
+                <div class="login-options">
+                    <a href={% url "login" %} class="login active">Login</a>
+                    <a href={% url "register" %} class="register">Signup</a>
+                </div>
+                <!-- ICONE DE CONNEXION -->
 
-        <!-- FORMULAIRE -->
-        <form class="login-form">
-            <input type="email" placeholder="Email Address" class="email">
-            <input type="password" placeholder="Password" class="pass">
-        </form>
+                <!-- FORMULAIRE -->
+                <form method="post" action="{% url 'login' %}" class="login-form">
+                    {% csrf_token %}
+                    <input type="text" name="username" placeholder="Username" class="email">
+                    <input type="password" name="password" placeholder="Password" class="pass">
+                    <button type="submit" class="login-btn">Login</button>
+                </form>
 
-        <!-- MOT DE PASSE OUBLIE ? -->
-        <a href="#" class="fp">Forgot password?</a>
+                <!-- MOT DE PASSE OUBLIE ? -->
+                <a href="#" class="fp">Forgot password?</a>
 
-        <!-- BOUTTON LOGIN -->
-        <button type="button" class="login-btn">Login</button>
-
-        <!-- PIED DE LA CARD -->
-        <div class="login-footer">
-            <p>Not a member?</p>
-            <a href="#">Signup now</a>
+                <!-- PIED DE LA CARD -->
+                <div class="login-footer">
+                    <p>Not a member? </p>
+                    <a href={% url "register" %} class="mx-1">Signup now</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>

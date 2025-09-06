@@ -29,6 +29,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
         integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
         crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 
     <!-- Custom styles -->
     <link rel="stylesheet" href="{% static 'STYLES/main.css' %}">
@@ -38,15 +39,25 @@
     {% include "navabar.html" %} {# was navabar.html – corrected the typo #}
     {% include "vertical_menu.html" %}
 
+
+
     {% block layout %}
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
     {% block h1 %}{% endblock h1 %}
     {% block content %}{% endblock content %}
     {% endblock layout %}
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ENjdO4Dr2bkBIFxQpeo5oiJmM2dq1Pz1z9CT7Bcs0n1pZ6d9eUksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
 
     <script>
         const sidebarToggle = document.getElementById('toggleSidebar');
