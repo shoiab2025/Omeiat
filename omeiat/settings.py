@@ -42,7 +42,7 @@ INSTALLED_APPS = [
 # ----------------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # for static files on Render
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # static files for production
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -78,7 +78,7 @@ TEMPLATES = [
 ]
 
 # ----------------------
-# Auth
+# Authentication
 # ----------------------
 AUTH_USER_MODEL = 'app.User'
 AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
@@ -96,7 +96,6 @@ DATABASES = {
         ssl_require=True
     )
 }
-
 
 # ----------------------
 # Password Validation
@@ -123,7 +122,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]  # local development
 STATIC_ROOT = BASE_DIR / "staticfiles"    # production (Render)
 
-# Enable WhiteNoise compression & caching
+# Enable WhiteNoise for static file compression & caching
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # ----------------------
