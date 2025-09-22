@@ -62,7 +62,7 @@
 /* Login button with a gradient */
 .login-options a.active {
   border-radius: 15px;
-  background: linear-gradient(145deg, #e15954, #f7bfbd);
+  background: #e15954;
   color: white;
 }
 
@@ -81,14 +81,16 @@
 }
 
 /* Styling input fields */
-.login-form input {
-  padding: 12px;
+.login-form input,
+.login-form select,
+.login-form textarea {
+  padding: 12px !important;
   border-radius: 5px;
-  border: 1px solid #DDDDDD;
-  color: #A0A6A3;
-  font-family: "Roboto Mono", sans-serif;
-  box-shadow: 1px 5px 9px rgba(211, 211, 211, .7);
-  margin-bottom: 15px;
+  border: 1px solid #dddddd;
+  color: #000000;
+  font-family: "Roboto Mono", monospace;
+  box-shadow: 1px 5px 9px rgba(211, 211, 211, 0.7);
+  margin-bottom: 15px !important;
 }
 
 /* Styling email input */
@@ -112,7 +114,7 @@
   padding: 12px;
   margin-top: 20px;
   margin-bottom: 15px;
-  background: linear-gradient(145deg, #e15954, #f7bfbd);
+  background: #e15954;
   box-shadow: 1px 5px 9px rgba(211, 211, 211, .9);
 }
 

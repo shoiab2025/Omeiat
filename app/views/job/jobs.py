@@ -18,13 +18,11 @@ def job_list(request):
     return render(request, "jobs.html", {"jobs": jobs})
 
 def get_job_detail(request, job_id):
-    pdb.set_trace()
     job = get_object_or_404(Job, id=job_id, is_active=True)
     return render(request, "job_detail.html", {"job": job})
 
 @login_required
 def apply_job(request, job_id):
-    pdb.set_trace()
     job = get_object_or_404(Job, id=job_id, is_active=True)
     if request.method == "POST":
 
@@ -41,10 +39,9 @@ def apply_job(request, job_id):
             applied_at=datetime.now(),
         )
         application.save()
-
+        
         messages.success(request, "Your application has been submitted successfully.")
-        return HttpResponseRedirect(reverse("job_detail", args=[job_id]))
-
+        return redirect('applied_jobs')
     return render(request, "applied_jobs.html", {"job": job})
 
 @login_required

@@ -1,131 +1,190 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth.models import User
-from django.contrib.auth.hashers import make_password, check_password
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from django.contrib import messages
+from django.contrib.auth.hashers import check_password, make_password
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from app.models import Institution, OmeiatZones
 import pdb
-
 User = get_user_model()
+
 
 def user_login(request):
     if request.user.is_authenticated:
-        return redirect('home')
+        messages.info(request, "You are already logged in.")
+        return redirect("home")
 
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
 
-        # 1️⃣ Try normal Django authentication first
         user = authenticate(request, username=username, password=password)
 
-        if user is None:
-            # 2️⃣ If that fails, manually check password hash
-            try:
-                db_user = User.objects.get(username=username)
-            except User.DoesNotExist:
-                messages.error(request, 'Invalid username or password.')
-                return redirect('login')
-
-            if check_password(password, db_user.password):
-                user = db_user  # password matches, assign to user object
-            else:
-                messages.error(request, 'Invalid username or password.')
-                return redirect('login')
-
-        # 3️⃣ If we have a valid user object, log them in
-        if user:
-            if not getattr(user, 'is_deleted', False):
+        if user is not None:
+            if not getattr(user, "is_deleted", False):
                 login(request, user)
-                messages.success(request, 'Logged in successfully.')
-                pdb.set_trace()
-                return redirect('home')
+                messages.success(request, "Logged in successfully.")
+                return redirect("home")
             else:
-                messages.error(request, 'Your account has been deactivated.')
+                messages.error(request, "Your account has been deactivated.")
+        else:
+            messages.error(request, "Invalid username or password.")
+            return redirect("login")
 
-    return render(request, 'login.html')
+    return render(request, "login.html")
+
 
 def user_logout(request):
     if request.user.is_authenticated:
         logout(request)
-        messages.success(request, 'You have been logged out successfully.')
-    return redirect('login')  # Redirect to login page after logout
+        messages.success(request, "You have been logged out successfully.")
+    return redirect("login")
 
 
 @login_required
 def update_user(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         user = request.user
 
-        # Update all editable fields from request.POST
         editable_fields = [
-            'username', 'spouse_name', 'dob', 'mother_tongue', 'address',
-            'qualification', 'schooling', 'languages_known', 'working_experience_years',
-            'describing_experience', 'last_salary', 'expected_salary',
-            'reference_by_1', 'reference_by_2', 'joining_availability',
-            'aim_of_life', 'about_family'
+            "username", "spouse_name", "dob", "mother_tongue", "address",
+            "qualification", "schooling", "languages_known", "working_experience_years",
+            "describing_experience", "last_salary", "expected_salary",
+            "reference_by_1", "reference_by_2", "joining_availability",
+            "aim_of_life", "about_family"
         ]
 
         for field in editable_fields:
             if field in request.POST:
                 value = request.POST.get(field)
-                setattr(user, field, value if value != '' else None)
+                setattr(user, field, value if value != "" else None)
 
-        # Handle file upload
-        if 'profile_picture' in request.FILES:
-            user.profile_picture = request.FILES['profile_picture']
+        if "profile_picture" in request.FILES:
+            user.profile_picture = request.FILES["profile_picture"]
 
-        # Calculate profile completion dynamically
+        # Profile completion %
         exclude_fields = [
-            'id', 'password', 'last_login', 'is_superuser', 'is_staff', 'is_active',
-            'date_joined', 'groups', 'user_permissions',
-            'profile_percentage', 'profile_visibility', 'is_deleted', 'timestamp', 'email'
+            "id", "password", "last_login", "is_superuser", "is_staff", "is_active",
+            "date_joined", "groups", "user_permissions",
+            "profile_percentage", "profile_visibility", "is_deleted", "timestamp", "email"
         ]
-        model_fields = [f.name for f in user._meta.get_fields() if hasattr(f, 'attname')]
-        total_fields = 0
-        filled_fields = 0
+        model_fields = [f.name for f in user._meta.get_fields() if hasattr(f, "attname")]
+        total_fields, filled_fields = 0, 0
 
         for field_name in model_fields:
             if field_name not in exclude_fields:
                 total_fields += 1
                 value = getattr(user, field_name, None)
-                if value not in [None, '', 0]:
+                if value not in [None, "", 0]:
                     filled_fields += 1
 
         user.profile_percentage = int((filled_fields / total_fields) * 100) if total_fields > 0 else 0
-
-        # Save changes
         user.save()
 
-        # Success message
-        messages.success(request, f'Profile updated successfully! ({user.profile_percentage}% complete)')
-        return redirect('profile')  # Change 'profile' to your profile view name
+        messages.success(request, f"Profile updated successfully! ({user.profile_percentage}% complete)")
+        return redirect("profile")
 
-    # If not POST, just redirect back
-    return redirect('profile')
+    return redirect("profile")
 
 
 def register_user(request):
-    
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        phone = request.POST.get('phone')
-        password = request.POST.get('password1')
-        hashed_password = make_password(password)
-        if User.objects.filter(email=email).exists():
-            messages.error(request, 'Email already exists.')
-            return redirect('register')
-        pdb.set_trace()
-        user = User.objects.create_user(username=username, password=hashed_password, email=email, phone=phone)
-        user.save()
-        login(request, user)  # Automatically log in the user after registration
-        messages.success(request, 'User registered successfully. Please log in.')
-        return redirect('home')
+    if request.method == "POST":
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        phone = request.POST.get("phone")
+        password = request.POST.get("password1")
 
-    return render(request, 'register.html')  # Render registration form
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Email already exists.")
+            return redirect("register")
+
+        # ✅ create_user handles hashing
+        user = User.objects.create_user(username=username, password=password, email=email, phone=phone)
+        login(request, user)
+        messages.success(request, "User registered successfully.")
+        return redirect("home")
+
+    return render(request, "register.html")
+
+
+def institution_register(request):
+    if request.method == "POST":
+        pdb.set_trace()
+        email = request.POST.get("email").lower()
+        if Institution.objects.filter(email=email).exists():
+            messages.error(request, "Email already exists.")
+            return redirect("institution_register")
+
+        try:
+            institution = Institution(
+                name=request.POST.get("name"),
+                email=email,
+                phone=request.POST.get("phone"),
+                website=request.POST.get("website"),
+                category=request.POST.get("category"),
+                address=request.POST.get("address"),
+                city=request.POST.get("city"),
+                state=request.POST.get("state"),
+                district=request.POST.get("district"),
+                country=request.POST.get("country"),
+                pincode=request.POST.get("pincode") or 0,
+                year_established=request.POST.get("year_established") or 0,
+                member_since=request.POST.get("member_since") or 0,
+                board=request.POST.get("board"),
+                no_of_students=request.POST.get("no_of_students") or 0,
+                no_of_boys=request.POST.get("no_of_boys") or 0,
+                no_of_girls=request.POST.get("no_of_girls") or 0,
+                no_of_gents_staff=request.POST.get("no_of_gents_staff") or 0,
+                no_of_ladies_staff=request.POST.get("no_of_ladies_staff") or 0,
+                no_of_non_teaching_staff=request.POST.get("no_of_non_teaching_staff") or 0,
+                avg_salary_teaching=request.POST.get("avg_salary_teaching") or 0,
+                avg_salary_non_teaching=request.POST.get("avg_salary_non_teaching") or 0,
+                recruitment_contact=request.POST.get("recruitment_contact"),
+                principal_name=request.POST.get("principal_name"),
+                coordinator_name=request.POST.get("coordinator_name"),
+                correspondent_name=request.POST.get("correspondent_name"),
+                founder_name=request.POST.get("founder_name"),
+            )
+            # Hash password
+            pdb.set_trace()
+            password = request.POST.get("password")
+            institution.password = make_password(password)
+            institution.save()
+
+            messages.success(request, "Institution registered successfully! Please login.")
+            return redirect("institution_login")
+
+        except Exception as e:
+            messages.error(request, f"Error: {str(e)}")
+            return redirect("institution_register")
+
+    return render(request, "institution_register_form.html")
+
+
+def institution_login(request):
+    if request.method == "POST":
+        email = request.POST.get("email").lower()
+        password = request.POST.get("password")
+
+        try:
+            institution = Institution.objects.get(email=email)
+            
+            # Use Django's check_password function
+            if check_password(password, institution.password):
+                # Save institution info in session
+                request.session["institution_id"] = institution.id
+                request.session["institution_name"] = institution.name
+                messages.success(request, f"Welcome back, {institution.name}!")
+                return redirect("home")
+            else:
+                messages.error(request, "Invalid email or password.")
+        except Institution.DoesNotExist:
+            messages.error(request, "Invalid email or password.")
+
+    return render(request, "institution_login_form.html")
+
+def institution_logout(request):
+    request.session.flush()
+    messages.success(request, "You have been logged out successfully.")
+    return redirect("home")

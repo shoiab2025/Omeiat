@@ -1,7 +1,7 @@
 :root {
     /* Colors */
     --primary-blue: #017414;
-    --primary-gradient: linear-gradient(145deg, #e15954, #f7bfbd) !important;
+    --primary-gradient: #e15954 !important;
     --primary-purple: #9C27B0;
     --primary-purple-light: #9A9FF6;
     --primary_blue: #353745;
@@ -101,13 +101,13 @@ h2 {
     padding: 0.5rem 1rem  !important;
     border: none  !important;
     border-radius: var(--border-radius)  !important;
-    background: linear-gradient(145deg, #e15954, #f7bfbd) !important;
+    background: #e15954 !important;
     color: var(--white) !important;
     transition: background-color 0.3s ease !important;
 }
 
 .bg-primary {
-    background: linear-gradient(145deg, #e15954, #f7bfbd) !important;
+    background: #e15954 !important;
 }
 
 .btn-outline-primary {
@@ -122,9 +122,14 @@ h2 {
     transition: background-color 0.3s ease !important;
 }
 .btn-outline-primary:hover {
-    background: linear-gradient(145deg, #e15954, #f7bfbd) !important;
+    background: #e15954 !important;
     border: none !important;
     color: var(--white) !important;
+}
+.ins-login:hover {
+    background: #e15954 !important;
+    border: none !important;
+    color: var(--black) !important;
 }
 
 /* Inactive tab styles */

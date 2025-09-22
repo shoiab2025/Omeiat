@@ -3,10 +3,27 @@ from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 
 # ----------------------------
+# Omeiat Zones Model
+# ----------------------------
+class OmeiatZones(models.Model):
+    zone_name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True)
+    from_location = models.CharField(max_length=200, blank=True)
+    to_location = models.CharField(max_length=200, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.zone_name
+    class Meta:
+        verbose_name_plural = "Omeiat Zones"
+        ordering = ['zone_name']
+        
+
+# ----------------------------
 # Institution Model
 # ----------------------------
 class Institution(models.Model):
-    SCHOOLS_CATEGORIES = [
+    CATEGORY_CHOICES = [
         ('Nursery', 'Nursery'),
         ('Primary', 'Primary'),
         ('High School', 'High School'),
@@ -15,41 +32,40 @@ class Institution(models.Model):
         ('Vocational', 'Vocational'),
         ('Other', 'Other'),
     ]
-    name = models.CharField(max_length=200)
+
+    name = models.CharField(max_length=255)
     address = models.TextField()
-    category = models.CharField(max_length=50, choices=SCHOOLS_CATEGORIES)
-    email = models.EmailField()
+    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES)
+    email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20)
-    website = models.URLField(blank=True)
-    omeiat_zone = models.ForeignKey('OmeiatZones', on_delete=models.SET_NULL, null=True, blank=True)
+    website = models.URLField(blank=True, null=True)
+    omeiat_zone = models.ForeignKey(OmeiatZones, on_delete=models.SET_NULL, null=True)
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
-    country = models.CharField(max_length=100)
-    pincode = models.PositiveIntegerField(default=0)  # or a valid number
     district = models.CharField(max_length=100)
-    year_established = models.PositiveIntegerField()
-    member_since = models.PositiveIntegerField()
+    country = models.CharField(max_length=100)
+    pincode = models.IntegerField()
+    year_established = models.IntegerField()
+    member_since = models.IntegerField()
     board = models.CharField(max_length=100)
-    no_of_students = models.PositiveIntegerField()
-    no_of_boys = models.PositiveIntegerField()
-    no_of_girls = models.PositiveIntegerField()
-    no_of_gents_staff = models.PositiveIntegerField()
-    no_of_ladies_staff = models.PositiveIntegerField()
-    no_of_non_teaching_staff = models.PositiveIntegerField()
+    no_of_students = models.IntegerField()
+    no_of_boys = models.IntegerField()
+    no_of_girls = models.IntegerField()
+    no_of_gents_staff = models.IntegerField()
+    no_of_ladies_staff = models.IntegerField()
+    no_of_non_teaching_staff = models.IntegerField()
     avg_salary_teaching = models.DecimalField(max_digits=10, decimal_places=2)
     avg_salary_non_teaching = models.DecimalField(max_digits=10, decimal_places=2)
-    recruitment_contact = models.CharField(max_length=100)
-    principal_name = models.CharField(max_length=100)
-    coordinator_name = models.CharField(max_length=100)
-    correspondent_name = models.CharField(max_length=100)
-    founder_name = models.CharField(max_length=100)
-    is_approved = models.BooleanField(default=False)
-    timestamp = models.DateTimeField(auto_now_add=True)
-
+    recruitment_contact = models.CharField(max_length=255)
+    principal_name = models.CharField(max_length=255)
+    coordinator_name = models.CharField(max_length=255)
+    correspondent_name = models.CharField(max_length=255)
+    founder_name = models.CharField(max_length=255)
+    password = models.CharField(max_length=255, null=True, blank=True)  # Add password field for institution login
+    
     def __str__(self):
         return self.name
-
-
+        
 # ----------------------------
 # Custom User Model
 # ----------------------------
@@ -195,20 +211,20 @@ class Notification(models.Model):
     def __str__(self):
         return f"To {self.recipient.username}: {self.message[:50]}"
 
-
 # ----------------------------
-# Omeiat Zones Model
+# Institution Approval Model
 # ----------------------------
-class OmeiatZones(models.Model):
-    zone_name = models.CharField(max_length=100, unique=True)
-    description = models.TextField(blank=True)
-    from_location = models.CharField(max_length=200, blank=True)
-    to_location = models.CharField(max_length=200, blank=True)
-    timestamp = models.DateTimeField(auto_now_add=True)
+class InstitutionApproval(models.Model):
+    institution = models.ForeignKey(
+        Institution, on_delete=models.CASCADE, related_name="approvals"
+    )
+    approved_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    is_approved = models.BooleanField(default=False)
+    remarks = models.TextField(blank=True, null=True)
+    approved_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.zone_name
-    class Meta:
-        verbose_name_plural = "Omeiat Zones"
-        ordering = ['zone_name']
-        
+        status = "Approved" if self.is_approved else "Pending"
+        return f"{self.institution.name} - {status}"

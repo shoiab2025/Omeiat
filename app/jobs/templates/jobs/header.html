@@ -1,68 +1,62 @@
-{%load static %}
+{% load static %}
 <header>
-    <nav class="navbar navbar-expand-md navbar-dark">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
         <div class="container">
             <!-- Brand/logo -->
-            <img src="/static/app/images/logo.png" alt="Logo 1" class="logo-img"
-                style="width: 100px; min-height: 60px;" />
-            <a class="navbar-brand text-white " href="#">
-                OMEIAT
-            </a>
+            <img src="{% static 'app/images/logo.png' %}" alt="Logo 1" class="logo-img"
+                 style="width: 100px; min-height: 60px;" />
+            <a class="navbar-brand text-white" href="#">OMEIAT</a>
 
             <!-- Toggler/collapsible Button -->
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar"
+                    aria-controls="collapsibleNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <!-- Navbar links -->
-            <div class="collapse navbar-collapse ml-auto" id="collapsibleNavbar">
-                {% comment %} <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
-                    </li>
-                </ul> {% endcomment %}
-
-                <div class="navbar-nav ml-auto">
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <div class="navbar-nav ms-auto">
 
                     {% if request.user.is_authenticated %}
-                    <div class="dropdown">
-                        <button class="btn btn-outline-primary dropdown-toggle d-flex align-items-center" type="button"
-                            id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            {% if request.user.profile.profile_picture %}
-                            <img src="{{ request.user.profile.profile_picture.url }}" alt="Profile"
-                                class="rounded-circle" width="30" height="30">
-                            {% else %}
-                            <img src="{% static '/app/images/' %}{{ request.user.gender|lower }}_user.png" alt="Profile"
-                                class="rounded-circle" width="60" height="60">
-                            {% endif %}
-                            <span class="text-white h5 my-1 mx-2">{{ request.user.username }}</span>
-                        </button>
+                        <!-- Role-based options -->
+                        {% if request.user.profile.role == "Employer" %}
+                            <a class="nav-link text-white" href="{% url 'job_list' %}">Find Candidates</a>
+                            <a class="nav-link text-white" href="{% url 'create_job' %}">Create Job</a>
+                        {% elif request.user.profile.role == "Job Seeker" %}
+                            <a class="nav-link text-white" href="{% url 'job_list' %}">Find Jobs</a>
+                            <a class="nav-link text-white" href="{% url 'applied_jobs' %}">My Applications</a>
+                        {% else %}
+                            <!-- Default role (not chosen yet) -->
+                            <a class="nav-link text-white" href="#">Select Role</a>
+                        {% endif %}
 
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                           
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                        </ul>
-                    </div>
+                        <!-- Profile Dropdown -->
+                        <div class="dropdown ms-3">
+                            <button class="btn btn-outline-primary dropdown-toggle d-flex align-items-center"
+                                    type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                {% if request.user.profile.profile_picture %}
+                                    <img src="{{ request.user.profile.profile_picture.url }}" alt="Profile"
+                                         class="rounded-circle" width="30" height="30">
+                                {% else %}
+                                    <img src="{% static 'app/images/' %}{{ request.user.gender|lower }}_user.png" 
+                                         alt="Profile" class="rounded-circle" width="30" height="30">
+                                {% endif %}
+                                <span class="text-white h6 my-1 mx-2">{{ request.user.username }}</span>
+                            </button>
+
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                                <li><a class="dropdown-item" href="#">Profile</a></li>
+                                <li><a class="dropdown-item" href="#">Settings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                            </ul>
+                        </div>
 
                     {% else %}
-                    <a class="btn btn-login ml-md-2" href="{% url 'login' %}">
-                        <i class="fas fa-user"></i> Login / SignUp
-                    </a>
+                        <!-- If not logged in, only role options (disabled actions) -->
+                        <a class="nav-link text-muted" href="#">Find Jobs</a>
+                        <a class="nav-link text-muted" href="#">Create Job</a>
                     {% endif %}
-
-                    <!-- Signup or Login button with an icon inside it -->
-
                 </div>
             </div>
         </div>

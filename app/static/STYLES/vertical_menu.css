@@ -63,7 +63,7 @@
 }
 
 .menu-inner .menu-link:hover {
-  background: linear-gradient(145deg, #e15954, #f7bfbd) !important;
+  background: #e15954 !important;
   border-left-color: #f7bfbd !important;
   color: #ffffff !important;
   font-weight: 700;
@@ -73,7 +73,7 @@
 }
 
 .menu-inner .menu-item.active .menu-link {
-  background: linear-gradient(145deg, #e15954, #f7bfbd) !important;
+  background: #e15954 !important;
   border-left-color: #f7bfbd !important;
   color: #ffffff !important;
   font-weight: 700;

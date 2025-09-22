@@ -1,0 +1,306 @@
+{% extends "blank_layout.html" %}
+{% load static %}
+
+{% block head %}
+<style>
+/* Page Background */
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #fff;
+    padding: 30px;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* Card Layout */
+.login-card {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    max-width: 1100px;
+    width: 100%;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+/* Left Section */
+.login-left {
+    background: #e15954;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 30px;
+    text-align: center;
+}
+
+.login-left img {
+    height: 90px;
+    margin-bottom: 20px;
+}
+
+.login-left h2 {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Right Section */
+.login-right {
+    padding: 40px 35px;
+    overflow-y: auto;
+    max-height: 90vh;
+}
+
+/* Navigation */
+.login-options {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 25px;
+}
+
+.login-options a {
+    text-decoration: none;
+    font-weight: 600;
+    color: #666;
+    font-size: 15px;
+    padding-bottom: 6px;
+    transition: 0.3s;
+}
+
+.login-options .active {
+    border-bottom: 3px solid #e15954;
+    color: #e15954;
+}
+
+/* Section */
+.form-section {
+    margin-bottom: 25px;
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    background: #fafafa;
+    transition: 0.3s;
+}
+
+.form-section:hover {
+    box-shadow: 0 5px 15px rgba(79, 110, 247, 0.1);
+}
+
+.form-section h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #e15954;
+    border-left: 4px solid #e15954;
+    padding-left: 10px;
+}
+
+/* Floating label fields */
+.form-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 14px 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    background: #fff;
+    transition: 0.3s;
+}
+
+.form-group label {
+    position: absolute;
+    top: 14px;
+    left: 15px;
+    font-size: 14px;
+    color: #888;
+    pointer-events: none;
+    transition: 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #e15954;
+    box-shadow: 0 0 8px rgba(79, 110, 247, 0.2);
+    outline: none;
+}
+
+.form-group input:focus + label,
+.form-group input:not(:placeholder-shown) + label,
+.form-group textarea:focus + label,
+.form-group textarea:not(:placeholder-shown) + label,
+.form-group select:focus + label,
+.form-group select:not([value=""]) + label {
+    top: -8px;
+    left: 10px;
+    font-size: 12px;
+    background: #fff;
+    padding: 0 4px;
+    color: #e15954;
+}
+
+/* Button */
+.login-btn {
+    width: 100%;
+    padding: 16px;
+    background: #e15954;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(79, 110, 247, 0.3);
+}
+
+/* Footer */
+.login-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #777;
+}
+
+.login-footer a {
+    color: #e15954;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+{% endblock head %}
+
+{% block title %}Institution Signup{% endblock title %}
+
+{% block layout %}
+<div class="login-page">
+    <div class="login-card">
+        <!-- LEFT -->
+        <div class="login-left">
+            <img src="{% static 'app/images/logo.png' %}" alt="Logo">
+            <h2>Join Our Network</h2>
+            <p>Register your institution and connect with thousands of students, educators, and opportunities.</p>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="login-right">
+            <div class="login-options">
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'institution_register' %}" class="active">Signup</a>
+            </div>
+
+            <form class="login-form" method="post" action="{% url 'institution_register' %}">
+                {% csrf_token %}
+
+                <!-- Institution Details -->
+                <div class="form-section">
+                    <h3>Institution Details</h3>
+                    <div class="form-group"><input type="text" name="name" placeholder=" " required><label>Institution Name</label></div>
+                    <div class="form-group">
+                        <select name="category" required>
+                            <option value="" disabled selected></option>
+                            <option value="Nursery">Nursery</option>
+                            <option value="Primary">Primary</option>
+                            <option value="High School">High School</option>
+                            <option value="College">College</option>
+                            <option value="University">University</option>
+                            <option value="Vocational">Vocational</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <label>Category</label>
+                    </div>
+                    <div class="form-group"><input type="email" name="email" placeholder=" " required><label>Email</label></div>
+                    <div class="form-group"><input type="text" name="phone" placeholder=" " required><label>Phone</label></div>
+                    <div class="form-group"><input type="url" name="website" placeholder=" "><label>Website</label></div>
+                    <div class="form-group"><input type="text" name="city" placeholder=" " required><label>City</label></div>
+                    <div class="form-group"><input type="text" name="state" placeholder=" " required><label>State</label></div>
+                    <div class="form-group"><input type="text" name="district" placeholder=" " required><label>District</label></div>
+                    <div class="form-group"><input type="text" name="country" placeholder=" " required><label>Country</label></div>
+                    <div class="form-group"><input type="number" name="pincode" placeholder=" " required><label>Pincode</label></div>
+                </div>
+
+                <!-- Institution Info -->
+                <div class="form-section">
+                    <h3>Institution Info</h3>
+                    <div class="form-group"><input type="number" name="year_established" placeholder=" " required><label>Year Established</label></div>
+                    <div class="form-group"><input type="number" name="member_since" placeholder=" " required><label>Member Since</label></div>
+                    <div class="form-group"><input type="text" name="board" placeholder=" " required><label>Affiliated Board</label></div>
+                </div>
+
+                <!-- Staff & Students -->
+                <div class="form-section">
+                    <h3>Staff & Students</h3>
+                    <div class="form-group"><input type="number" name="no_of_students" placeholder=" " required><label>Total Students</label></div>
+                    <div class="form-group"><input type="number" name="no_of_boys" placeholder=" " required><label>No. of Boys</label></div>
+                    <div class="form-group"><input type="number" name="no_of_girls" placeholder=" " required><label>No. of Girls</label></div>
+                    <div class="form-group"><input type="number" name="no_of_gents_staff" placeholder=" " required><label>Male Staff</label></div>
+                    <div class="form-group"><input type="number" name="no_of_ladies_staff" placeholder=" " required><label>Female Staff</label></div>
+                    <div class="form-group"><input type="number" name="no_of_non_teaching_staff" placeholder=" " required><label>Non-teaching Staff</label></div>
+                </div>
+
+                <!-- Salaries -->
+                <div class="form-section">
+                    <h3>Salaries</h3>
+                    <div class="form-group"><input type="number" step="0.01" name="avg_salary_teaching" placeholder=" " required><label>Avg Salary (Teaching)</label></div>
+                    <div class="form-group"><input type="number" step="0.01" name="avg_salary_non_teaching" placeholder=" " required><label>Avg Salary (Non-Teaching)</label></div>
+                </div>
+
+                <!-- Key People -->
+                <div class="form-section">
+                    <h3>Key People</h3>
+                    <div class="form-group"><input type="text" name="recruitment_contact" placeholder=" " required><label>Recruitment Contact</label></div>
+                    <div class="form-group"><input type="text" name="principal_name" placeholder=" " required><label>Principal Name</label></div>
+                    <div class="form-group"><input type="text" name="coordinator_name" placeholder=" " required><label>Coordinator Name</label></div>
+                    <div class="form-group"><input type="text" name="correspondent_name" placeholder=" " required><label>Correspondent Name</label></div>
+                    <div class="form-group"><input type="text" name="founder_name" placeholder=" " required><label>Founder Name</label></div>
+                </div>
+
+                <!-- Address -->
+                <div class="form-section">
+                    <h3>Address</h3>
+                    <div class="form-group"><textarea name="address" placeholder=" " rows="3" required></textarea><label>Address</label></div>
+                </div>
+
+                <!-- Account Details (Password) -->
+                <div class="form-section">
+                    <h3>Account Details</h3>
+                    <div class="form-group"><input type="password" name="password" placeholder=" " required><label>Password</label></div>
+                    <div class="form-group"><input type="password" name="confirm_password" placeholder=" " required><label>Confirm Password</label></div>
+                </div>
+
+                <button type="submit" class="login-btn">Register Institution</button>
+            </form>
+
+            <div class="login-footer">
+                <p>Already registered? <a href="{% url 'institution_login' %}">Login now</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock layout %}
