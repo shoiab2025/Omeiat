@@ -96,7 +96,6 @@ DATABASES = {
         ssl_require=True
     )
 }
-
 # ----------------------
 # Password Validation
 # ----------------------
