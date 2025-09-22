@@ -90,10 +90,16 @@ LOGIN_URL = '/login/'
 # Database (PostgreSQL via env)
 # ----------------------
 DATABASES = {
-    "default": dj_database_url.config(
-        default=config("DATABASE_URL")
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': config("DB_NAME", default="Omeiat_database"),
+        'USER': config("DB_USER", default="root"),
+        'PASSWORD': config("DB_PASSWORD", default="root"),
+        'HOST': config("DB_HOST", default="localhost"),
+        'PORT': config("DB_PORT", default="3306"),
+    }
 }
+
 
 # ----------------------
 # Password Validation

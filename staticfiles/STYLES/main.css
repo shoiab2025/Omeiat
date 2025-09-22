@@ -1,0 +1,185 @@
+:root {
+    /* Colors */
+    --primary-blue: #017414;
+    --primary-gradient: #e15954 !important;
+    --primary-purple: #9C27B0;
+    --primary-purple-light: #9A9FF6;
+    --primary_blue: #353745;
+    --footer-dark: #424356;
+    --footer-border: #545562;
+    --footer-heading: #9697A0;
+    --footer-text: #B3B3B3;
+    --white: #FFFFFF;
+    --black: #000000;
+    --navbar-link: #fff;
+    --navbar-link-hover: #fff;
+    --footer-link-hover: #9A9FF6;
+    --footer-link: #FFFFFF;
+    --footer-link-hover-bg: #9A9FF6;
+    --footer-link-hover-color: #424356;
+    --mobile-bg: #C03B3D;
+
+    /* Font families */
+    --font-main: 'Poppins', sans-serif;
+    --font-footer: 'Montserrat', sans-serif;
+    --font-logo: 'Turret Road';
+
+    /* Font sizes */
+    --font-size-base: 16px;
+    --font-size-logo: 25px;
+    --font-size-footer-heading: 20px;
+    --font-size-footer-link: 16px;
+    --font-size-footer-small: 14px;
+    --font-size-copyright: 20px;
+
+    /* Border radius */
+    --border-radius: 5px;
+
+    /* Spacing */
+    --footer-padding: 3% 0px;
+    --footer-margin: 5px;
+    --footer-width: 80%;
+
+    /* Social icon */
+    --social-icon-size: 35px;
+    --social-icon-font-size: 14px;
+
+    /* Search */
+    --search-width: 200px;
+    --search-height: 35px;
+}
+
+/* Use variables below */
+
+body {
+    font-family: var(--font-main);
+    background-color: #f7f7f7 !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-main);
+}
+
+a {
+    color: var(--font-main) !important;
+    text-decoration: none !important;
+    transition: color 0.3s ease;
+}
+h1 {
+    font-size: 1.7rem !important;
+    font-weight: 600;
+    color: var(--primary_blue);
+    line-height: 60px !important;
+}
+h2 {
+    font-size: 1.5rem !important;
+    font-weight: 600;
+    color: var(--primary_blue);
+    line-height: 60px !important;
+}
+
+.content-wrapper {
+    margin-top: 100px !important; /* height of navbar */
+    margin-left: 280px !important; /* width of sidebar */
+    padding: 2rem;
+    min-height: calc(100vh - 100px); /* corrected: match margin-top */
+    background-color: #f6f6f6 !important;
+    overflow-x: hidden;
+    overflow-y: auto; /* fixed: 'scroll' always shows scrollbar even if not needed */
+    box-sizing: border-box; /* good practice for consistent padding/margin */
+}
+
+.btn-primary {
+    cursor: pointer !important ;
+    font-family: var(--font-main) !important;
+    font-size: 1rem !important;
+    padding: 0.5rem 1rem  !important;
+    border: none  !important;
+    border-radius: var(--border-radius)  !important;
+    background: #e15954 !important;
+    color: var(--white) !important;
+    transition: background-color 0.3s ease !important;
+}
+
+.bg-primary {
+    background: #e15954 !important;
+}
+
+.btn-outline-primary {
+    background: transparent !important;
+    color: var(--primary_blue) !important;
+    border: 1px solid var(--primary_blue) !important;
+    cursor: pointer !important ;
+    font-family: var(--font-main) !important;
+    font-size: 1rem !important;
+    padding: 0.5rem 1rem  !important;
+    border-radius: var(--border-radius)  !important;
+    transition: background-color 0.3s ease !important;
+}
+.btn-outline-primary:hover {
+    background: #e15954 !important;
+    border: none !important;
+    color: var(--white) !important;
+}
+.ins-login:hover {
+    background: #e15954 !important;
+    border: none !important;
+    color: var(--black) !important;
+}
+
+/* Inactive tab styles */
+.nav-tabs .nav-link {
+    background-color: #e0e0e0 !important; /* grey background */
+    color: #333 !important; /* dark text */
+    border: none !important;
+    margin-right: 5px;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    font-weight: 500;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Hover effect for inactive tabs */
+.nav-tabs .nav-link:hover {
+    background-color: #d5d5d5 !important;
+}
+
+/* Active tab styles */
+.nav-tabs .nav-link.active {
+    background: var(--primary-gradient) !important;
+    color: var(--white) !important;
+    border: none !important;
+    font-weight: 600;
+}
+
+/* Remove bottom border gap between tabs and content */
+.nav-tabs {
+    border-bottom: none !important;
+}
+
+
+/* Mobile first approach */
+@media (max-width: 767.98px) {
+    .content-wrapper {
+        margin-left: 0 !important;
+        padding: 1rem;
+    }
+
+    h1 {
+        font-size: 1.5rem !important; /* smaller font size for mobile */
+    }
+}
+
+/* Medium devices (tablets) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .content-wrapper {
+        margin-left: 0 !important;
+        padding: 1rem;
+    }
+}
+
+

@@ -1,0 +1,121 @@
+/* navbar.css */
+
+/* General navbar styles */
+#layout-navbar {
+  height: 100px;
+  z-index: 1020;
+  border-bottom: 1px solid #f0f0f0;
+  background-color: #fff !important;
+}
+
+#layout-navbar .navbar-brand img {
+  height: 35px;
+}
+
+/* Search input inside navbar */
+#layout-navbar .form-control {
+  border-radius: 0.375rem;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+#layout-navbar .form-control:focus {
+  box-shadow: none;
+  background-color: #fff;
+  border: 1px solid #ccc;
+}
+
+/* Avatar styling */
+#layout-navbar .avatar {
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+#layout-navbar .avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Dropdown menu inside navbar */
+#layout-navbar .dropdown-menu {
+  border-radius: 0.5rem;
+  min-width: 220px;
+  font-size: 0.9rem;
+  animation: fadeIn 0.15s ease-in-out;
+}
+
+#layout-navbar .dropdown-item {
+  padding: 0.5rem 1rem;
+  color: #333;
+  transition: background-color 0.15s;
+}
+
+#layout-navbar .dropdown-item:hover {
+  background-color: #f5f5f5;
+}
+
+/* Divider */
+#layout-navbar .dropdown-divider {
+  margin: 0.5rem 0;
+}
+
+/* Badge in dropdown */
+#layout-navbar .badge {
+  font-size: 0.75rem;
+  padding: 0.3em 0.6em;
+}
+
+/* Logout button */
+#layout-navbar .btn-danger {
+  font-size: 0.875rem;
+  padding: 0.4rem 1rem;
+}
+
+#layout-navbar .ri-logout-box-r-line {
+  font-size: 1.1rem;
+}
+
+/* Fade-in animation for dropdown */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.search-secondary {
+  display: none !important;
+}
+
+
+@media only screen and (min-width : 320px) {
+
+  /* Styles here */
+  .search-field input {
+    display: none;
+  }
+
+  .search_profile-wrapper {
+    display: none;
+  }
+   #searchInput {
+    min-width: 200px !important;
+  }
+}
+
+
+@media only screen and (min-width : 768px) and (max-width: 991px) {
+
+  /* Styles here */
+  #searchInput {
+    min-width: 100% !important;
+  }
+}
