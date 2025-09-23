@@ -24,8 +24,8 @@ class OmeiatZones(models.Model):
 # ----------------------------
 class Institution(models.Model):
     CATEGORY_CHOICES = [
-        ('Nursery', 'Nursery'),
-        ('Primary', 'Primary'),
+        ('Kindergarden', 'Kindergarden'),
+        ('Nursery & Primary', 'Nuresery & Primary'),
         ('High School', 'High School'),
         ('College', 'College'),
         ('University', 'University'),
@@ -46,7 +46,8 @@ class Institution(models.Model):
     country = models.CharField(max_length=100)
     pincode = models.IntegerField()
     year_established = models.IntegerField()
-    member_since = models.IntegerField()
+    is_omeiat_member = models.BooleanField(default=False)
+    omeiat_member_since = models.IntegerField()
     board = models.CharField(max_length=100)
     no_of_students = models.IntegerField()
     no_of_boys = models.IntegerField()
@@ -54,8 +55,6 @@ class Institution(models.Model):
     no_of_gents_staff = models.IntegerField()
     no_of_ladies_staff = models.IntegerField()
     no_of_non_teaching_staff = models.IntegerField()
-    avg_salary_teaching = models.DecimalField(max_digits=10, decimal_places=2)
-    avg_salary_non_teaching = models.DecimalField(max_digits=10, decimal_places=2)
     recruitment_contact = models.CharField(max_length=255)
     principal_name = models.CharField(max_length=255)
     coordinator_name = models.CharField(max_length=255)
@@ -85,7 +84,10 @@ class User(AbstractUser):
     profile_visibility = models.BooleanField(default=True)
     is_deleted = models.BooleanField(default=False)
     profile_picture = models.ImageField(upload_to='profiles/', null=True, blank=True)
-
+    consolidated_college_marksheet = models.FileField(upload_to='consolidated_mark_sheets/', null=True, blank=True)
+    graducation_percentage = models.PositiveIntegerField(default=0)
+    sslc_marksheet = models.FileField(upload_to='sslc_marksheets/', null=True, blank=True)
+    hss_marksheet = models.FileField(upload_to='hss_marksheets/', null=True, blank=True)
     last_salary = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     expected_salary = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     reference_by_1 = models.CharField(max_length=100, blank=True, null=True)

@@ -1,15 +1,17 @@
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password, make_password
-from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from app.models import Institution, OmeiatZones
-import pdb
+from django.contrib.auth import get_user_model
+from app.models import Institution
+from app.decorators import institution_login_required
 User = get_user_model()
 
 
+# ----------------------------
+# USER LOGIN
+# ----------------------------
 def user_login(request):
     if request.user.is_authenticated:
         messages.info(request, "You are already logged in.")
@@ -20,7 +22,6 @@ def user_login(request):
         password = request.POST.get("password")
 
         user = authenticate(request, username=username, password=password)
-
         if user is not None:
             if not getattr(user, "is_deleted", False):
                 login(request, user)
@@ -35,6 +36,9 @@ def user_login(request):
     return render(request, "login.html")
 
 
+# ----------------------------
+# USER LOGOUT
+# ----------------------------
 def user_logout(request):
     if request.user.is_authenticated:
         logout(request)
@@ -42,6 +46,32 @@ def user_logout(request):
     return redirect("login")
 
 
+# ----------------------------
+# USER REGISTRATION
+# ----------------------------
+def register_user(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        phone = request.POST.get("phone")
+        password = request.POST.get("password1")
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Email already exists.")
+            return redirect("register")
+
+        # ✅ create_user handles hashing
+        user = User.objects.create_user(username=username, password=password, email=email, phone=phone)
+        login(request, user)
+        messages.success(request, "User registered successfully.")
+        return redirect("home")
+
+    return render(request, "register.html")
+
+
+# ----------------------------
+# UPDATE USER PROFILE
+# ----------------------------
 @login_required
 def update_user(request):
     if request.method == "POST":
@@ -88,80 +118,56 @@ def update_user(request):
     return redirect("profile")
 
 
-def register_user(request):
-    if request.method == "POST":
-        username = request.POST.get("username")
-        email = request.POST.get("email")
-        phone = request.POST.get("phone")
-        password = request.POST.get("password1")
-
-        if User.objects.filter(email=email).exists():
-            messages.error(request, "Email already exists.")
-            return redirect("register")
-
-        # ✅ create_user handles hashing
-        user = User.objects.create_user(username=username, password=password, email=email, phone=phone)
-        login(request, user)
-        messages.success(request, "User registered successfully.")
-        return redirect("home")
-
-    return render(request, "register.html")
-
-
+# ----------------------------
+# INSTITUTION REGISTRATION
+# ----------------------------
 def institution_register(request):
     if request.method == "POST":
-        pdb.set_trace()
         email = request.POST.get("email").lower()
         if Institution.objects.filter(email=email).exists():
             messages.error(request, "Email already exists.")
             return redirect("institution_register")
 
-        try:
-            institution = Institution(
-                name=request.POST.get("name"),
-                email=email,
-                phone=request.POST.get("phone"),
-                website=request.POST.get("website"),
-                category=request.POST.get("category"),
-                address=request.POST.get("address"),
-                city=request.POST.get("city"),
-                state=request.POST.get("state"),
-                district=request.POST.get("district"),
-                country=request.POST.get("country"),
-                pincode=request.POST.get("pincode") or 0,
-                year_established=request.POST.get("year_established") or 0,
-                member_since=request.POST.get("member_since") or 0,
-                board=request.POST.get("board"),
-                no_of_students=request.POST.get("no_of_students") or 0,
-                no_of_boys=request.POST.get("no_of_boys") or 0,
-                no_of_girls=request.POST.get("no_of_girls") or 0,
-                no_of_gents_staff=request.POST.get("no_of_gents_staff") or 0,
-                no_of_ladies_staff=request.POST.get("no_of_ladies_staff") or 0,
-                no_of_non_teaching_staff=request.POST.get("no_of_non_teaching_staff") or 0,
-                avg_salary_teaching=request.POST.get("avg_salary_teaching") or 0,
-                avg_salary_non_teaching=request.POST.get("avg_salary_non_teaching") or 0,
-                recruitment_contact=request.POST.get("recruitment_contact"),
-                principal_name=request.POST.get("principal_name"),
-                coordinator_name=request.POST.get("coordinator_name"),
-                correspondent_name=request.POST.get("correspondent_name"),
-                founder_name=request.POST.get("founder_name"),
-            )
-            # Hash password
-            pdb.set_trace()
-            password = request.POST.get("password")
-            institution.password = make_password(password)
-            institution.save()
+        institution = Institution(
+            name=request.POST.get("name"),
+            email=email,
+            phone=request.POST.get("phone"),
+            website=request.POST.get("website"),
+            category=request.POST.get("category"),
+            address=request.POST.get("address"),
+            city=request.POST.get("city"),
+            state=request.POST.get("state"),
+            district=request.POST.get("district"),
+            country=request.POST.get("country"),
+            pincode=request.POST.get("pincode") or 0,
+            year_established=request.POST.get("year_established") or 0,
+            omeiat_member_since=request.POST.get("member_since") or 0,
+            board=request.POST.get("board"),
+            no_of_students=request.POST.get("no_of_students") or 0,
+            no_of_boys=request.POST.get("no_of_boys") or 0,
+            no_of_girls=request.POST.get("no_of_girls") or 0,
+            no_of_gents_staff=request.POST.get("no_of_gents_staff") or 0,
+            no_of_ladies_staff=request.POST.get("no_of_ladies_staff") or 0,
+            no_of_non_teaching_staff=request.POST.get("no_of_non_teaching_staff") or 0,
+            recruitment_contact=request.POST.get("recruitment_contact"),
+            principal_name=request.POST.get("principal_name"),
+            coordinator_name=request.POST.get("coordinator_name"),
+            correspondent_name=request.POST.get("correspondent_name"),
+            founder_name=request.POST.get("founder_name"),
+        )
+        password = request.POST.get("password")
+        institution.password = make_password(password)
+        institution.save()
 
-            messages.success(request, "Institution registered successfully! Please login.")
-            return redirect("institution_login")
-
-        except Exception as e:
-            messages.error(request, f"Error: {str(e)}")
-            return redirect("institution_register")
+        messages.success(request, "Institution registered successfully! Please login.")
+        return redirect("institution_login")
 
     return render(request, "institution_register_form.html")
 
 
+# ----------------------------
+# INSTITUTION LOGIN
+# ----------------------------
 def institution_login(request):
     if request.method == "POST":
         email = request.POST.get("email").lower()
@@ -169,14 +175,12 @@ def institution_login(request):
 
         try:
             institution = Institution.objects.get(email=email)
-            
-            # Use Django's check_password function
             if check_password(password, institution.password):
                 # Save institution info in session
                 request.session["institution_id"] = institution.id
                 request.session["institution_name"] = institution.name
                 messages.success(request, f"Welcome back, {institution.name}!")
-                return redirect("home")
+                return redirect("institution_dashboard")
             else:
                 messages.error(request, "Invalid email or password.")
         except Institution.DoesNotExist:
@@ -184,6 +188,10 @@ def institution_login(request):
 
     return render(request, "institution_login_form.html")
 
+
+# ----------------------------
+# INSTITUTION LOGOUT
+# ----------------------------
 def institution_logout(request):
     request.session.flush()
     messages.success(request, "You have been logged out successfully.")
