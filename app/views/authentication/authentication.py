@@ -5,7 +5,6 @@ from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from app.models import Institution
-from app.decorators import institution_login_required
 User = get_user_model()
 
 
