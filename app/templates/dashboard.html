@@ -1,0 +1,15 @@
+{% extends "master_layout.html" %}
+{% block title %}Application Stats{% endblock %}
+
+{% block layout %}
+<section class="content-wrapper py-5">
+  <div class="container">
+    {% include "application_chart.html" %}
+    {% if not request.session.institution_id %}
+      {% include "latest_jobs.html" %}
+    {%endif%}
+  </div>
+</section>
+
+
+{% endblock %}

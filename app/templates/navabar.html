@@ -1,0 +1,143 @@
+{% load static %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+  #layout-navbar {
+    background: #e15954 !important;
+    box-shadow: 0px 3px 8px rgba(0,0,0,0.15);
+    transition: all 0.3s ease-in-out;
+  }
+
+  .navbar .btn {
+    border-radius: 50px;
+    font-weight: 500;
+    padding: 6px 18px;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .navbar .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
+  }
+
+  .dropdown-menu {
+    border-radius: 12px;
+    box-shadow: 0px 6px 20px rgba(0,0,0,0.15);
+  }
+
+  .navbar-brand span {
+    font-family: 'Segoe UI', sans-serif;
+    letter-spacing: 0.5px;
+  }
+</style>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-xl navbar-dark px-3 py-2 fixed-top" id="layout-navbar">
+
+  <!-- Logo -->
+  <a class="navbar-brand d-flex align-items-center mr-5 mx-3" href="{% url 'home' %}">
+    <img src="{% static 'app/images/logo.png' %}" alt="Logo" style="height: 65px;" class="mr-2">
+    <span class="font-weight-bold h4 mb-0 text-white">Omeiat</span>
+  </a>
+
+  <!-- Right Side -->
+  <div class="d-flex align-items-center ms-auto">
+    <ul class="navbar-nav d-flex align-items-center">
+
+      {% if request.user.is_authenticated %}
+        {# Employer or Job Seeker Dashboard Links #}
+        {% if user.profile.role == "Employer" %}
+          <li class="nav-item mx-1">
+            <a class="btn btn-light text-dark btn-sm" href="{% url 'candidate_list' %}">
+              <i class="bi bi-people-fill"></i> Find Candidates
+            </a>
+          </li>
+          <li class="nav-item mx-1">
+            <a class="btn btn-outline-light btn-sm" href="{% url 'create_job' %}">
+              <i class="bi bi-plus-circle-fill"></i> Post Job
+            </a>
+          </li>
+
+        {% elif user.profile.role == "Job Seeker" %}
+          <li class="nav-item mx-1">
+            <a class="btn btn-light text-dark btn-sm" href="{% url 'job_list' %}">
+              <i class="bi bi-briefcase-fill"></i> Browse Jobs
+            </a>
+          </li>
+          <li class="nav-item mx-1">
+            <a class="btn btn-outline-light btn-sm" href="{% url 'applied_jobs' %}">
+              <i class="bi bi-file-earmark-check-fill"></i> My Applications
+            </a>
+          </li>
+        {% endif %}
+
+        <!-- User Profile -->
+        <li class="nav-item dropdown ml-3">
+          <a class="nav-link dropdown-toggle d-flex align-items-center p-0 gap-2 text-white" href="#" id="userDropdown"
+             role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+            {% if user.profile.profile_picture %}
+              <img src="{{ user.profile.profile_picture.url }}" alt="User"
+                   class="rounded-circle border border-light" style="width: 38px; height: 38px;">
+            {% else %}
+              <img src="{% static 'app/images/male_user.png' %}" alt="User"
+                   class="rounded-circle border border-light" style="width: 38px; height: 38px;">
+            {% endif %}
+
+            <span class="d-none d-lg-inline-block ml-2">{{ user.username }}</span>
+          </a>
+
+          <div class="dropdown-menu dropdown-menu-right">
+            <h6 class="dropdown-header">Hi, {{ request.user.username }}</h6>
+            <a class="dropdown-item" href="#"><i class="bi bi-person-circle"></i> Profile</a>
+            <a class="dropdown-item" href="#"><i class="bi bi-gear-fill"></i> Settings</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item text-danger" href="{% url 'logout' %}">
+              <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+          </div>
+        </li>
+
+      {% elif request.session.institution_id %}
+
+        <li class="nav-item dropdown ml-3">
+          <a class="nav-link dropdown-toggle d-flex align-items-center p-0 gap-2 text-white" href="#" id="institutionDropdown"
+             role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+            <img src="{% static 'app/images/institution.jpg' %}" alt="Institution"
+                 class="rounded-circle border border-light" style="width: 38px; height: 38px;">
+            <span class="d-none d-lg-inline-block ml-2">{{ request.session.institution_name }}</span>
+          </a>
+
+          <div class="dropdown-menu dropdown-menu-right">
+            <h6 class="dropdown-header">Hi, {{ request.session.institution_name }}</h6>
+            <a class="dropdown-item" href="#"><i class="bi bi-building"></i> Profile</a>
+            <a class="dropdown-item" href="#"><i class="bi bi-gear-fill"></i> Settings</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item text-danger" href="{% url 'logout' %}">
+              <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+          </div>
+        </li>
+
+      {% else %}
+        {# Not Logged In: Show Beautiful Login Buttons #}
+        <li class="nav-item mx-1">
+          <a class="btn btn-light btn-sm" href="{% url 'login' %}">
+            <i class="bi bi-person-circle"></i> Job Seeker Login
+          </a>
+        </li>
+        <li class="nav-item mx-1">
+          <a class="btn btn-outline-light btn-sm" href="{% url 'institution_login' %}">
+            <i class="bi bi-building"></i> Institution Login
+          </a>
+        </li>
+      {% endif %}
+
+    </ul>
+  </div>
+</nav>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>

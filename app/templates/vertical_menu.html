@@ -1,0 +1,97 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'STYLES/vertical_menu.css' %}">
+
+<div class="sidebar-wrapper">
+  <aside id="layout-menu" class="layout-menu vertical-menu menu bg-menu-theme">
+
+    <div class="menu-inner-shadow"></div>
+
+    <ul class="menu-inner py-1">
+
+      {% if request.session.institution_id %}
+
+        <!-- Institution Menus -->
+        <li class="menu-item {% if request.resolver_match.url_name == 'institution_dashboard' %}active open{% endif %}">
+          <a href="{% url 'home' %}" class="menu-link">
+            <i class="menu-icon tf-icons ri-dashboard-line"></i>
+            <div class="text-truncate">Dashboard</div>
+          </a>
+        </li>
+
+        <li class="menu-item {% if request.resolver_match.url_name == 'institution_jobs' %}active open{% endif %}">
+          <a href="{% url 'institution_jobs' %}" class="menu-link">
+            <i class="menu-icon tf-icons ri-briefcase-line"></i>
+            <div class="text-truncate">Manage Jobs</div>
+          </a>
+        </li>
+
+        <li class="menu-item {% if request.resolver_match.url_name == 'institution_profile' %}active open{% endif %}">
+          <a href="{% url 'profile' %}" class="menu-link">
+            <i class="menu-icon tf-icons ri-user-line"></i>
+            <div class="text-truncate">Profile</div>
+          </a>
+        </li>
+
+        <!-- Institution Logout -->
+        <div class="px-3 py-2">
+          <a class="btn btn-primary btn-block d-flex justify-content-between align-items-center"
+             href="{% url 'institution_logout' %}">
+            <span class="text-white">Logout</span>
+            <i class="ri-logout-box-r-line text-white"></i>
+          </a>
+        </div>
+
+      {% elif request.user.is_authenticated %}
+        <!-- Normal User Sidebar -->
+        <div class="px-3 py-2 user-details">
+          <div class="d-flex align-items-center">
+            <div>
+              <h3 class="mb-0 small fw-bold">{{ request.user.username }}</h3>
+              {% if request.user.profile.role %}
+                <small class="text-muted">{{ request.user.profile.role }}</small>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <li class="menu-item {% if request.resolver_match.url_name == 'home' %}active open{% endif %}">
+          <a href="{% url 'home' %}" class="menu-link">
+            <i class="menu-icon tf-icons ri-dashboard-line"></i>
+            <div class="text-truncate">Dashboard</div>
+          </a>
+        </li>
+
+        <li class="menu-item {% if request.resolver_match.url_name == 'jobs' %}active open{% endif %}">
+          <a href="{% url 'jobs' %}" class="menu-link">
+            <i class="menu-icon tf-icons ri-briefcase-line"></i>
+            <div class="text-truncate">Jobs</div>
+          </a>
+        </li>
+
+        <li class="menu-item {% if request.resolver_match.url_name == 'applied_jobs' %}active open{% endif %}">
+          <a href="{% url 'applied_jobs' %}" class="menu-link">
+            <i class="menu-icon tf-icons ri-file-list-line"></i>
+            <div class="text-truncate">Applications</div>
+          </a>
+        </li>
+
+        <li class="menu-item {% if request.resolver_match.url_name == 'profile' %}active open{% endif %}">
+          <a href="{% url 'profile' %}" class="menu-link">
+            <i class="menu-icon tf-icons ri-user-line"></i>
+            <div class="text-truncate">Profile</div>
+          </a>
+        </li>
+
+        <!-- User Logout -->
+        <div class="px-3 py-2">
+          <a class="btn btn-primary btn-block d-flex justify-content-between align-items-center"
+             href="{% url 'logout' %}">
+            <span class="text-white">Logout</span>
+            <i class="ri-logout-box-r-line text-white"></i>
+          </a>
+        </div>
+
+      {% endif %}
+    </ul>
+  </aside>
+</div>

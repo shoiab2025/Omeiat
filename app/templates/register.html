@@ -1,0 +1,59 @@
+{% extends "blank_layout.html" %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'STYLES/login.css' %}">
+{% endblock head %}
+
+{% block title %}Signup{% endblock title %}
+{% block meta_description %}Create your new account.{% endblock meta_description %}
+{% block meta_keywords %}signup, register, create account{% endblock meta_keywords %}
+
+{% block layout %}
+<div class="login-page">
+    <div class="login-card">
+        <!-- LOGO -->
+        <div class="logo_container">
+            <img src="{% static 'app/images/logo.png' %}" alt="Logo" style="height: 130px;" class="m-0">
+        </div>
+
+        <!-- NAV OPTIONS -->
+        <div class="login-options">
+            <a href="{% url 'login' %}" class="login">Login</a>
+            <a href="{% url 'register' %}" class="register active">Signup</a>
+        </div>
+
+        <!-- REGISTER FORM -->
+        <form class="login-form" method="post" action="{% url 'register' %}">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="User Name" required>
+            <input type="text" name="phone" placeholder="Phone Number" required>
+            <input type="email" name="email" placeholder="Email Address" required>
+            <input type="password" name="password1" placeholder="Password" required>
+            <input type="password" name="password2" placeholder="Confirm Password" required>
+
+            <!-- SIGNUP BUTTON -->
+            <button type="submit" class="login-btn">Signup</button>
+        </form>
+
+        <!-- FOOTER -->
+        <div class="login-footer">
+            <p>Already have an account?</p>
+            <a href="{% url 'login' %}" class="mx-1">Login now</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // JavaScript to handle form submission and validation
+    document.querySelector('.login-form').addEventListener('submit', function(event) {
+        const password1 = document.querySelector('input[name="password1"]').value;
+        const password2 = document.querySelector('input[name="password2"]').value;
+
+        if (password1 !== password2) {
+            event.preventDefault();
+            alert("Passwords do not match!");
+        }
+    });
+</script>
+{% endblock layout %}

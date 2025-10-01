@@ -1,0 +1,118 @@
+{% extends "master_layout.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block layout %}
+<div class="row g-4">
+    <!-- Application Status Chart -->
+
+    <!-- Profile Completion Chart -->
+    <div class="col-md-4 d-flex">
+        <div class="card shadow-sm border-0 rounded-4 p-4 position-relative w-100 h-100 text-center hover-shadow">
+            <h5 class="mb-4 text-secondary fw-semibold">Profile Completion</h5>
+
+            <!-- Doughnut Chart -->
+            <div class="position-relative" style="width: 200px; height: 200px; margin: 0 auto;">
+                <canvas id="completionChart" width="200" height="200"></canvas>
+                <div class="position-absolute top-50 start-50 translate-middle"
+                    style="font-size: 1.8rem; font-weight: 700; color: #198754;">
+                    {{ completion }}%
+                </div>
+            </div>
+
+            <!-- Additional Text -->
+            <div class="mt-4">
+                {% if completion < 100 %} <p class="text-muted mb-1">Complete your profile to increase visibility.</p>
+                    <a href={% url "profile" %} class="btn btn-sm btn-primary mt-2">Complete Profile</a>
+                    {% else %}
+                    <p class="text-success mb-0 fw-semibold">Your profile is fully complete!</p>
+                    {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Profile Completion Chart -->
+<script>
+    const completion = {{ completion }};
+    const ctx1 = document.getElementById('completionChart').getContext('2d');
+    new Chart(ctx1, {
+        type: 'doughnut',
+        data: {
+            labels: ['Completed', 'Remaining'],
+            datasets: [{
+                data: [completion, 100 - completion],
+                backgroundColor: ['#198754', '#e9ecef'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: false,
+            cutout: '75%',
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            return `${context.label}: ${context.raw}%`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+<!-- Applications Bar Chart -->
+<script>
+    const ctx2 = document.getElementById('applicationsChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: {{ labels| safe }},
+        datasets: [{
+            label: 'Applications',
+            data: {{ data| safe }},
+        backgroundColor: ['#6c757d', '#0dcaf0', '#198754', '#dc3545'],
+        borderRadius: 6,
+        barThickness: 40
+      }]
+    },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: { stepSize: 1, precision: 0 },
+                grid: { color: '#f1f1f1' }
+            },
+            x: {
+                grid: { display: false }
+            }
+        },
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        return `${context.label}: ${context.raw}`;
+                    }
+                }
+            }
+        }
+    }
+  });
+</script>
+
+<!-- Optional CSS: Add hover effect -->
+<style>
+    .hover-shadow:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+        transition: box-shadow 0.3s ease-in-out;
+    }
+</style>
+{% endblock %}

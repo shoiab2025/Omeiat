@@ -1,0 +1,70 @@
+{% extends "master_layout.html" %}
+{% load static %}
+
+{% block title %}Jobs | Find Latest Openings{% endblock title %}
+{% block meta_description %}Browse the latest job openings in various industries on our employment portal.{% endblock meta_description %}
+{% block meta_keywords %}jobs, employment, hiring, teaching jobs, software, contract jobs{% endblock meta_keywords %}
+
+{% block layout %}
+<section class="content-wrapper">
+  <div class="container">
+    {% block h1 %}<h1>Latest Job Openings</h1>{% endblock h1 %}
+
+    <div class="row">
+      {% if jobs %}
+      {% for job in jobs %}
+      <div class="col-sm-6 mb-3">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h3 class="card-title font-weight-bold text-dark">{{ job.name }}</h3>
+
+            <div class="row mb-2">
+              <div class="col-6">
+                <p class="mb-1"><strong>Post:</strong> <br>{{ job.post }}</p>
+              </div>
+              <div class="col-6">
+                <p class="mb-1"><strong>Type:</strong> <br> {{ job.job_type }}</p>
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <div class="col-6">
+                <p class="mb-1"><strong>Experience:</strong> <br>{{ job.experience_needed }} year{{ job.experience_needed|pluralize }}</p>
+              </div>
+              <div class="col-6">
+                <p class="mb-1"><strong>Category:</strong> <br> {{ job.category }}</p>
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <div class="col-6">
+                <p class="mb-1"><strong>Location:</strong> <br> {{ job.location }}</p>
+              </div>
+              <div class="col-6">
+                <p class="mb-1"><strong>Institution:</strong> <br> {{ job.posted_by.name }}</p>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-6">
+                <p class="mb-1"><strong>Salary:</strong> <br> ₹{{ job.salary_min }} - ₹{{ job.salary_max }}</p>
+              </div>
+              <div class="col-6">
+                <p class="mb-1"><strong>Deadline:</strong> <br> {{ job.application_deadline|date:"F j, Y" }}</p>
+              </div>
+            </div>
+
+            <a href="{% url 'job_detail' job_id=job.id %}" class="btn btn-primary mt-2">View Details</a>
+          </div>
+        </div>
+      </div>
+
+      {% endfor %}
+      {% else %}
+      <p class="text-center">No active job openings available at the moment.</p>
+      {% endif %}
+    </div>
+
+  </div>
+</section>
+{% endblock layout %}
