@@ -7,9 +7,6 @@ from django.conf import settings
 # ----------------------------
 class OmeiatZones(models.Model):
     zone_name = models.CharField(max_length=100, unique=True)
-    description = models.TextField(blank=True)
-    from_location = models.CharField(max_length=200, blank=True)
-    to_location = models.CharField(max_length=200, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

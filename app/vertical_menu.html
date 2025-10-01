@@ -9,23 +9,13 @@
     <ul class="menu-inner py-1">
 
       {% if request.session.institution_id %}
-        <!-- Institution Sidebar -->
-        <div class="px-3 py-2 user-details">
-          <div class="d-flex align-items-center">
-            <div>
-              <h3 class="mb-0 small fw-bold">
-                {{ request.session.institution_name|default:"Institution" }}
-              </h3>
-              <small class="text-muted">Institution Admin</small>
-            </div>
-          </div>
-        </div>
 
         <!-- Institution Menus -->
         <li class="menu-item {% if request.resolver_match.url_name == 'institution_dashboard' %}active open{% endif %}">
           <a href="{% url 'dashboard' %}" class="menu-link">
             <i class="menu-icon tf-icons ri-dashboard-line"></i>
             <div class="text-truncate">Dashboard</div>
+            
           </a>
         </li>
 
@@ -59,7 +49,7 @@
           </a>
         </div>
 
-      {% elif request.user.is_authenticated %}
+      {% elif request.user.is_authenticated? %}
         <!-- Normal User Sidebar -->
         <div class="px-3 py-2 user-details">
           <div class="d-flex align-items-center">

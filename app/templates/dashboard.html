@@ -5,7 +5,9 @@
 <section class="content-wrapper py-5">
   <div class="container">
     {% include "application_chart.html" %}
-    {% include "latest_jobs.html" %}
+    {% if not request.session.institution_id %}
+      {% include "latest_jobs.html" %}
+    {%endif%}
   </div>
 </section>
 

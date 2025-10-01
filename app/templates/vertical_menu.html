@@ -1,95 +1,96 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'STYLES/vertical_menu.css' %}">
 
-
 <div class="sidebar-wrapper">
   <aside id="layout-menu" class="layout-menu vertical-menu menu bg-menu-theme">
-    {% comment %} {% if not navbar_full %}
-    <div class="app-brand demo">
-      <a href="{% url 'home' %}" class="app-brand-link d-flex align-items-center gap-1">
-        <img src="{{ site_logo|default:'/static/img/logo/logo.png' }}" alt="logo" class="w-25 h-25 align-self-center" />
-        <span class="app-brand-text demo menu-text fw-semibold align-self-center">
-          {{ site_name|default:"Omeiat" }}
-        </span>
-      </a>
-
-      <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
-        <i class="menu-toggle-icon d-xl-block align-middle"></i>
-      </a>
-    </div>
-    {% endif %} {% endcomment %}
 
     <div class="menu-inner-shadow"></div>
 
     <ul class="menu-inner py-1">
 
-      <div class="px-3 py-2 user-details">
-        <div class="d-flex align-items-center">
+      {% if request.session.institution_id %}
 
-          <div>
-            <h3 class="mb-0 small fw-bold">John Doe</h3>
-            <small class="text-muted">Admin</small>
+        <!-- Institution Menus -->
+        <li class="menu-item {% if request.resolver_match.url_name == 'institution_dashboard' %}active open{% endif %}">
+          <a href="{% url 'home' %}" class="menu-link">
+            <i class="menu-icon tf-icons ri-dashboard-line"></i>
+            <div class="text-truncate">Dashboard</div>
+          </a>
+        </li>
+
+        <li class="menu-item {% if request.resolver_match.url_name == 'institution_jobs' %}active open{% endif %}">
+          <a href="{% url 'institution_jobs' %}" class="menu-link">
+            <i class="menu-icon tf-icons ri-briefcase-line"></i>
+            <div class="text-truncate">Manage Jobs</div>
+          </a>
+        </li>
+
+        <li class="menu-item {% if request.resolver_match.url_name == 'institution_profile' %}active open{% endif %}">
+          <a href="{% url 'profile' %}" class="menu-link">
+            <i class="menu-icon tf-icons ri-user-line"></i>
+            <div class="text-truncate">Profile</div>
+          </a>
+        </li>
+
+        <!-- Institution Logout -->
+        <div class="px-3 py-2">
+          <a class="btn btn-primary btn-block d-flex justify-content-between align-items-center"
+             href="{% url 'institution_logout' %}">
+            <span class="text-white">Logout</span>
+            <i class="ri-logout-box-r-line text-white"></i>
+          </a>
+        </div>
+
+      {% elif request.user.is_authenticated %}
+        <!-- Normal User Sidebar -->
+        <div class="px-3 py-2 user-details">
+          <div class="d-flex align-items-center">
+            <div>
+              <h3 class="mb-0 small fw-bold">{{ request.user.username }}</h3>
+              {% if request.user.profile.role %}
+                <small class="text-muted">{{ request.user.profile.role }}</small>
+              {% endif %}
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Dashboard -->
-      <li class="menu-item {% if request.resolver_match.url_name == 'home' %}active open{% endif %}">
-        <a href="{% url 'home' %}" class="menu-link">
-          <i class="menu-icon tf-icons ri-dashboard-line"></i>
-          <div class="text-truncate" data-i18n="Dashboard">Dashboard</div>
-        </a>
-      </li>
+        <li class="menu-item {% if request.resolver_match.url_name == 'home' %}active open{% endif %}">
+          <a href="{% url 'home' %}" class="menu-link">
+            <i class="menu-icon tf-icons ri-dashboard-line"></i>
+            <div class="text-truncate">Dashboard</div>
+          </a>
+        </li>
 
-      <!-- Jobs -->
-      <li class="menu-item {% if request.resolver_match.url_name == 'jobs' %}active open{% endif %}">
-        <a href="{% url 'jobs' %}" class="menu-link">
-          <i class="menu-icon tf-icons ri-briefcase-line"></i>
-          <div class="text-truncate" data-i18n="Jobs">Jobs</div>
-        </a>
-      </li>
+        <li class="menu-item {% if request.resolver_match.url_name == 'jobs' %}active open{% endif %}">
+          <a href="{% url 'jobs' %}" class="menu-link">
+            <i class="menu-icon tf-icons ri-briefcase-line"></i>
+            <div class="text-truncate">Jobs</div>
+          </a>
+        </li>
 
-      <!-- Applications -->
-      <li class="menu-item {% if request.resolver_match.url_name == 'applied_jobs' %}active open{% endif %}">
-        <a href="{% url 'applied_jobs' %}" class="menu-link">
-          <i class="menu-icon tf-icons ri-file-list-line"></i>
-          <div class="text-truncate" data-i18n="Applications">Applications</div>
-        </a>
-      </li>
+        <li class="menu-item {% if request.resolver_match.url_name == 'applied_jobs' %}active open{% endif %}">
+          <a href="{% url 'applied_jobs' %}" class="menu-link">
+            <i class="menu-icon tf-icons ri-file-list-line"></i>
+            <div class="text-truncate">Applications</div>
+          </a>
+        </li>
 
-      <!-- Profile -->
-      {% if request.user.is_authenticated %}
-      <!-- Show profile and logout when logged in -->
-      <li class="menu-item {% if request.resolver_match.url_name == 'profile' %}active open{% endif %}">
-        <a href="{% url 'profile' %}" class="menu-link">
-          <i class="menu-icon tf-icons ri-user-line"></i>
-          <div class="text-truncate" data-i18n="Profile">Profile</div>
-        </a>
-      </li>
+        <li class="menu-item {% if request.resolver_match.url_name == 'profile' %}active open{% endif %}">
+          <a href="{% url 'profile' %}" class="menu-link">
+            <i class="menu-icon tf-icons ri-user-line"></i>
+            <div class="text-truncate">Profile</div>
+          </a>
+        </li>
 
-      <div class="px-3 py-2">
-        <a class="btn btn-primary btn-block d-flex justify-content-between align-items-center"
-          href="{% url 'logout' %}">
-          <span class="text-white">Logout</span>
-          <i class="ri-logout-box-r-line text-white"></i>
-        </a>
-      </div>
-      {% elif request.session.institution_id %}
-      <!-- Show profile and logout when logged in -->
-      <li class="menu-item {% if request.resolver_match.url_name == 'profile' %}active open{% endif %}">
-        <a href="{% url 'profile' %}" class="menu-link">
-          <i class="menu-icon tf-icons ri-user-line"></i>
-          <div class="text-truncate" data-i18n="Profile">Profile</div>
-        </a>
-      </li>
+        <!-- User Logout -->
+        <div class="px-3 py-2">
+          <a class="btn btn-primary btn-block d-flex justify-content-between align-items-center"
+             href="{% url 'logout' %}">
+            <span class="text-white">Logout</span>
+            <i class="ri-logout-box-r-line text-white"></i>
+          </a>
+        </div>
 
-      <div class="px-3 py-2">
-        <a class="btn btn-primary btn-block d-flex justify-content-between align-items-center"
-          href="{% url 'institution_logout' %}">
-          <span class="text-white">Logout</span>
-          <i class="ri-logout-box-r-line text-white"></i>
-        </a>
-      </div>
       {% endif %}
     </ul>
   </aside>
