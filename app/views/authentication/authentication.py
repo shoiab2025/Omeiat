@@ -162,7 +162,7 @@ def login_account(request, account_type="user"):
 
             if account_type == "institution":
                 account = Institution.objects.get(email=email)
-                if password == account.password:
+                if check_password(password, account.password):
                     if not account.is_otp_verified:
                         account.otp = generate_otp()
                         account.save()

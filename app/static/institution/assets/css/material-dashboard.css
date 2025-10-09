@@ -22201,8 +22201,8 @@ fieldset:disabled .btn {
 
 .btn-dark:hover,
 .btn.bg-gradient-dark:hover {
-  background-color: #262626;
-  border-color: #262626;
+  background-color:  #000000 !important;
+  border-color: #000000 !important;
   box-shadow: 0 8px 14px -8px rgba(38, 38, 38, 0.3), 0 3px 18px 0 rgba(38, 38, 38, 0.1), 0 7px 8px -4px rgba(38, 38, 38, 0.18);
 }
 
@@ -22217,8 +22217,8 @@ fieldset:disabled .btn {
 .btn.bg-gradient-dark:not(:disabled):not(.disabled).active,
 .btn.bg-gradient-dark:not(:disabled):not(.disabled):active,
 .show>.btn.bg-gradient-dark.dropdown-toggle {
-  color: color-yiq(#262626);
-  background-color: #262626;
+  color: color-yiq(#000000);
+  background-color: #000000;
 }
 
 .btn-dark.focus,
@@ -24748,7 +24748,7 @@ hr.horizontal.gray-light {
 
 .navbar.navbar-transparent .nav-link:hover,
 .navbar.navbar-transparent .nav-link:focus {
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.75) !important;
 }
 
 .navbar.navbar-transparent .navbar-toggler .navbar-toggler-icon .navbar-toggler-bar {

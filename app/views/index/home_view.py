@@ -154,7 +154,7 @@ def institution_profile(request):
                     email=c_email
                 )
 
-        return redirect('ins_profile')
+        return redirect('dashboard')
 
     # GET Request
     return render(request, 'institution/register.html' if is_new else 'institution/profile.html', {
