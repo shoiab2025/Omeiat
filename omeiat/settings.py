@@ -28,7 +28,6 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="*").split(",")
 INSTALLED_APPS = [
     'app',
     'django_filters',
-    'crispy_bootstrap5',
     'rest_framework',
     'jazzmin',
     'django.contrib.admin',
