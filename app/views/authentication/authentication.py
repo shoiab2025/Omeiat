@@ -1,197 +1,241 @@
+import random
+from django.core.mail import send_mail
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-from app.models import Institution
+from app.models import Institution, InstitutionAddress
+from app.utils import institution_required, get_institution_choices
+from django.utils.html import strip_tags
+import pdb
 User = get_user_model()
 
+# ----------------------------
+# OTP Helpers
+# ----------------------------
+def generate_otp():
+    """Generate a 6-digit OTP"""
+    return str(random.randint(100000, 999999))
 
-# ----------------------------
-# USER LOGIN
-# ----------------------------
-def user_login(request):
-    if request.user.is_authenticated:
-        messages.info(request, "You are already logged in.")
-        return redirect("home")
+def send_otp_email(email, otp):
+    """Send OTP to user's email"""
+    subject = "Your OTP Verification Code"
+    message = f"Dear User,\n\nYour OTP code is: {otp}\n\nUse this to verify your account."
+    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [email])
+
+
+# ==========================
+# REGISTER FUNCTION
+# ==========================
+
+def register_account(request, account_type="user"):
+    """
+    Register a User or Institution.
+    account_type: "user" or "institution"
+    """
+    choices = get_institution_choices()  # Includes 'categories'
 
     if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
+        email = request.POST.get("email", "").strip().lower()
+        password = request.POST.get("password", "")
+        confirm_password = request.POST.get("confirm_password", "")
+        redirect_url = "register" if account_type == "user" else "institution_register"
 
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            if not getattr(user, "is_deleted", False):
-                login(request, user)
-                messages.success(request, "Logged in successfully.")
-                return redirect("home")
-            else:
-                messages.error(request, "Your account has been deactivated.")
-        else:
-            messages.error(request, "Invalid username or password.")
-            return redirect("login")
+        if not email or not password:
+            messages.error(request, "Email and password are required.")
+            return redirect(redirect_url)
 
-    return render(request, "login.html")
+        if password != confirm_password:
+            messages.error(request, "Passwords do not match.")
+            return redirect(redirect_url)
 
-
-# ----------------------------
-# USER LOGOUT
-# ----------------------------
-def user_logout(request):
-    if request.user.is_authenticated:
-        logout(request)
-        messages.success(request, "You have been logged out successfully.")
-    return redirect("login")
-
-
-# ----------------------------
-# USER REGISTRATION
-# ----------------------------
-def register_user(request):
-    if request.method == "POST":
-        username = request.POST.get("username")
-        email = request.POST.get("email")
-        phone = request.POST.get("phone")
-        password = request.POST.get("password1")
-
-        if User.objects.filter(email=email).exists():
+        # Check if email already exists
+        if account_type == "user" and User.objects.filter(email=email).exists():
             messages.error(request, "Email already exists.")
-            return redirect("register")
-
-        # ✅ create_user handles hashing
-        user = User.objects.create_user(username=username, password=password, email=email, phone=phone)
-        login(request, user)
-        messages.success(request, "User registered successfully.")
-        return redirect("home")
-
-    return render(request, "register.html")
-
-
-# ----------------------------
-# UPDATE USER PROFILE
-# ----------------------------
-@login_required
-def update_user(request):
-    if request.method == "POST":
-        user = request.user
-
-        editable_fields = [
-            "username", "spouse_name", "dob", "mother_tongue", "address",
-            "qualification", "schooling", "languages_known", "working_experience_years",
-            "describing_experience", "last_salary", "expected_salary",
-            "reference_by_1", "reference_by_2", "joining_availability",
-            "aim_of_life", "about_family"
-        ]
-
-        for field in editable_fields:
-            if field in request.POST:
-                value = request.POST.get(field)
-                setattr(user, field, value if value != "" else None)
-
-        if "profile_picture" in request.FILES:
-            user.profile_picture = request.FILES["profile_picture"]
-
-        # Profile completion %
-        exclude_fields = [
-            "id", "password", "last_login", "is_superuser", "is_staff", "is_active",
-            "date_joined", "groups", "user_permissions",
-            "profile_percentage", "profile_visibility", "is_deleted", "timestamp", "email"
-        ]
-        model_fields = [f.name for f in user._meta.get_fields() if hasattr(f, "attname")]
-        total_fields, filled_fields = 0, 0
-
-        for field_name in model_fields:
-            if field_name not in exclude_fields:
-                total_fields += 1
-                value = getattr(user, field_name, None)
-                if value not in [None, "", 0]:
-                    filled_fields += 1
-
-        user.profile_percentage = int((filled_fields / total_fields) * 100) if total_fields > 0 else 0
-        user.save()
-
-        messages.success(request, f"Profile updated successfully! ({user.profile_percentage}% complete)")
-        return redirect("profile")
-
-    return redirect("profile")
-
-
-# ----------------------------
-# INSTITUTION REGISTRATION
-# ----------------------------
-def institution_register(request):
-    if request.method == "POST":
-        email = request.POST.get("email").lower()
-        if Institution.objects.filter(email=email).exists():
+            return redirect(redirect_url)
+        if account_type == "institution" and Institution.objects.filter(email=email).exists():
             messages.error(request, "Email already exists.")
-            return redirect("institution_register")
+            return redirect(redirect_url)
 
-        institution = Institution(
-            name=request.POST.get("name"),
-            email=email,
-            phone=request.POST.get("phone"),
-            website=request.POST.get("website"),
-            category=request.POST.get("category"),
-            address=request.POST.get("address"),
-            city=request.POST.get("city"),
-            state=request.POST.get("state"),
-            district=request.POST.get("district"),
-            country=request.POST.get("country"),
-            pincode=request.POST.get("pincode") or 0,
-            year_established=request.POST.get("year_established") or 0,
-            omeiat_member_since=request.POST.get("member_since") or 0,
-            board=request.POST.get("board"),
-            no_of_students=request.POST.get("no_of_students") or 0,
-            no_of_boys=request.POST.get("no_of_boys") or 0,
-            no_of_girls=request.POST.get("no_of_girls") or 0,
-            no_of_gents_staff=request.POST.get("no_of_gents_staff") or 0,
-            no_of_ladies_staff=request.POST.get("no_of_ladies_staff") or 0,
-            no_of_non_teaching_staff=request.POST.get("no_of_non_teaching_staff") or 0,
-            recruitment_contact=request.POST.get("recruitment_contact"),
-            principal_name=request.POST.get("principal_name"),
-            coordinator_name=request.POST.get("coordinator_name"),
-            correspondent_name=request.POST.get("correspondent_name"),
-            founder_name=request.POST.get("founder_name"),
-        )
-        password = request.POST.get("password")
-        institution.password = make_password(password)
-        institution.save()
+        if account_type == "user":
+            username = request.POST.get("username", "")
+            phone = request.POST.get("phone", "")
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                phone=phone,
+                password=password
+            )
+            user.is_otp_verified = False
+            user.otp = generate_otp()
+            user.save()
+            send_otp_email(user.email, user.otp)
+            request.session["pending_user_email"] = email
+            messages.success(request, "Registration successful! Please verify OTP.")
+            return redirect("user_verify_otp")
 
-        messages.success(request, "Institution registered successfully! Please login.")
-        return redirect("institution_login")
+        elif account_type == "institution":
+            institution = Institution(
+                name=request.POST.get("name", ""),
+                email=email,
+                phone=request.POST.get("phone", ""),
+                website=request.POST.get("website", ""),
+                category=request.POST.get("category", ""),
+                board=request.POST.get("board", ""),
+                about=strip_tags(request.POST.get("about", "")),
+                is_otp_verified=False,
+                otp=generate_otp(),
+                is_omeiat_member=bool(request.POST.get("is_omeiat_member")),
+                omeiat_member_since=request.POST.get("omeiat_member_since") or None,
+            )
 
-    return render(request, "institution_register_form.html")
+            # Year Established
+            try:
+                institution.year_established = int(request.POST.get("year_established", 0))
+            except ValueError:
+                institution.year_established = 0
 
+            # Handle logo upload
+            if 'logo' in request.FILES:
+                logo_file = request.FILES['logo']
+                institution.logo = logo_file  # Make sure your model has an ImageField
 
-# ----------------------------
-# INSTITUTION LOGIN
-# ----------------------------
-def institution_login(request):
+            # Password hashing
+            institution.password = make_password(password)
+            institution.save()
+
+            # Address handling (assuming OneToOne or ForeignKey relationship)
+            address_data = {
+                "building_no": request.POST.get("building_no", ""),
+                "street": request.POST.get("street", ""),
+                "area": request.POST.get("area", ""),
+                "city": request.POST.get("city", ""),
+                "district": request.POST.get("district", ""),
+                "state": request.POST.get("state", ""),
+                "country": request.POST.get("country", ""),
+                "pincode": request.POST.get("pincode", ""),
+            }
+
+            address = InstitutionAddress(**address_data)
+            address.institution = institution  # Assuming FK to Institution
+            address.save()
+
+            # Send OTP
+            send_otp_email(institution.email, institution.otp)
+            request.session["pending_institution_email"] = email
+            messages.success(request, "Institution registered! Please verify OTP.")
+            return redirect("institution_verify_otp")
+
+    # GET request
+    template = "register.html" if account_type == "user" else "ins_register.html"
+    return render(request, template, {
+        'categories': choices.get('categories', []),
+    })
+# ==========================
+# LOGIN FUNCTION
+# ==========================
+def login_account(request, account_type="user"):
+    """
+    Login a User or Institution.
+    account_type: "user" or "institution"
+    """
     if request.method == "POST":
         email = request.POST.get("email").lower()
         password = request.POST.get("password")
-
         try:
-            institution = Institution.objects.get(email=email)
-            if check_password(password, institution.password):
-                # Save institution info in session
-                request.session["institution_id"] = institution.id
-                request.session["institution_name"] = institution.name
-                messages.success(request, f"Welcome back, {institution.name}!")
-                return redirect("institution_dashboard")
-            else:
-                messages.error(request, "Invalid email or password.")
-        except Institution.DoesNotExist:
+            if account_type == "user":
+                account = User.objects.get(email=email)
+                if check_password(password, account.password):
+                    if not account.is_otp_verified:
+                        account.otp = generate_otp()
+                        account.save()
+                        send_otp_email(account.email, account.otp)
+                        request.session["pending_user_email"] = email
+                        messages.info(request, "OTP sent to your email. Please verify to login.")
+                        return redirect("user_verify_otp")
+                    login(request, account)
+                    messages.success(request, f"Welcome back, {account.username}!")
+                    return redirect("home")
+
+            if account_type == "institution":
+                account = Institution.objects.get(email=email)
+                if password == account.password:
+                    if not account.is_otp_verified:
+                        account.otp = generate_otp()
+                        account.save()
+                        send_otp_email(account.email, account.otp)
+                        request.session["pending_institution_email"] = email
+                        messages.info(request, "OTP sent to your email. Please verify to login.")
+                        return redirect("institution_verify_otp")
+                    request.session["institution_id"] = account.id
+                    request.session["institution_name"] = account.name
+                    messages.success(request, f"Welcome back, {account.name}!")
+                    return redirect("dashboard")
+
+            messages.error(request, "Invalid email or password.")
+        except (User.DoesNotExist, Institution.DoesNotExist):
             messages.error(request, "Invalid email or password.")
 
-    return render(request, "institution_login_form.html")
+    template = "login.html" if account_type=="user" else "ins_login.html"
+    return render(request, template)
 
 
-# ----------------------------
-# INSTITUTION LOGOUT
-# ----------------------------
-def institution_logout(request):
-    request.session.flush()
-    messages.success(request, "You have been logged out successfully.")
-    return redirect("home")
+# ==========================
+# OTP VERIFICATION
+# ==========================
+def verify_otp(request, account_type="user"):
+    """
+    Verify OTP for User or Institution.
+    account_type: "user" or "institution"
+    """
+    session_key = "pending_user_email" if account_type=="user" else "pending_institution_email"
+    email = request.session.get(session_key)
+    if not email:
+        messages.error(request, "No pending OTP verification found.")
+        return redirect("user_login" if account_type=="user" else "institution_login")
+
+    account_model = User if account_type=="user" else Institution
+    account = get_object_or_404(account_model, email=email)
+
+    if request.method == "POST":
+        otp_entered = request.POST.get("otp")
+        if otp_entered == account.otp:
+            account.is_otp_verified = True
+            account.otp = None
+            account.save()
+            if account_type == "user":
+                login(request, account)
+                messages.success(request, "OTP verified successfully. You are now logged in.")
+                return redirect("home")
+            else:
+                request.session["institution_id"] = account.id
+                request.session["institution_name"] = account.name
+                messages.success(request, "OTP verified successfully. You are now logged in.")
+                return redirect("dashboard")
+        else:
+            messages.error(request, "Invalid OTP. Please try again.")
+            return redirect("user_verify_otp" if account_type=="user" else "institution_verify_otp")
+
+    template = "verify_otp.html" if account_type=="user" else "institution_verify_otp.html"
+    return render(request, template)
+
+
+# ==========================
+# LOGOUT FUNCTION
+# ==========================
+def logout_account(request, account_type="user"):
+    """
+    Logout User or Institution
+    """
+    if account_type == "user":
+        if request.user.is_authenticated:
+            logout(request)
+            messages.success(request, "You have been logged out successfully.")
+        return redirect("user_login")
+    else:
+        request.session.flush()
+        messages.success(request, "You have been logged out successfully.")
+        return redirect("institution_login")

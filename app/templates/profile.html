@@ -1,222 +1,298 @@
-{% extends "master_layout.html" %}
+{% extends 'base_layout.html' %}
 {% load static %}
+{% block content %}
 
-{% block title %}Edit Profile{% endblock title %}
+<div class="container my-5">
+    <h2>User Profile</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
 
-{% block layout %}
-<section class="content-wrapper py-4">
-    <div class="container">
-        {% block h1 %}<h1 class="mb-4">Edit Profile</h1>{% endblock h1 %}
-
-        <!-- Progress Bar -->
-        <div class="mb-4">
-            <div class="progress" style="height: 15x; border-radius: 10px; overflow: hidden;">
-                <div id="profileProgress" class="progress-bar bg-success fw-bold" role="progressbar"
-                    style="width: {{ user.profile_percentage|default:'0' }}%;">
-                    {{ user.profile_percentage|default:'0' }}%
-                </div>
+            <!-- Basic Info -->
+            <div class="col-12 col-md-6 mb-3">
+                <label class="form-label">Username</label>
+                <input type="text" name="username" class="form-control" value="{{ user.username }}">
             </div>
-        </div>
+            <div class="col-12 col-md-6 mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" value="{{ user.email }}">
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+                <label class="form-label">Phone</label>
+                <input type="text" name="phone" class="form-control" value="{{ user.phone }}">
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+                <label class="form-label">Date of Birth</label>
+                <input type="date" name="dob" class="form-control" value="{{ user.dob }}">
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+                <label class="form-label">Father's Name</label>
+                <input type="text" name="father_name" class="form-control" value="{{ user.father_name }}">
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+                <label class="form-label">Spouse Name</label>
+                <input type="text" name="spouse_name" class="form-control" value="{{ user.spouse_name }}">
+            </div>
+            <div class="col-12 mb-3">
+                <label class="form-label">Profile Picture</label>
+                <input type="file" name="profile_picture" class="form-control">
+                {% if user.profile_picture %}
+                    <img src="{{ user.profile_picture.url }}" alt="Profile" style="height:80px;" class="mt-2">
+                {% endif %}
+            </div>
 
-        <div class="bg-white rounded-3 shadow-lg p-4">
-            <form id="profileForm" method="POST" enctype="multipart/form-data" class="p-4 mb-3" action="{% url 'update_profile' %}">
-                {% csrf_token %}
+            <!-- Address -->
+            <h5 class="mt-4">Address</h5>
+            {% with addr=user.address %}
+            <div class="col-12 col-md-6 mb-3">
+                <label class="form-label">Building No</label>
+                <input type="text" name="building_no" class="form-control" value="{{ addr.building_no }}">
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+                <label class="form-label">Street</label>
+                <input type="text" name="street" class="form-control" value="{{ addr.street }}">
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+                <label class="form-label">Area</label>
+                <input type="text" name="area" class="form-control" value="{{ addr.area }}">
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+                <label class="form-label">District</label>
+                <input type="text" name="district" class="form-control" value="{{ addr.district }}">
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+                <label class="form-label">State</label>
+                <input type="text" name="state" class="form-control" value="{{ addr.state }}">
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+                <label class="form-label">Pincode</label>
+                <input type="text" name="pincode" class="form-control" value="{{ addr.pincode }}">
+            </div>
+            {% endwith %}
 
-                <!-- Tabs -->
-                <ul class="nav nav-tabs" id="profileTab" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="personal-tab" data-bs-toggle="tab"
-                            data-bs-target="#personal" type="button" role="tab">Personal Info</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="education-tab" data-bs-toggle="tab" data-bs-target="#education"
-                            type="button" role="tab">Education</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="experience-tab" data-bs-toggle="tab" data-bs-target="#experience"
-                            type="button" role="tab">Experience</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="additional-tab" data-bs-toggle="tab" data-bs-target="#additional"
-                            type="button" role="tab">Additional</button>
-                    </li>
-                </ul>
-
-                <div class="tab-content mt-4" id="profileTabContent">
-
-                    <!-- Personal Info -->
-                    <div class="tab-pane fade show active" id="personal" role="tabpanel">
-                        <div class="row">
-                            <div class="col-md-4 mb-3 justify-content-center d-flex flex-column align-items-center">
-                                <label class="form-label d-block">Profile Picture</label>
-
-                                <!-- Hidden file input -->
-                                <input type="file" id="profile_picture_input" class="d-none" name="profile_picture"
-                                    accept="image/*">
-
-                                <!-- Clickable preview image -->
-                                <label for="profile_picture_input" style="cursor: pointer;">
-                                    <img id="profile_picture_preview"
-                                        src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'app/images/male_user.png' %}{% endif %}"
-                                        height="150" class="rounded" alt="Profile Picture">
-                                </label>
-
-                                <!-- Small hint -->
-                                <div class="text-muted mt-2" style="font-size: 0.9em;">
-                                    Click the picture to upload a new one.
-                                </div>
-                            </div>
-
-                            <div class="col-md-8 mb-3">
-                                <div class="form_group my-2">
-                                    <label class="form-label">User Name</label>
-                                    <input type="text" class="form-control" name="username" value="{{ user.username }}">
-                                </div>
-                                <div class="form_group my-2">
-                                    <label class="form-label">Spouse Name</label>
-                                    <input type="text" class="form-control" name="spouse_name"
-                                        value="{{ user.spouse_name }}">
-                                </div>
-                                <div class="form_group my-2">
-                                    <label class="form-label">Date of Birth</label>
-                                    <input type="date" class="form-control" name="dob"
-                                        value="{{ user.dob|date:'Y-m-d' }}">
-                                </div>
-                                <div class="form_group my-2">
-                                    <label class="form-label">Mother Tongue</label>
-                                    <input type="text" class="form-control" name="mother_tongue"
-                                        value="{{ user.mother_tongue }}">
-                                </div>
-                                <div class="form_group my-2">
-                                    <label class="form-label">Address</label>
-                                    <textarea class="form-control" name="address">{{ user.address }}</textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-primary float-end" onclick="nextTab('education-tab')">Save
-                            & Continue</button>
+            <!-- Education -->
+            <h5 class="mt-4">Education</h5>
+            <div id="education-container">
+                {% for edu in user.educations.all %}
+                <div class="education-entry row mb-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Level</label>
+                        <select name="edu_level[]" class="form-control w-100">
+                            {% for lvl, lbl in edu.LEVEL_CHOICES %}
+                                <option value="{{ lvl }}" {% if edu.level == lvl %}selected{% endif %}>{{ lbl }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
-
-                    <!-- Education -->
-                    <div class="tab-pane fade" id="education" role="tabpanel">
-                        <div class="mb-3">
-                            <label class="form-label">Qualification</label>
-                            <input type="text" class="form-control" name="qualification"
-                                value="{{ user.qualification }}">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Schooling</label>
-                            <input type="text" class="form-control" name="schooling" value="{{ user.schooling }}">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Languages Known</label>
-                            <input type="text" class="form-control" name="languages_known"
-                                value="{{ user.languages_known }}">
-                        </div>
-                        <button type="button" class="btn btn-primary float-end" onclick="nextTab('experience-tab')">Save
-                            & Continue</button>
+                    <div class="col-md-3">
+                        <label class="form-label">Institution</label>
+                        <input type="text" name="edu_institution[]" class="form-control w-100" value="{{ edu.institution }}">
                     </div>
-
-                    <!-- Experience -->
-                    <div class="tab-pane fade" id="experience" role="tabpanel">
-                        <div class="mb-3">
-                            <label class="form-label">Working Experience (Years)</label>
-                            <input type="number" class="form-control" name="working_experience_years"
-                                value="{{ user.working_experience_years }}">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Describe Your Experience</label>
-                            <textarea class="form-control"
-                                name="describing_experience">{{ user.describing_experience }}</textarea>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Last Salary</label>
-                                <input type="number" step="0.01" class="form-control" name="last_salary"
-                                    value="{{ user.last_salary }}">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Expected Salary</label>
-                                <input type="number" step="0.01" class="form-control" name="expected_salary"
-                                    value="{{ user.expected_salary }}">
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-primary float-end" onclick="nextTab('additional-tab')">Save
-                            & Continue</button>
+                    <div class="col-md-3">
+                        <label class="form-label">Degree</label>
+                        <input type="text" name="edu_degree[]" class="form-control w-100" value="{{ edu.degree }}">
                     </div>
-
-                    <!-- Additional -->
-                    <div class="tab-pane fade" id="additional" role="tabpanel">
-                        <div class="mb-3">
-                            <label class="form-label">Reference 1</label>
-                            <input type="text" class="form-control" name="reference_by_1"
-                                value="{{ user.reference_by_1 }}">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Reference 2</label>
-                            <input type="text" class="form-control" name="reference_by_2"
-                                value="{{ user.reference_by_2 }}">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Joining Availability</label>
-                            <input type="text" class="form-control" name="joining_availability"
-                                value="{{ user.joining_availability }}">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Aim of Life</label>
-                            <textarea class="form-control" name="aim_of_life">{{ user.aim_of_life }}</textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">About Family</label>
-                            <textarea class="form-control" name="about_family">{{ user.about_family }}</textarea>
-                        </div>
-                        <button type="submit" class="btn btn-success float-end">Submit Profile</button>
+                    <div class="col-md-3">
+                        <label class="form-label">Percentage</label>
+                        <input type="number" step="0.01" name="edu_percentage[]" class="form-control w-100" value="{{ edu.percentage }}">
                     </div>
-
                 </div>
-            </form>
+                {% endfor %}
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-primary mb-3" onclick="addEducation()">Add Education</button>
+
+            <!-- Work Experience -->
+            <h5 class="mt-4">Work Experience</h5>
+            <div id="experience-container">
+                {% for exp in user.experiences.all %}
+                <div class="experience-entry row mb-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Company</label>
+                        <input type="text" name="exp_company[]" class="form-control w-100" value="{{ exp.company }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Role</label>
+                        <input type="text" name="exp_role[]" class="form-control w-100" value="{{ exp.role }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Start Date</label>
+                        <input type="date" name="exp_start_date[]" class="form-control w-100" value="{{ exp.start_date }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">End Date</label>
+                        <input type="date" name="exp_end_date[]" class="form-control w-100" value="{{ exp.end_date }}">
+                    </div>
+                    <div class="col-md-12 mt-2">
+                        <label class="form-label">Description</label>
+                        <textarea name="exp_description[]" class="form-control w-100">{{ exp.description }}</textarea>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-primary mb-3" onclick="addExperience()">Add Experience</button>
+
+            <!-- Skills -->
+            <h5 class="mt-4">Skills</h5>
+            <div id="skill-container">
+                {% for skill in user.skills.all %}
+                <div class="row mb-3 skill-entry">
+                    <div class="col-md-6">
+                        <label class="form-label">Skill</label>
+                        <input type="text" name="skill_name[]" class="form-control w-100" value="{{ skill.name }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Level</label>
+                        <select name="skill_level[]" class="form-control">
+                            {% for lvl, lbl in skill.LEVEL_CHOICES %}
+                                <option value="{{ lvl }}" {% if skill.level == lvl %}selected{% endif %}>{{ lbl }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-primary mb-3" onclick="addSkill()">Add Skill</button>
+
+            <!-- Languages -->
+            <h5 class="mt-4">Languages</h5>
+            <div id="language-container">
+                {% for lang in user.languages.all %}
+                <div class="row mb-3 language-entry">
+                    <div class="col-md-6">
+                        <label class="form-label">Language</label>
+                        <input type="text" name="lang_name[]" class="form-control w-100" value="{{ lang.name }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Proficiency</label>
+                        <select name="lang_proficiency[]" class="form-control">
+                            {% for lvl, lbl in lang.PROFICIENCY_CHOICES %}
+                                <option value="{{ lvl }}" {% if lang.proficiency == lvl %}selected{% endif %}>{{ lbl }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-primary mb-3" onclick="addLanguage()">Add Language</button>
+
+            <!-- Submit -->
+            <div class="col-12 mt-4">
+                <button type="submit" class="btn btn-primary">Save Profile</button>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<!-- Hidden templates for cloning -->
+<div id="education-template" class="d-none">
+    <div class="education-entry row mb-3">
+        <div class="col-md-3">
+            <label class="form-label">Level</label>
+            <select name="edu_level[]" class="form-control">
+                <option value="SSLC">SSLC</option>
+                <option value="HSS">HSS</option>
+                <option value="Diploma">Diploma</option>
+                <option value="Bachelor">Bachelor</option>
+                <option value="Master">Master</option>
+                <option value="PhD">PhD</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Institution</label>
+            <input type="text" name="edu_institution[]" class="form-control">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Degree</label>
+            <input type="text" name="edu_degree[]" class="form-control">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Percentage</label>
+            <input type="number" step="0.01" name="edu_percentage[]" class="form-control">
         </div>
     </div>
-</section>
+</div>
+
+<div id="experience-template" class="d-none">
+    <div class="experience-entry row mb-3">
+        <div class="col-md-3">
+            <label class="form-label">Company</label>
+            <input type="text" name="exp_company[]" class="form-control">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Role</label>
+            <input type="text" name="exp_role[]" class="form-control">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Start Date</label>
+            <input type="date" name="exp_start_date[]" class="form-control">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">End Date</label>
+            <input type="date" name="exp_end_date[]" class="form-control">
+        </div>
+        <div class="col-md-12 mt-2">
+            <label class="form-label">Description</label>
+            <textarea name="exp_description[]" class="form-control"></textarea>
+        </div>
+    </div>
+</div>
+
+<div id="skill-template" class="d-none">
+    <div class="row mb-3 skill-entry">
+        <div class="col-md-6">
+            <label class="form-label">Skill</label>
+            <input type="text" name="skill_name[]" class="form-control">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Level</label>
+            <select name="skill_level[]" class="form-control">
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Expert">Expert</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div id="language-template" class="d-none">
+    <div class="row mb-3 language-entry">
+        <div class="col-md-6">
+            <label class="form-label">Language</label>
+            <input type="text" name="lang_name[]" class="form-control">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Proficiency</label>
+            <select name="lang_proficiency[]" class="form-control">
+                <option value="Basic">Basic</option>
+                <option value="Fluent">Fluent</option>
+                <option value="Native">Native</option>
+            </select>
+        </div>
+    </div>
+</div>
 
 <script>
-    function nextTab(tabId) {
-        let tabTrigger = document.querySelector(`#${tabId}`);
-        if (tabTrigger) {
-            new bootstrap.Tab(tabTrigger).show();
-        }
-        updateProgress();
-    }
-
-    function updateProgress() {
-        let inputs = document.querySelectorAll('#profileForm input, #profileForm textarea, #profileForm select');
-        let filled = 0;
-        inputs.forEach(input => {
-            if (input.type !== 'file' && input.value.trim() !== '') {
-                filled++;
-            }
-        });
-        let total = inputs.length - 1; // minus CSRF
-        let percent = Math.round((filled / total) * 100);
-        let progressBar = document.getElementById('profileProgress');
-        progressBar.style.width = percent + '%';
-        progressBar.innerText = percent + '%';
-    }
-
-    document.querySelectorAll('#profileForm input, #profileForm textarea, #profileForm select')
-        .forEach(el => el.addEventListener('input', updateProgress));
+function addEducation() {
+    const container = document.getElementById('education-container');
+    const template = document.getElementById('education-template').firstElementChild.cloneNode(true);
+    container.appendChild(template);
+}
+function addExperience() {
+    const container = document.getElementById('experience-container');
+    const template = document.getElementById('experience-template').firstElementChild.cloneNode(true);
+    container.appendChild(template);
+}
+function addSkill() {
+    const container = document.getElementById('skill-container');
+    const template = document.getElementById('skill-template').firstElementChild.cloneNode(true);
+    container.appendChild(template);
+}
+function addLanguage() {
+    const container = document.getElementById('language-container');
+    const template = document.getElementById('language-template').firstElementChild.cloneNode(true);
+    container.appendChild(template);
+}
 </script>
 
-<script>
-    document.getElementById('profile_picture_input').addEventListener('change', function (event) {
-        let file = event.target.files[0];
-        if (file) {
-            let reader = new FileReader();
-            reader.onload = function (e) {
-                document.getElementById('profile_picture_preview').src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-</script>
-{% endblock layout %}
+{% endblock content %}

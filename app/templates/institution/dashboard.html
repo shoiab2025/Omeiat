@@ -1,0 +1,76 @@
+{% extends 'institution/dash_layout.html' %}
+{% load static %}
+{%block page%}
+  <span>Dashboard</span>
+{%endblock page%}
+{% block content %}
+
+
+<div class="container-fluid py-2">
+  <div class="row">
+    <div class="ms-3">
+      <h1 class="mb-0 h4 font-weight-bolder">Dashboard</h1>
+      <p class="mb-4">
+        Check the Job applications, Job analytics.
+      </p>
+    </div>
+    <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+      <div class="card">
+        <div class="card-header p-2 ps-3">
+          <div class="d-flex justify-content-between">
+            <div>
+              <p class="text-sm mb-0 text-capitalize">Today's Applications</p>
+              <h2 class="mb-0">{{job_count}}</h2>
+            </div>
+            <div class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
+              <i class="material-symbols-rounded opacity-10">person</i>
+            </div>
+          </div>
+        </div>
+        <hr class="dark horizontal my-0">
+        <div class="card-footer p-2 ps-3">
+          <p class="mb-0 text-sm">Total aplications for all jobs    </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+      <div class="card">
+        <div class="card-header p-2 ps-3">
+          <div class="d-flex justify-content-between">
+            <div>
+              <p class="text-sm mb-0 text-capitalize">Total Applications</p>
+              <h2 class="mb-0">{{application_count}}</h2>
+            </div>
+            <div class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
+              <i class="material-symbols-rounded opacity-10">leaderboard</i>
+            </div>
+          </div>
+        </div>
+        <hr class="dark horizontal my-0">
+        <div class="card-footer p-2 ps-3">
+          <p class="mb-0 text-sm">Total Applications for all jobs</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-sm-6">
+      <div class="card">
+        <div class="card-header p-2 ps-3">
+          <div class="d-flex justify-content-between">
+            <div>
+              <p class="text-sm mb-0 text-capitalize">Total Shortlists</p>
+              <h2 class="mb-0">{{shortlisted_count}}</h2>
+            </div>
+            <div class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
+              <i class="material-symbols-rounded opacity-10">list</i>
+            </div>
+          </div>
+        </div>
+        <hr class="dark horizontal my-0">
+        <div class="card-footer p-2 ps-3">
+          <p class="mb-0 text-sm">Total Shortlists created</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content%}

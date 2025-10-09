@@ -1,0 +1,94 @@
+{% extends 'institution/dash_layout.html' %}
+{% load static %}
+
+{% block page %}
+<span>Jobs</span>
+{% endblock page %}
+
+{% block content %}
+<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
+    <div class="container-fluid py-2">
+        <div class="row">
+            <div class="col-12">
+                {% if page_obj %}
+                    {% for job_wrapper in page_obj %}
+                        {% with job=job_wrapper.job %}
+                        <div class="single-job-items mb-4 p-3 border rounded bg-white shadow-sm">
+                            <div class="d-flex align-items-start">
+                                <div class="company-img me-3">
+                                    {% if job.posted_by.logo %}
+                                        <img src="{% static job.posted_by.logo %}" alt="{{ job.posted_by.name }}"
+                                            class="img-fluid rounded" width="100" height="100">
+                                    {% else %}
+                                        <img src="{% static 'assets/img/default-company.png' %}" alt="Default Logo"
+                                            class="img-fluid rounded" width="60" height="60">
+                                    {% endif %}
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h5 class="mb-1">{{ job.title }}</h5>
+                                            <ul class="list-unstyled mb-2">
+                                                <li><i class="fas fa-building me-1 text-secondary"></i> {{ job.posted_by.name }}</li>
+                                                <li><i class="fas fa-map-marker-alt me-1 text-secondary"></i> {{ job.location }}</li>
+                                                <li><i class="fas fa-briefcase me-1 text-secondary"></i> {{ job.job_type }}</li>
+                                            </ul>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-gradient-primary">{{ job.category }}</span><br>
+                                            <small class="text-muted">{{ job.timestamp|date:"M d, Y" }}</small>
+                                        </div>
+                                    </div>
+                                    <p class="mb-1 text-muted">
+                                        <strong>Salary:</strong> ₹{{ job.min_salary|floatformat:0 }} - ₹{{ job.max_salary|floatformat:0 }}
+                                    </p>
+                                    <a href="" class="btn btn-sm btn-outline-secondary mt-2">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endwith %}
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-info text-center">
+                        <h4><i class="fas fa-briefcase"></i> No Jobs Found</h4>
+                        <p class="mb-3">You haven't posted any jobs yet.</p>
+                       
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination-area pt-3 text-center">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                                <span class="ti-angle-left"></span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% for i in page_obj.paginator.page_range %}
+                        <li class="page-item {% if page_obj.number == i %}active{% endif %}">
+                            <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                        </li>
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                                <span class="ti-angle-right"></span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+        <!-- Pagination End -->
+    </div>
+</main>
+{% endblock content %}

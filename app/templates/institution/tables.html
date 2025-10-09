@@ -1,0 +1,348 @@
+{% extends 'institution/dash_layout.html' %}
+{% load static %}
+
+{% block page %}
+<span>Jobs</span>
+{% endblock page %}
+
+{% block content %}
+<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
+  <div class="container-fluid py-2">
+    <div class="row">
+      <div class="col-12">
+        <!-- Add Job Button -->
+        <div class="d-flex justify-content-end mb-3">
+          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#jobFormModal"
+            onclick="clearJobForm()">+ Create Job</button>
+        </div>
+
+        <!-- Jobs Table -->
+        <div class="card my-4">
+          <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+            <div class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3">
+              <h6 class="text-white text-capitalize ps-3">Jobs</h6>
+            </div>
+          </div>
+          <div class="card-body px-0 pb-2">
+            <div class="table-responsive p-0">
+              <table class="table align-items-center mb-0">
+                <thead>
+                  <tr>
+                    <th>Job</th>
+                    <th>Job Type</th>
+                    <th class="text-center">Location</th>
+                    <th class="text-center">Category</th>
+                    <th class="text-center">Posted At</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% if jobs %}
+                  {% for job in jobs %}
+                  <tr>
+                    <td>
+                      <div class="d-flex px-2 py-1">
+                        <div>
+                          <img src="{% static job.posted_by.logo %}" class="avatar avatar-sm me-3 border-radius-lg"
+                            alt="logo">
+                        </div>
+                        <div class="d-flex flex-column justify-content-center">
+                          <h6 class="mb-0 text-sm">{{ job.title }}</h6>
+                          <p class="text-xs text-secondary mb-0">₹{{ job.min_salary|floatformat:0 }} - ₹{{ job.max_salary|floatformat:0 }}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <p class="text-xs font-weight-bold mb-0">{{ job.job_type }}</p>
+                      <p class="text-xs text-secondary mb-0">{{ job.time_ago }}</p>
+                    </td>
+                    <td class="align-middle text-center text-sm">
+                      <span class="badge badge-sm bg-gradient-success">{{ job.location }}</span>
+                    </td>
+                    <td class="align-middle text-center">
+                      <span class="text-secondary text-xs font-weight-bold text-capitalize">{{ job.category }}</span>
+                    </td>
+                    <td class="align-middle text-center">
+                      <span class="text-secondary text-xs font-weight-bold">{{ job.timestamp|date:"F d, Y" }}</span>
+                    </td>
+                    <td class="align-middle">
+                      <a href="#" class="text-secondary font-weight-bold text-xs edit-job" data-bs-toggle="modal"
+                        data-bs-target="#jobFormModal" 
+                        data-job-id="{{ job.id }}" 
+                        data-title="{{ job.title }}"
+                        data-location="{{ job.location }}" 
+                        data-job-type="{{ job.job_type }}"
+                        data-category="{{ job.category }}" 
+                        data-description="{{ job.description }}"
+                        data-min-salary="{{ job.min_salary }}" 
+                        data-max-salary="{{ job.max_salary }}"
+                        data-experience-needed="{{ job.experience_needed }}"
+                        data-deadline="{{ job.application_deadline|date:'Y-m-d' }}"
+                        data-no-of-openings="{{ job.no_of_openings }}"
+                        data-location-range-km="{{ job.location_range_km }}"
+                        data-job-timing="{{ job.job_timing }}"
+                        data-candidate-gender="{{ job.candidate_gender }}"
+                        data-degree-required="{{ job.degree_required }}"
+                        data-qualifications-required="{{ job.qualifications_required }}"
+                        data-status="{{ job.status }}"
+                        data-is-active="{{ job.is_active|yesno:'true,false' }}"
+                        data-skills-required="{% for skill in job.skills_required.all %}{{ skill.id }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                        data-certifications-required="{% for cert in job.certifications_required.all %}{{ cert.id }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                        Edit
+                      </a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                  {% else %}
+                  <tr>
+                    <td colspan="6" class="text-center py-4">
+                      <p class="text-muted">No jobs found. Create your first job!</p>
+                    </td>
+                  </tr>
+                  {% endif %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Job Create/Edit Modal -->
+<div class="modal fade" id="jobFormModal" tabindex="-1" aria-labelledby="jobFormModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form method="POST" action="{% url 'job_create_or_update' %}" id="jobForm">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="jobFormModalLabel">Create Job</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body row">
+          <input type="hidden" name="job_id" id="job_id">
+
+          <div class="mb-3 col-md-6">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="title" required>
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" class="form-control" id="location" name="location" required>
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label for="job_type" class="form-label">Job Type</label>
+            <select class="form-control" id="job_type" name="job_type" required>
+              {% for job_type in job_types %}
+              <option value="{{ job_type }}">{{ job_type }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label for="category" class="form-label">Category</label>
+            <select class="form-control" id="category" name="category" required>
+              {% for category in categories %}
+              <option value="{{ category.key }}">{{ category.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3 col-12">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label for="min_salary" class="form-label">Min Salary</label>
+            <input type="number" class="form-control" id="min_salary" name="min_salary" min="0">
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label for="max_salary" class="form-label">Max Salary</label>
+            <input type="number" class="form-control" id="max_salary" name="max_salary" min="0">
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label for="experience_needed" class="form-label">Experience Needed (years)</label>
+            <input type="number" class="form-control" id="experience_needed" name="experience_needed" min="0" step="0.1">
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label for="application_deadline" class="form-label">Application Deadline</label>
+            <input type="date" class="form-control" id="application_deadline" name="application_deadline" required>
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label for="no_of_openings" class="form-label">No. of Openings</label>
+            <input type="number" class="form-control" id="no_of_openings" name="no_of_openings" min="1" required>
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label for="location_range_km" class="form-label">Location Range (km)</label>
+            <input type="number" class="form-control" id="location_range_km" name="location_range_km" min="0">
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label for="job_timing" class="form-label">Job Timing</label>
+            <input type="text" class="form-control" id="job_timing" name="job_timing" placeholder="e.g., 9 AM - 6 PM">
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label for="candidate_gender" class="form-label">Preferred Gender</label>
+            <select class="form-control" id="candidate_gender" name="candidate_gender">
+              {% for key, label in GENDER_CHOICES %}
+                <option value="{{ key }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label for="degree_required" class="form-label">Degree Required</label>
+            <input type="text" class="form-control" id="degree_required" name="degree_required" placeholder="e.g., Bachelor's Degree">
+          </div>
+
+          <div class="mb-3 col-12">
+            <label for="qualifications_required" class="form-label">Qualifications Required</label>
+            <textarea class="form-control" id="qualifications_required" name="qualifications_required"
+              rows="2" placeholder="List required qualifications"></textarea>
+          </div>
+
+          <div class="mb-3 col-12">
+            <label for="skills_required" class="form-label">Skills Required</label>
+            <select class="form-select" id="skills_required" name="skills_required" multiple>
+              {% for skill in skills %}
+              <option value="{{ skill.id }}">{{ skill.name }}</option>
+              {% endfor %}
+            </select>
+            <small class="text-muted">Hold Ctrl (or Cmd on Mac) to select multiple.</small>
+          </div>
+
+          <div class="mb-3 col-12">
+            <label for="certifications_required" class="form-label">Certifications Required</label>
+            <select class="form-select" id="certifications_required" name="certifications_required" multiple>
+              {% for cert in certifications %}
+              <option value="{{ cert.id }}">{{ cert.name }}</option>
+              {% endfor %}
+            </select>
+            <small class="text-muted">Hold Ctrl (or Cmd on Mac) to select multiple.</small>
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label for="status" class="form-label">Job Status</label>
+            <select class="form-control" id="status" name="status">
+              {% for key, label in STATUS_CHOICES %}
+              <option value="{{ key }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3 col-md-6 d-flex align-items-center">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="true" checked>
+              <label class="form-check-label" for="is_active">Is Active</label>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary bg-dark">Save</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript to Fill Modal -->
+<script>
+  function clearJobForm() {
+    document.getElementById('jobForm').reset();
+    document.getElementById('job_id').value = '';
+    document.getElementById('jobFormModalLabel').innerText = 'Create Job';
+    
+    // Reset multi-select fields
+    const skillsSelect = document.getElementById('skills_required');
+    Array.from(skillsSelect.options).forEach(option => {
+      option.selected = false;
+    });
+    
+    const certsSelect = document.getElementById('certifications_required');
+    Array.from(certsSelect.options).forEach(option => {
+      option.selected = false;
+    });
+  }
+
+  document.querySelectorAll('.edit-job').forEach(button => {
+    button.addEventListener('click', function () {
+      // Change modal title
+      document.getElementById('jobFormModalLabel').innerText = 'Edit Job';
+
+      // Set basic input values
+      document.getElementById('job_id').value = this.dataset.jobId || '';
+      document.getElementById('title').value = this.dataset.title || '';
+      document.getElementById('location').value = this.dataset.location || '';
+      document.getElementById('job_type').value = this.dataset.jobType || '';
+      document.getElementById('category').value = this.dataset.category || '';
+      document.getElementById('description').value = this.dataset.description || '';
+      document.getElementById('min_salary').value = this.dataset.minSalary || '';
+      document.getElementById('max_salary').value = this.dataset.maxSalary || '';
+      document.getElementById('experience_needed').value = this.dataset.experienceNeeded || '';
+      document.getElementById('application_deadline').value = this.dataset.deadline || '';
+      document.getElementById('no_of_openings').value = this.dataset.noOfOpenings || '';
+      document.getElementById('location_range_km').value = this.dataset.locationRangeKm || '';
+      document.getElementById('job_timing').value = this.dataset.jobTiming || '';
+      document.getElementById('candidate_gender').value = this.dataset.candidateGender || '';
+      document.getElementById('degree_required').value = this.dataset.degreeRequired || '';
+      document.getElementById('qualifications_required').value = this.dataset.qualificationsRequired || '';
+      document.getElementById('status').value = this.dataset.status || '';
+
+      // Handle checkbox for is_active
+      const isActive = this.dataset.isActive === 'true';
+      document.getElementById('is_active').checked = isActive;
+
+      // Handle multi-select for skills_required
+      const skillIds = (this.dataset.skillsRequired || '').split(',').filter(id => id.trim() !== '');
+      const skillsSelect = document.getElementById('skills_required');
+      Array.from(skillsSelect.options).forEach(option => {
+        option.selected = skillIds.includes(option.value);
+      });
+
+      // Handle multi-select for certifications_required
+      const certIds = (this.dataset.certificationsRequired || '').split(',').filter(id => id.trim() !== '');
+      const certsSelect = document.getElementById('certifications_required');
+      Array.from(certsSelect.options).forEach(option => {
+        option.selected = certIds.includes(option.value);
+      });
+    });
+  });
+
+  // Form validation
+  document.getElementById('jobForm').addEventListener('submit', function(e) {
+    const minSalary = parseFloat(document.getElementById('min_salary').value) || 0;
+    const maxSalary = parseFloat(document.getElementById('max_salary').value) || 0;
+    
+    if (maxSalary > 0 && minSalary > maxSalary) {
+      e.preventDefault();
+      alert('Maximum salary cannot be less than minimum salary.');
+      return false;
+    }
+    
+    const deadline = new Date(document.getElementById('application_deadline').value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (deadline < today) {
+      e.preventDefault();
+      alert('Application deadline cannot be in the past.');
+      return false;
+    }
+  });
+</script>
+{% endblock content %}

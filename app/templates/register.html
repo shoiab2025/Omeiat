@@ -1,59 +1,43 @@
-{% extends "blank_layout.html" %}
+{% extends 'base_layout.html' %}
 {% load static %}
+{% block content %}
 
-{% block head %}
-<link rel="stylesheet" href="{% static 'STYLES/login.css' %}">
-{% endblock head %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-12 mx-auto">
+            <h2>User Registration</h2>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
 
-{% block title %}Signup{% endblock title %}
-{% block meta_description %}Create your new account.{% endblock meta_description %}
-{% block meta_keywords %}signup, register, create account{% endblock meta_keywords %}
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
 
-{% block layout %}
-<div class="login-page">
-    <div class="login-card">
-        <!-- LOGO -->
-        <div class="logo_container">
-            <img src="{% static 'app/images/logo.png' %}" alt="Logo" style="height: 130px;" class="m-0">
-        </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
 
-        <!-- NAV OPTIONS -->
-        <div class="login-options">
-            <a href="{% url 'login' %}" class="login">Login</a>
-            <a href="{% url 'register' %}" class="register active">Signup</a>
-        </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" class="form-control" id="phone" name="phone" required>
+                </div>
 
-        <!-- REGISTER FORM -->
-        <form class="login-form" method="post" action="{% url 'register' %}">
-            {% csrf_token %}
-            <input type="text" name="username" placeholder="User Name" required>
-            <input type="text" name="phone" placeholder="Phone Number" required>
-            <input type="email" name="email" placeholder="Email Address" required>
-            <input type="password" name="password1" placeholder="Password" required>
-            <input type="password" name="password2" placeholder="Confirm Password" required>
+                <div class="mb-3">
+                    <label for="password1" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password1" name="password1" required>
+                </div>
 
-            <!-- SIGNUP BUTTON -->
-            <button type="submit" class="login-btn">Signup</button>
-        </form>
+                <div class="mb-3">
+                    <label for="password2" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="password2" name="password2" required>
+                </div>
 
-        <!-- FOOTER -->
-        <div class="login-footer">
-            <p>Already have an account?</p>
-            <a href="{% url 'login' %}" class="mx-1">Login now</a>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
         </div>
     </div>
 </div>
 
-<script>
-    // JavaScript to handle form submission and validation
-    document.querySelector('.login-form').addEventListener('submit', function(event) {
-        const password1 = document.querySelector('input[name="password1"]').value;
-        const password2 = document.querySelector('input[name="password2"]').value;
-
-        if (password1 !== password2) {
-            event.preventDefault();
-            alert("Passwords do not match!");
-        }
-    });
-</script>
-{% endblock layout %}
+{% endblock content %}

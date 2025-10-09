@@ -1,50 +1,69 @@
-{% extends "blank_layout.html" %}
-
+{% extends 'base_layout.html' %}
 {% load static %}
+{% block content %}
 
-{% block head %}
-<link rel="stylesheet" href="{% static 'STYLES/login.css' %}">
-{% endblock head %}
-
-{% block title %}Login{% endblock title %}
-{% block meta_description %}Login to your account.{% endblock meta_description %}
-{% block meta_keywords %}login, authentication, user account{% endblock meta_keywords %}
-{% block layout %}
-<div class="row">
-    
-
-    <div class="col-lg-12">
-        <div class="login-page">
-            <div class="login-card">
-                <div class="logo_container">
-                    <img src="{% static 'app/images/logo.png' %}" alt="Logo" style="height: 130px;" class="m-0">
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-5 col-md-6 col-12 mx-auto">
+            <div class="card shadow-sm p-4">
+                <div class="text-center mb-4">
+                    <h2 id="login-title" class="fw-bold">
+                        {% if request.resolver_match.url_name == 'institution_login' %}
+                            Institution Login
+                        {% else %}
+                            User Login
+                        {% endif %}
+                    </h2>
+                    <div class="btn-group mt-2">
+                        <a href="{% url 'user_login' %}" 
+                           class="btn btn-outline-primary {% if request.resolver_match.url_name == 'user_login' %}active{% endif %}">
+                            User
+                        </a>
+                        <a href="{% url 'institution_login' %}" 
+                           class="btn btn-outline-primary {% if request.resolver_match.url_name == 'institution_login' %}active{% endif %}">
+                            Institution
+                        </a>
+                    </div>
                 </div>
-                <div class="login-options">
-                    <a href={% url "login" %} class="login active">Login</a>
-                    <a href={% url "register" %} class="register">Signup</a>
+
+```
+            <form method="POST" enctype="multipart/form-data" 
+                  action="{% if request.resolver_match.url_name == 'institution_login' %}
+                            {% url 'institution_login' %}
+                          {% else %}
+                            {% url 'user_login' %}
+                          {% endif %}">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="email" class="form-label fw-semibold">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
                 </div>
-                <!-- ICONE DE CONNEXION -->
 
-                <!-- FORMULAIRE -->
-                <form method="post" action="{% url 'login' %}" class="login-form">
-                    {% csrf_token %}
-                    <input type="text" name="username" placeholder="Username" class="email">
-                    <input type="password" name="password" placeholder="Password" class="pass">
-                    <button type="submit" class="login-btn">Login</button>
-                </form>
-
-                <!-- MOT DE PASSE OUBLIE ? -->
-                <a href="#" class="fp">Forgot password?</a>
-
-                <!-- PIED DE LA CARD -->
-                <div class="login-footer">
-                    <p>Not a member? </p>
-                    <a href={% url "register" %} class="mx-1">Signup now</a>
+                <div class="mb-3">
+                    <label for="password" class="form-label fw-semibold">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
                 </div>
-            </div>
+
+                <button type="submit" class="btn btn-primary w-100">Login</button>
+
+                <div class="text-center mt-3">
+                    <small>
+                        {% if request.resolver_match.url_name == 'user_login' %}
+                            Not an individual?
+                            <a href="{% url 'institution_login' %}" class="text-primary fw-semibold">Login as Institution</a>
+                        {% else %}
+                            Not an institution?
+                            <a href="{% url 'user_login' %}" class="text-primary fw-semibold">Login as User</a>
+                        {% endif %}
+                    </small>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+```
 
+</div>
 
-{% endblock layout %}
+{% endblock content %}

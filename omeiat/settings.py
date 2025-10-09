@@ -27,6 +27,9 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="*").split(",")
 # ----------------------
 INSTALLED_APPS = [
     'app',
+    'django_filters',
+    'crispy_forms',
+    'crispy_bootstrap5',
     'rest_framework',
     'jazzmin',
     'django.contrib.admin',
@@ -49,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'app.middleware.InstitutionMiddleware'
 ]
 
 # ----------------------
@@ -86,16 +90,45 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login/'
 LOGIN_URL = '/login/'
 
+
+from django.contrib.messages import constants as messages_constants
+MESSAGE_TAGS = {
+    messages_constants.DEBUG: 'debug',
+    messages_constants.INFO: 'info',
+    messages_constants.SUCCESS: 'success',
+    messages_constants.WARNING: 'warning',
+    messages_constants.ERROR: 'danger',  # map error to Bootstrap class 'danger'
+}
+
 # ----------------------
 # Database (PostgreSQL via env)
 # ----------------------
-DATABASES = {
-    'default': dj_database_url.config(
-        default=config("DATABASE_URL"),
-        conn_max_age=600,
-        ssl_require=True
-    )
-}
+# ----------------------
+# Database
+# ----------------------
+if DEBUG:  # Local development (MySQL)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': config("omeiat_db", default="omeiat_database"),
+            'USER': config("root", default="root"),
+            'PASSWORD': config("root", default="root"),
+            'HOST': config("localhost", default="127.0.0.1"),
+            'PORT': config("3306", default="3306"),
+            'OPTIONS': {
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            },
+        }
+    }
+else:  # Production (PostgreSQL on Render)
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=config("DATABASE_URL"),
+            conn_max_age=600,
+            ssl_require=True
+        )
+    }
+
 # ----------------------
 # Password Validation
 # ----------------------
@@ -179,3 +212,17 @@ LOGGING = {
 # Default primary key field type
 # ----------------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ----------------------
+# SMTP Setting
+# ----------------------
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "abutalib967708@gmail.com"
+EMAIL_HOST_PASSWORD = "yigi mppv gjxt tdhi"   # generate App Password in Gmail
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"

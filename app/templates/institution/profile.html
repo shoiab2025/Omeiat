@@ -1,0 +1,238 @@
+{% extends 'institution/dash_layout.html' %}
+{% load static %}
+
+{% block page %}
+<span>Profile</span>
+{% endblock page %}
+
+{% block content %}
+<div class="main-content position-relative max-height-vh-100 h-100">
+
+  <!-- Page Header / Banner -->
+  <div class="page-header min-height-300 border-radius-xl mt-4" style="background-image: url('{% static "assets/img/hero/home_banner.jpg" %}');">
+    <span class="mask bg-gradient-dark opacity-6"></span>
+  </div>
+
+  <div class="container-fluid px-2 px-md-4">
+    <div class="card card-body mx-2 mx-md-2 mt-n6">
+
+      <h4 class="mb-4">Institution Profile</h4>
+
+      <form method="POST" enctype="multipart/form-data" action="{ url 'ins_profile'}">
+        {% csrf_token %}
+        <div class="row">
+
+          <!-- Institution Basic Info -->
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label">Institution Name</label>
+            <input type="text" name="name" class="form-control" required value="{{ institution.name }}">
+          </div>
+
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label">Category</label>
+            <select name="category" class="form-control">
+              {% for cat in categories %}
+                <option value="{{ cat }}" {% if institution.category == cat %}selected{% endif %}>{{ cat }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required value="{{ institution.email }}">
+          </div>
+
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label">Phone</label>
+            <input type="text" name="phone" class="form-control" required value="{{ institution.phone }}">
+          </div>
+
+          <div class="col-12 mb-3">
+            <label class="form-label">About</label>
+            <textarea name="about" class="form-control" rows="3">{{ institution.about }}</textarea>
+          </div>
+
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label">Website</label>
+            <input type="url" name="website" class="form-control" value="{{ institution.website }}">
+          </div>
+
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label">Logo</label>
+            <input type="file" name="logo" class="form-control">
+            {% if institution.logo %}
+              <img src="{{ institution.logo.url }}" alt="Logo" class="mt-2" style="height:50px;">
+            {% endif %}
+          </div>
+
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label">Year Established</label>
+            <input type="number" name="year_established" class="form-control" required value="{{ institution.year_established }}">
+          </div>
+
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label">Board</label>
+            <input type="text" name="board" class="form-control" value="{{ institution.board }}">
+          </div>
+
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label">Is Omeiat Member?</label>
+            <input type="checkbox" name="is_omeiat_member" class="form-check-input" {% if institution.is_omeiat_member %}checked{% endif %}>
+          </div>
+
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label">Omeiat Member Since</label>
+            <input type="number" name="omeiat_member_since" class="form-control" value="{{ institution.omeiat_member_since }}">
+          </div>
+
+          <!-- Institution Address -->
+          <h5 class="mt-4">Address</h5>
+          {% with addr=institution.address %}
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label">Building No</label>
+            <input type="text" name="building_no" class="form-control" value="{{ addr.building_no }}">
+          </div>
+
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label">Street</label>
+            <input type="text" name="street" class="form-control" value="{{ addr.street }}">
+          </div>
+
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label">Area</label>
+            <input type="text" name="area" class="form-control" value="{{ addr.area }}">
+          </div>
+
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label">City</label>
+            <input type="text" name="city" class="form-control" required value="{{ addr.city }}">
+          </div>
+
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label">District</label>
+            <input type="text" name="district" class="form-control" required value="{{ addr.district }}">
+          </div>
+
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label">State</label>
+            <input type="text" name="state" class="form-control" required value="{{ addr.state }}">
+          </div>
+
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label">Country</label>
+            <input type="text" name="country" class="form-control" value="{{ addr.country }}">
+          </div>
+
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label">Pincode</label>
+            <input type="text" name="pincode" class="form-control" value="{{ addr.pincode }}">
+          </div>
+          {% endwith %}
+
+          <!-- Institution Strength -->
+          <h5 class="mt-4">Strength</h5>
+          {% with strength=institution.strength %}
+          <div class="col-12 col-md-3 mb-3">
+            <label class="form-label">Male Students</label>
+            <input type="number" name="students_male" class="form-control" value="{{ strength.students_male }}">
+          </div>
+
+          <div class="col-12 col-md-3 mb-3">
+            <label class="form-label">Female Students</label>
+            <input type="number" name="students_female" class="form-control" value="{{ strength.students_female }}">
+          </div>
+
+          <div class="col-12 col-md-3 mb-3">
+            <label class="form-label">Male Teachers</label>
+            <input type="number" name="teachers_male" class="form-control" value="{{ strength.teachers_male }}">
+          </div>
+
+          <div class="col-12 col-md-3 mb-3">
+            <label class="form-label">Female Teachers</label>
+            <input type="number" name="teachers_female" class="form-control" value="{{ strength.teachers_female }}">
+          </div>
+
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label">Non-Teaching Staff</label>
+            <input type="number" name="non_teaching_staff" class="form-control" value="{{ strength.non_teaching_staff }}">
+          </div>
+          {% endwith %}
+
+          <!-- Institution Contacts -->
+          <h5 class="mt-4">Contacts</h5>
+          <div id="contacts-container">
+            {% if institution.contacts.exists %}
+              {% for contact in institution.contacts.all %}
+              <div class="contact-entry row mb-3">
+                <div class="col-md-3">
+                  <label class="form-label">Contact Type</label>
+                  <select name="contact_type[]" class="form-control">
+                    {% for ct in contact_types %}
+                      <option value="{{ ct }}" {% if contact.contact_type == ct %}selected{% endif %}>{{ ct }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Name</label>
+                  <input type="text" name="contact_name[]" class="form-control" value="{{ contact.name }}">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Phone</label>
+                  <input type="text" name="contact_phone[]" class="form-control" value="{{ contact.phone }}">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Email</label>
+                  <input type="email" name="contact_email[]" class="form-control" value="{{ contact.email }}">
+                </div>
+              </div>
+              {% endfor %}
+            {% endif %}
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-primary mb-3" onclick="addContact()">Add Contact</button>
+
+          <!-- Submit -->
+          <div class="col-12 mt-4">
+            <button type="submit" class="btn btn-primary bg-dark">Save Profile</button>
+          </div>
+
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function addContact() {
+    const container = document.getElementById('contacts-container');
+
+    // Create a new contact entry
+    const entry = document.createElement('div');
+    entry.className = 'contact-entry row mb-3';
+    entry.innerHTML = `
+        <div class="col-md-3">
+            <label class="form-label">Contact Type</label>
+            <select name="contact_type[]" class="form-control">
+                {% for ct in contact_types %}
+                <option value="{{ ct }}">{{ ct }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Name</label>
+            <input type="text" name="contact_name[]" class="form-control">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Phone</label>
+            <input type="text" name="contact_phone[]" class="form-control">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="contact_email[]" class="form-control">
+        </div>
+    `;
+
+    container.appendChild(entry);
+}
+</script>
+
+{% endblock content %}

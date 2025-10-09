@@ -1,0 +1,324 @@
+{% extends 'base_layout.html' %}
+{% load static %}
+
+{% block content %}
+<main>
+
+    <!-- Hero Area Start-->
+    <div class="slider-area ">
+        <div class="single-slider section-overly slider-height2 d-flex align-items-center"
+            data-background="{% static 'assets/img/hero/home_banner.jpg' %}">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="hero-cap text-center">
+                            <h2>{{job.title}}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Hero Area End -->
+    <!-- job post company Start -->
+    <div class="job-post-company pt-50 pb-120">
+        <div class="container">
+            <div class="row justify-content-between">
+                <!-- Left Content -->
+                <div class="col-xl-7 col-lg-8">
+                    <!-- job single -->
+                    <div class="single-job-items mb-20 p-0">
+                        <div class="job-items d-flex">
+                            <div class="company-img company-img-details d-flex justify-content-center">
+                                <a href="#"><img src="{% static job.posted_by.logo %}" alt=""></a>
+                            </div>
+                            <div class="job-tittle mt-2">
+                                <a href="#">
+                                    <h4 class="text-capitalize">{{job.title}}</h4>
+                                </a>
+                                <ul>
+                                    <li class="text-capitalize">{{job.category}}</li>
+                                    <li>{{job.posted_by}}</li>
+                                    <li><i class="fas fa-map-marker-alt"></i>{{job.location}}</li>
+                                    <li>₹{{ job.min_salary|floatformat:0 }} - ₹{{ job.max_salary|floatformat:0 }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- job single End -->
+
+                    <div class="job-post-details">
+                        <div class="post-details1 mb-50">
+                            <!-- Small Section Tittle -->
+                            <div class="small-section-tittle">
+                                <h4>Job Description</h4>
+                            </div>
+                            <p>{{job.description}}</p>
+                        </div>
+                        <div class="post-details2  mb-50">
+                            <!-- Small Section Tittle -->
+                            <div class="small-section-tittle">
+                                <h4>Required Knowledge, Skills, and Abilities</h4>
+                            </div>
+                            <ul>
+                                <li>{{job.qualifications_required}}</li>
+                            </ul>
+                        </div>
+                        <div class="post-details2  mb-50">
+                            <!-- Small Section Tittle -->
+                            <div class="small-section-tittle">
+                                <h4>Education + Experience</h4>
+                            </div>
+                            <ul>
+                                <li>{{job.degree_required}}</li>
+                                <li>{{job.experience_needed}} years Experience using Invision a plus</li>
+                            </ul>
+                        </div>
+                        <div class="post-details2  mb-50">
+                            <!-- Small Section Tittle -->
+                            <div class="small-section-tittle">
+                                <h4>Candidate</h4>
+                            </div>
+                            <ul>
+                                <li>{{job.candidate_gender}} Candidates can apply for this job</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- Right Content -->
+                <div class="col-xl-4 col-lg-4">
+                    <div class="post-details3  mb-50">
+                        <!-- Small Section Tittle -->
+                        <div class="small-section-tittle">
+                            <h4>Job Overview</h4>
+                        </div>
+                        <ul>
+                            <li>Posted date : <span>{{ job.timestamp|date:"F d, Y" }}</span></li>
+                            <li>Location : <span>{{job.location}}</span></li>
+                            <li>Vacancy : <span>{{job.no_of_openings}}</span></li>
+                            <li>Job nature : <span>{{job.job_type}}</span></li>
+                            <li>Salary : <span>₹{{ job.min_salary|floatformat:0 }} - ₹{{job.max_salary|floatformat:0}}</span></li>
+                            <li>Application date : <span>{{job.application_deadline}}</span></li>
+                        </ul>
+                        <div class="apply-btn2 text-center">
+                            <!-- Apply Button that triggers the first modal -->
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#communicationModal">
+                                Apply Now
+                            </button>
+                        </div>
+                    </div>
+                    <div class="post-details4  mb-50">
+                        <!-- Small Section Tittle -->
+                        <div class="small-section-tittle">
+                            <h4>Company Information</h4>
+                        </div>
+                        <span>{{job.posted_by}}</span>
+                        <p>{{job.posted_by.about}}</p>
+                        <ul>
+                            <li>Name: <span>{{job.posted_by}} </span></li>
+                            <li>Web : <span>{{job.posted_by.website}}</span></li>
+                            <li>Email: <span>{{job.posted_by.email}}</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- job post company End -->
+
+</main>
+
+<!-- All Modals should be outside the main content but inside block content -->
+<!-- Main Form Wrapper -->
+<form id="applyForm" method="POST" action="{% url 'apply_job' job.id %}">
+    {% csrf_token %}
+    
+    <!-- Communication Skills Modal -->
+    <div class="modal fade" id="communicationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Step 1: Communication Skills</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="communication" class="form-label">Communication Skills</label>
+                        <input type="text" class="form-control" id="communication" name="communication"
+                            placeholder="Enter your communication skills" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" 
+                            data-bs-toggle="modal" data-bs-target="#technicalModal">
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Technical Skills Modal -->
+    <div class="modal fade" id="technicalModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Step 2: Technical Skills</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="technical_skills" class="form-label">Technical Skills</label>
+                        <input type="text" class="form-control" id="technical_skills" name="technical_skills"
+                            placeholder="Enter your technical skills" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" 
+                            data-bs-target="#communicationModal">Previous</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" 
+                            data-bs-toggle="modal" data-bs-target="#experienceModal">
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Experience Modal -->
+    <div class="modal fade" id="experienceModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Step 3: Experience</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="experience" class="form-label">Experience</label>
+                        <input type="text" class="form-control" id="experience" name="experience"
+                            placeholder="Enter your experience in years" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" 
+                            data-bs-target="#technicalModal">Previous</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" 
+                            data-bs-toggle="modal" data-bs-target="#qualificationModal">
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Qualification Modal -->
+    <div class="modal fade" id="qualificationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Step 4: Qualification</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="qualification" class="form-label">Qualification</label>
+                        <input type="text" class="form-control" id="qualification" name="qualification"
+                            placeholder="Enter your qualification" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" 
+                            data-bs-target="#experienceModal">Previous</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" 
+                            data-bs-toggle="modal" data-bs-target="#joiningModal">
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Joining Availability Modal -->
+    <div class="modal fade" id="joiningModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Step 5: Joining Availability</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="joining_availability" class="form-label">Joining Availability</label>
+                        <input type="text" class="form-control" id="joining_availability" name="joining_availability" 
+                            required placeholder="Enter days when you can join the job">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" 
+                            data-bs-target="#qualificationModal">Previous</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" 
+                            data-bs-toggle="modal" data-bs-target="#commuteModal">
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Commute Distance Modal -->
+    <div class="modal fade" id="commuteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Step 6: Commute Distance</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="commute_distance_km" class="form-label">Commute distance in (km)</label>
+                        <input type="number" class="form-control" id="commute_distance_km" name="commute_distance_km"
+                            placeholder="Enter the distance you can commute" required min="1">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" 
+                            data-bs-target="#joiningModal">Previous</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" 
+                            data-bs-toggle="modal" data-bs-target="#coverletterModal">
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cover Letter Modal -->
+    <div class="modal fade" id="coverletterModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Step 7: Cover Letter</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="coverletter" class="form-label">Cover Letter</label>
+                        <textarea class="form-control" id="coverletter" name="coverletter" rows="4"
+                            placeholder="Write a short cover letter..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" 
+                            data-bs-target="#commuteModal">Previous</button>
+                    <button type="submit" class="btn btn-success">Submit Application</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock content %}
+

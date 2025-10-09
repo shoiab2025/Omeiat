@@ -160,7 +160,13 @@ h2 {
 .nav-tabs {
     border-bottom: none !important;
 }
+.bg-primary {    
+    background: #e15954 !important;
+}
 
+.text-primary {
+    color: #e15954 !important;
+}
 
 /* Mobile first approach */
 @media (max-width: 767.98px) {
@@ -182,4 +188,7 @@ h2 {
     }
 }
 
-
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+}

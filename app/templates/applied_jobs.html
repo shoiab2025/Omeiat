@@ -1,81 +1,259 @@
-{% extends "master_layout.html" %}
+{% extends 'base_layout.html' %}
 {% load static %}
 
-{% block title %}Applied Jobs | Your Job Applications{% endblock %}
-{% block layout %}
-<section class="content-wrapper py-4">
-  <div class="container">
-    <h1 class="mb-4">Jobs You've Applied To</h1>
-
-    <!-- Filter Form -->
-    <form method="get" class="row g-3 mb-4">
-      <div class="col-md-4">
-        <select name="status" class="form-select" onchange="this.form.submit()">
-          <option value="">All Statuses</option>
-          <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
-          <option value="shortlisted" {% if status_filter == 'shortlisted' %}selected{% endif %}>Shortlisted</option>
-          <option value="hired" {% if status_filter == 'hired' %}selected{% endif %}>Hired</option>
-          <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>Rejected</option>
-        </select>
-      </div>
-    </form>
-
-    {% if page_obj %}
-      <div class="row row-cols-1 row-cols-md-2 g-4">
-        {% for application in page_obj %}
-          <div class="col">
-            <div class="card h-100 shadow-sm">
-              <div class="card-body">
-                <h4 class="card-title fw-bold">{{ application.job.name }}</h4>
-                <p class="mb-1"><strong>Category:</strong> {{ application.job.category }}</p>
-                <p class="mb-1"><strong>Company:</strong> {{ application.institution.name }}</p>
-                <p class="mb-1"><strong>Applied On:</strong> {{ application.applied_at|date:"F j, Y" }}</p>
-                <p class="mb-3">
-                  <strong>Status:</strong>
-                  {% if application.status == "pending" %}
-                    <span class="badge bg-warning">Pending</span>
-                  {% elif application.status == "shortlisted" %}
-                    <span class="badge bg-info text-dark">Shortlisted</span>
-                  {% elif application.status == "hired" %}
-                    <span class="badge bg-success">Hired</span>
-                  {% elif application.status == "rejected" %}
-                    <span class="badge bg-danger">Rejected</span>
-                  {% else %}
-                    {{ application.status }}
-                  {% endif %}
-                </p>
-                <a href="{% url 'job_detail' application.job.id %}" class="btn btn-outline-secondary">View Job</a>
-              </div>
+{% block content %}
+<main>
+    <!-- Hero Area Start-->
+    <div class="slider-area">
+        <div class="single-slider section-overly slider-height2 d-flex align-items-center"
+            data-background="{% static 'assets/img/hero/home_banner.jpg' %}">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="hero-cap text-center">
+                            <h2>My Jobs</h2>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        {% endfor %}
-      </div>
+        </div>
+    </div>
+    <!-- Hero Area End -->
+    
+    <!-- My Jobs Area Start -->
+    <div class="job-listing-area pt-5 pb-120">
+        <div class="container">
+            <div class="row">
+                <!-- Right content - Applications List -->
+                <div class="col-xl-12 col-lg-12 col-md-12">
+                    <!-- Applications List Start -->
+                    <section class="featured-job-area">
+                        <div class="container">
+                            <!-- Count of Applications Start -->
+                            <div class="row align-items-center">
+                                            <div class="col-md-4">
+                                                <span>{{ status_counts.total }} Application{{ status_counts.total|pluralize }}</span>
+                                            </div>
+                                            <div class="col-md-8 text-end">
+                                                <div class="application-stats">
+                                                    <small class="text-muted">
+                                                        <span class="badge bg-warning text-dark fs-6">{{ status_counts.pending }} Pending</span>
+                                                        <span class="badge bg-info text-white fs-6">{{ status_counts.shortlisted }} Shortlisted</span>
+                                                        <span class="badge bg-success text-white fs-6">{{ status_counts.hired }} Hired</span>
+                                                        <span class="badge bg-danger text-white fs-6">{{ status_counts.rejected }} Rejected</span>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                            <!-- Count of Applications End -->
+                            
+                            <!-- Application Content -->
+                            {% if page_obj %}
+                                {% for application in page_obj %}
+                                <div class="single-job-items mb-30">
+                                    <div class="job-items">
+                                        <div class="company-img">
+                                            {% if application.job.posted_by.logo %}
+                                                <img src="{% static application.job.posted_by.logo %}" alt="{{ application.job.posted_by.name }}" width="60" height="60">
+                                            {% else %}
+                                                <img src="{% static 'assets/img/default-company.png' %}" alt="Default Company Logo" width="60" height="60">
+                                            {% endif %}
+                                        </div>
+                                        <div class="job-tittle job-tittle2">
+                                            <a href="{% url 'job_detail' application.job.id %}">
+                                                <h4>{{ application.job.title }}</h4>
+                                            </a>
+                                            <ul>
+                                                <li><i class="fas fa-building"></i> {{ application.job.posted_by.name }}</li>
+                                                <li><i class="fas fa-map-marker-alt"></i> {{ application.job.location }}</li>
+                                                <li><i class="fas fa-money-bill-wave"></i> ₹{{ application.job.min_salary|floatformat:0 }} - ₹{{ application.job.max_salary|floatformat:0 }}</li>
+                                                <li><i class="fas fa-clock"></i> Applied: {{ application.applied_at|date:"M d, Y" }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="items-link items-link2 f-right text-center">
+                                        <span class="application-status badge 
+                                            {% if application.status == 'pending' %}bg-warning text-dark
+                                            {% elif application.status == 'shortlisted' %}bg-info
+                                            {% elif application.status == 'hired' %}bg-success
+                                            {% elif application.status == 'rejected' %}bg-danger
+                                            {% else %}bg-secondary{% endif %}">
+                                            {{ application.get_status_display }}
+                                        </span>
+                                        <br>
+                                        <small class="text-muted">{{ application.job.job_type }}</small>
+                                    </div>
+                                </div>
 
-      <!-- Pagination -->
-      <nav class="mt-4">
-        <ul class="pagination justify-content-center">
-          {% if page_obj.has_previous %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}">Previous</a>
-            </li>
-          {% endif %}
+                                <!-- Application Details Card -->
+                                <div class="application-details-card mb-4 p-3 border rounded bg-light">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6><i class="fas fa-info-circle"></i> Application Details</h6>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <strong>Communication:</strong><br>
+                                                    <small>{{ application.communication_skills|default:"Not specified" }}</small>
+                                                </div>
+                                                <div class="col-6">
+                                                    <strong>Technical Skills:</strong><br>
+                                                    <small>{{ application.technical_skills|default:"Not specified" }}</small>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div class="col-6">
+                                                    <strong>Experience:</strong><br>
+                                                    <small>{{ application.experience|default:"Not specified" }}</small>
+                                                </div>
+                                                <div class="col-6">
+                                                    <strong>Qualification:</strong><br>
+                                                    <small>{{ application.qualification|default:"Not specified" }}</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6><i class="fas fa-calendar-alt"></i> Additional Information</h6>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <strong>Joining:</strong><br>
+                                                    <small>{{ application.joining_availability|default:"Not specified" }}</small>
+                                                </div>
+                                                <div class="col-6">
+                                                    <strong>Commute:</strong><br>
+                                                    <small>
+                                                        {% if application.commute_distance_km %}
+                                                            {{ application.commute_distance_km }} km
+                                                        {% else %}
+                                                            Not specified
+                                                        {% endif %}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div class="col-12">
+                                                    <strong>Last Updated:</strong><br>
+                                                    <small>{{ application.updated_at|date:"M d, Y H:i" }}</small>
+                                                </div>
+                                            </div>
+                                            {% if application.cover_letter %}
+                                            <div class="row mt-2">
+                                                <div class="col-12">
+                                                    <button type="button" class="btn btn-sm btn-outline-primary" 
+                                                            data-bs-toggle="modal" data-bs-target="#coverLetterModal{{ application.id }}">
+                                                        <i class="fas fa-eye"></i> View Cover Letter
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
 
-          {% for num in page_obj.paginator.page_range %}
-            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
-              <a class="page-link text-white" href="?page={{ num }}{% if status_filter %}&status={{ status_filter }}{% endif %}">{{ num }}</a>
-            </li>
-          {% endfor %}
+                                <!-- Cover Letter Modal -->
+                                {% if application.cover_letter %}
+                                <div class="modal fade" id="coverLetterModal{{ application.id }}" tabindex="-1">
+                                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Cover Letter - {{ application.job.title }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="p-3 bg-light rounded">
+                                                    <p class="mb-0">{{ application.cover_letter|linebreaks }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                <div class="alert alert-info text-center">
+                                    <h4><i class="fas fa-inbox"></i> No Applications Found</h4>
+                                    <p class="mb-3">You haven't applied to any jobs yet.</p>
+                                    <a href="{% url 'jobs' %}" class="btn btn-primary">
+                                        <i class="fas fa-search"></i> Browse Available Jobs
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </section>
+                    <!-- Applications List End -->
+                    
+                    <!-- Pagination -->
+                    {% if page_obj.has_other_pages %}
+                    <div class="pagination-area pb-115 text-center">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-xl-12">
+                                    <div class="single-wrap d-flex justify-content-center">
+                                        <nav aria-label="Page navigation example">
+                                            <ul class="pagination justify-content-start">
+                                                {% if page_obj.has_previous %}
+                                                    <li class="page-item">
+                                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                                                            <span class="ti-angle-left"></span>
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                                
+                                                {% for i in page_obj.paginator.page_range %}
+                                                    {% if page_obj.number == i %}
+                                                        <li class="page-item active">
+                                                            <a class="page-link" href="#">{{ i }}</a>
+                                                        </li>
+                                                    {% else %}
+                                                        <li class="page-item">
+                                                            <a class="page-link" href="?page={{ i }}">
+                                                                {{ i }}
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                
+                                                {% if page_obj.has_next %}
+                                                    <li class="page-item">
+                                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                                                            <span class="ti-angle-right"></span>
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <!-- Pagination End -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- My Jobs Area End -->
+</main>
+{% endblock content %}
 
-          {% if page_obj.has_next %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}">Next</a>
-            </li>
-          {% endif %}
-        </ul>
-      </nav>
-    {% else %}
-      <div class="alert alert-info mt-4">You haven't applied to any jobs yet.</div>
-    {% endif %}
-  </div>
-</section>
-{% endblock %}
+{% block script %}
+    <script src="{% static 'assets/js/filter.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            // Add hover effects to application cards
+            $('.single-job-items').hover(
+                function() {
+                    $(this).css('transform', 'translateY(-2px)');
+                    $(this).css('box-shadow', '0 4px 15px rgba(0,0,0,0.1)');
+                },
+                function() {
+                    $(this).css('transform', 'translateY(0)');
+                    $(this).css('box-shadow', 'none');
+                }
+            );
+        });
+    </script>
+{% endblock script %}
