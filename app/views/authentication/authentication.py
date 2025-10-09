@@ -39,7 +39,6 @@ def register_account(request, account_type="user"):
     choices = get_institution_choices()  # Includes 'categories'
 
     if request.method == "POST":
-        pdb.set_trace()
         email = request.POST.get("email", "").strip().lower()
         password = request.POST.get("password1", "")
         confirm_password = request.POST.get("password2", "")
