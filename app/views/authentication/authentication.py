@@ -39,9 +39,10 @@ def register_account(request, account_type="user"):
     choices = get_institution_choices()  # Includes 'categories'
 
     if request.method == "POST":
+        pdb.set_trace()
         email = request.POST.get("email", "").strip().lower()
-        password = request.POST.get("password", "")
-        confirm_password = request.POST.get("confirm_password", "")
+        password = request.POST.get("password1", "")
+        confirm_password = request.POST.get("password2", "")
         redirect_url = "register" if account_type == "user" else "institution_register"
 
         if not email or not password:
