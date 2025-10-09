@@ -104,28 +104,37 @@ MESSAGE_TAGS = {
 # ----------------------
 # Database
 # ----------------------
-if DEBUG:  # Local development (MySQL)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': config("omeiat_db", default="omeiat_database"),
-            'USER': config("root", default="root"),
-            'PASSWORD': config("root", default="root"),
-            'HOST': config("localhost", default="127.0.0.1"),
-            'PORT': config("3306", default="3306"),
-            'OPTIONS': {
-                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            },
-        }
-    }
-else:  # Production (PostgreSQL on Render)
-    DATABASES = {
+# if DEBUG:  # Local development (MySQL)
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.mysql',
+#             'NAME': config("omeiat_db", default="omeiat_database"),
+#             'USER': config("root", default="root"),
+#             'PASSWORD': config("root", default="root"),
+#             'HOST': config("localhost", default="127.0.0.1"),
+#             'PORT': config("3306", default="3306"),
+#             'OPTIONS': {
+#                 'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#             },
+#         }
+#     }
+# else:  # Production (PostgreSQL on Render)
+#     DATABASES = {
+#         'default': dj_database_url.config(
+#             default=config("DATABASE_URL"),
+#             conn_max_age=600,
+#             ssl_require=True
+#         )
+#     }
+
+DATABASES = {
         'default': dj_database_url.config(
             default=config("DATABASE_URL"),
             conn_max_age=600,
             ssl_require=True
         )
     }
+
 
 # ----------------------
 # Password Validation
