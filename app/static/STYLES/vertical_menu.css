@@ -63,7 +63,7 @@
 }
 
 .menu-inner .menu-link:hover {
-  background: #e15954 !important;
+  background: #cdaf2c !important;
   border-left-color: #f7bfbd !important;
   color: #ffffff !important;
   font-weight: 700;
@@ -73,7 +73,7 @@
 }
 
 .menu-inner .menu-item.active .menu-link {
-  background: #e15954 !important;
+  background: #cdaf2c !important;
   border-left-color: #f7bfbd !important;
   color: #ffffff !important;
   font-weight: 700;

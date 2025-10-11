@@ -271,7 +271,7 @@ hr {
 		top: 0;
 		width: 101%;
 		height: 101%;
-		background:#da2461;
+		background:#20609a;
 		z-index: 1;
 		border-radius: 5px;
 		transition: transform 0.5s;
@@ -293,7 +293,7 @@ hr {
 .head-btn2 {
 	background: none;
 	border: 1px solid $theme-color;
-	color: #e15954;
+	color: #cdaf2c;
 	@media #{$lg}{
 		padding: 27px 34px;
 	}
@@ -358,7 +358,7 @@ hr {
 		top: 0;
 		width: 120%;
 		height: 105%;
-		background:#da2461;
+		background:#20609a;
 		z-index: -1;
 		transition: transform 0.5s;
 		transition-timing-function: ease;
@@ -942,7 +942,7 @@ hr {
         }
     }
     span{
-        color: #e15954;
+        color: #cdaf2c;
         text-transform: uppercase;
         margin-bottom: 28px;
         display: block;

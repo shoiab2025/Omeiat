@@ -21,7 +21,8 @@ from app.views.job.jobs import (
     bulk_add_to_shortlist,
     clear_shortlist,
     get_shortlist_status,
-    get_shortlist_count
+    get_shortlist_count,
+    job_applications_view
 )
 from app.views.dashboard.dashboard import dashboard_view, latest_jobs_views
 from app.views.index.home_view import (home, about, institution_dashboard, institution_profile, profile_view)
@@ -60,6 +61,7 @@ urlpatterns = [
     # ----------------------------
     path("institution/jobs/", my_jobs, name="my_jobs"),
     path("ins_applications/", ins_applications, name="ins_applications"),
+    path('ins_applications/<int:job_id>/applications/', job_applications_view, name='job_applications'),
     path('jobs/save/', create_or_update_job, name='job_create_or_update'),
     path("institution/jobs/<int:job_id>/delete/", delete_job, name="delete_job"),
 

@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>OMEIAT Careers</title>
+    <title>Careers in Omeiat Institutions</title>
     <meta name="description"
         content="Find career opportunities in education through OMEIAT – connecting institutions, teachers, and students across Tamil Nadu.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -73,10 +73,11 @@
                             <div class="main-menu d-none d-lg-block">
                                 <nav>
                                     <ul id="navigation" class="d-flex justify-content-end">
-                                        <li><a href="/">Home</a></li>
                                         <li><a href="{% url 'jobs' %}">Find a Job</a></li>
-                                        <li><a href="{% url 'my_applications' %}">My Jobs</a></li>
-                                        <li><a href="{% url 'about' %}">About</a></li>
+                                        {% if request.user.is_authenticated %}
+                                            <li><a href="{% url 'my_applications' %}">My Jobs</a></li>
+                                        {% endif %}
+                                        <li><a href="{% url 'about' %}">Omeiat About</a></li>
                                     </ul>
                                 </nav>
                             </div>
@@ -85,27 +86,29 @@
                             {% if user.is_authenticated %}
                             <div class="d-flex align-items-center ms-4 gap-3">
                                 <!-- Profile Picture and Progress Circle -->
-                                <div class="position-relative" style="width: 70px; height: 70px;">
+                                <div class="position-relative" style="width: 60px; height: 60px;">
                                     {% with percent=profile_percentage|default:0 %}
                                     <div class="rounded-circle border d-flex justify-content-center align-items-center"
-                                        style="width: 70px; height: 70px; padding: 5px; background: conic-gradient(#e15954 {{ percent }}%, #e9ecef 0%); border-radius: 50%; position: relative;">
+                                        style="width: 60px; height: 60px; padding: 5px; background: conic-gradient(#cdaf2c {{ percent }}%, #e9ecef 0%); border-radius: 50%; position: relative;">
                                         {% if user.profile_picture %}
-                                        <img src="{% static user.profile_picture %} " alt="{{ user.username }}"
-                                            class="rounded-circle mx-2" width="60" height="60"
+                                         <img src="{% static 'assets/img/logo/avatar.png' %}" alt="Default Profile"
+                                            class="rounded-circle mx-2" width="50" height="50"
                                             style="object-fit: cover;">
                                         {% else %}
                                         <img src="{% static 'assets/img/logo/avatar.png' %}" alt="Default Profile"
-                                            class="rounded-circle mx-2" width="60" height="60"
+                                            class="rounded-circle mx-2" width="50" height="50"
                                             style="object-fit: cover;">
                                         {% endif %}
                                         <span
-                                            class="position-absolute top-50 start-50 translate-middle text-dark fw-bold"
-                                            style="font-size: 0.7rem;">{{ percent }}%</span>
+                                            class="position-absolute top-50 start-50 translate-middle 
+         d-flex align-items-center justify-content-center 
+         text-white fw-bold bg-dark rounded-circle"
+                                            style="width: 30px; height: 30px; font-size: 0.7rem">{{ percent }}%</span>
                                     </div>
                                     {% endwith %}
                                 </div>
 
-                                <div class="mx-2">
+                                <div class="mx-1">
                                     <a href="{%url 'profile'%}">
                                         <h5 class="mb-0 text-capitalize">{{ user.username }}</h5>
                                         <small class="text-muted">{{ user.email }}</small>
@@ -114,7 +117,7 @@
                             </div>
 
                             <!-- Logout Button -->
-                            <div class="header-btn d-none d-lg-block mx-4">
+                            <div class="header-btn d-none d-lg-block mx-2">
                                 <a href="{% url 'user_logout' %}" class="btn head-btn1">Logout</a>
                             </div>
 
@@ -170,7 +173,7 @@
                                 <h4>Contact Info</h4>
                                 <ul>
                                     <li>
-                                        <p>Address: 147, The New College Campus, Peters Road, Royapettah, Chennai – 600
+                                        <p class="">Address: <br> 147, The New College Campus, <br>Peters Road, Royapettah, <br> Chennai – 600
                                             014</p>
                                     </li>
                                     <li><a href="tel:04448566559">Phone: 044-48566559</a></li>

@@ -5,7 +5,7 @@
 <div class="container my-5">
     <div class="row">
         <div class="col-lg-5 col-md-5 col-12 mx-auto">
-            <h2>Institute Login</h2>
+            <h2>Employer Login</h2>
             <form method="POST" enctype="multipart/form-data" action="{% url 'institution_login' %}">
                 {% csrf_token %}
 
@@ -25,7 +25,7 @@
             <!-- Register Link -->
             <div class="mt-3 text-center">
                 <span>Don't have an account? </span>
-                <a href="{% url 'institution_register' %}" class="btn btn-outline-secondary btn-sm mx-2">Register as Institute</a>
+                <a href="{% url 'institution_register' %}" class="btn btn-outline-secondary btn-sm mx-2">Register as Employer</a>
             </div>
         </div>
     </div>

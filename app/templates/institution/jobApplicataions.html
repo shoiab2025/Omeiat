@@ -7,194 +7,151 @@
 
 {% block content %}
 <style>
-    .modal {
-        z-index: 1060;
-    }
-    .modal-backdrop {
-        z-index: 1050;
-    }
-    .modal-content {
-        border: none;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    }
-    .shortlist-btn {
+    .job-card {
         transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+        cursor: pointer;
     }
-    .shortlist-btn.shortlisted {
-        background-color: #ffc107;
-        border-color: #ffc107;
-        color: #000;
+
+    .job-card:hover {
+        transform: scale(1.01);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     }
-    @media (max-width: 768px) {
-        .modal-dialog {
-            margin: 1rem;
-        }
-        .modal-xl {
-            max-width: calc(100% - 2rem);
-        }
+
+    .badge-info,
+    .badge-warning {
+        font-size: 0.8rem;
+    }
+
+    .accordion-button:not(.collapsed) {
+        color: #0d6efd;
+        background-color: #f8f9fa;
+        box-shadow: none;
+    }
+
+    .table th,
+    .table td {
+        vertical-align: middle;
     }
 </style>
 
 <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-    <div class="container-fluid py-2">
-        <!-- Display Messages -->
+    <div class="container-fluid py-3">
+
+        <!-- Messages -->
         {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endfor %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
+        {% endfor %}
         {% endif %}
 
-        <div class="row">
-            <div class="col-12">
-                {% if page_obj %}
-                {% for job_wrapper in page_obj %}
-                {% with job=job_wrapper.job %}
-                <div class="single-job-items mb-4 p-3 border rounded bg-white shadow-sm">
-                    <div class="d-flex align-items-start">
-                        <div class="company-img me-3">
-                            {% if job.posted_by.logo %}
-                            <img src="{% static job.posted_by.logo %}" alt="{{ job.posted_by.name }}"
-                                class="img-fluid rounded" width="100" height="100">
-                            {% else %}
-                            <img src="{% static 'assets/img/default-company.png' %}" alt="Default Logo"
-                                class="img-fluid rounded" width="60" height="60">
-                            {% endif %}
-                        </div>
-                        <div class="flex-grow-1">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h5 class="mb-1">{{ job.title }}</h5>
-                                    <ul class="list-unstyled mb-2">
-                                        <li><i class="fas fa-building me-1 text-secondary"></i> {{ job.posted_by.name }}</li>
-                                        <li><i class="fas fa-map-marker-alt me-1 text-secondary"></i> {{ job.location }}</li>
-                                        <li><i class="fas fa-briefcase me-1 text-secondary"></i> {{ job.job_type }}</li>
-                                    </ul>
-                                </div>
-                                <div class="text-end">
-                                    <span class="badge bg-gradient-primary">{{ job.category }}</span><br>
-                                    <small class="text-muted">{{ job.timestamp|date:"M d, Y" }}</small>
-                                </div>
-                            </div>
-                            <p class="mb-1 text-muted">
-                                <strong>Salary:</strong> ₹{{ job.min_salary|floatformat:0 }} - ₹{{ job.max_salary|floatformat:0 }}
+        {% if page_obj %}
+        {% for job_wrapper in page_obj %}
+        {% with job=job_wrapper.job %}
+
+        <!-- Job Card -->
+        <div class="card job-card shadow-sm border-0">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="d-flex align-items-center">
+                        {% if job.posted_by.logo %}
+                        <img src="{% static job.posted_by.logo %}" alt="{{ job.posted_by.name }}" class="rounded me-3"
+                            width="60" height="60">
+                        {% else %}
+                        <img src="{% static 'assets/img/default-company.png' %}" alt="Logo" class="rounded me-3"
+                            width="60" height="60">
+                        {% endif %}
+                        <div>
+                            <h5 class="mb-1">{{ job.title }}</h5>
+                            <p class="mb-0 text-muted">
+                                <i class="fas fa-building me-1"></i> {{ job.posted_by.name }} |
+                                <i class="fas fa-map-marker-alt me-1"></i> {{ job.location }} |
+                                <i class="fas fa-briefcase me-1"></i> {{ job.job_type }}
                             </p>
-                            <div class="d-flex gap-2 mt-2">
-                                <!-- View Applications Button -->
-                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
-                                    data-bs-target="#applicationsModal{{ job.id }}">
-                                    <i class="fas fa-users fs-6"></i> View Applications ({{ job.applications.count }})
-                                </button>
-                                <!-- View Shortlist Button -->
-                                <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal"
-                                    data-bs-target="#shortlistModal{{ job.id }}">
-                                    <i class="fas fa-star fs-6"></i> View Shortlist
-                                    {% if job_wrapper.job %}
-                                    <span class="badge bg-danger ms-1">{{ job_wrapper.shortlisted_count }}</span>
-                                    {% endif %}
-                                </button>
-                            </div>
                         </div>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-primary">{{ job.category }}</span><br>
+                        <small class="text-muted">{{ job.timestamp|date:"M d, Y" }}</small>
                     </div>
                 </div>
 
-                <!-- Applications Modal -->
-                <div class="modal fade" id="applicationsModal{{ job.id }}" tabindex="-1"
-                    aria-labelledby="applicationsModalLabel{{ job.id }}" aria-hidden="true">
-                    <div class="modal-dialog modal-xl modal-dialog-scrollable w-50">
-                        <div class="modal-content">
-                            <div class="modal-header bg-light">
-                                <h5 class="modal-title" id="applicationsModalLabel{{ job.id }}">
-                                    <i class="fas fa-users me-2"></i>
-                                    Applications for {{ job.title }}
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
+                <!-- Accordion for Applications & Shortlist -->
+                <div class="accordion mt-3" id="jobAccordion{{ job.id }}">
+                    <!-- Applications -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="applicationsHeading{{ job.id }}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#applicationsCollapse{{ job.id }}" aria-expanded="false"
+                                aria-controls="applicationsCollapse{{ job.id }}">
+                                <i class="fas fa-users me-2"></i> Applications ({{ job.applications.count }})
+                            </button>
+                        </h2>
+                        <div id="applicationsCollapse{{ job.id }}" class="accordion-collapse collapse"
+                            aria-labelledby="applicationsHeading{{ job.id }}"
+                            data-bs-parent="#jobAccordion{{ job.id }}">
+                            <div class="accordion-body p-0">
                                 {% if job.applications.all %}
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover align-middle">
+                                    <table class="table table-hover align-middle mb-0">
                                         <thead class="table-light">
                                             <tr>
                                                 <th>Applicant</th>
-                                                <th>Email</th>
                                                 <th>Qualification</th>
+                                                <th>Communication Skills</th>
+                                                <th>Technical Skills</th>
                                                 <th>Experience</th>
                                                 <th>Match %</th>
                                                 <th>Status</th>
-                                                <th>Applied On</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
+
                                         <tbody>
                                             {% for application in job.applications.all %}
                                             <tr>
-                                                <td>
+                                                <td style="word-break: break-word;">
                                                     <div class="d-flex align-items-center">
                                                         {% if application.applicant.profile.profile_picture %}
                                                         <img src="{{ application.applicant.profile.profile_picture.url }}"
-                                                            alt="{{ application.applicant.get_full_name }}"
-                                                            class="rounded-circle me-2" width="40" height="40">
+                                                            class="rounded-circle me-2" width="35" height="35">
                                                         {% else %}
                                                         <img src="{% static 'assets/img/default-avatar.png' %}"
-                                                            alt="Default Avatar" class="rounded-circle me-2" width="40" height="40">
+                                                            class="rounded-circle me-2" width="35" height="35">
                                                         {% endif %}
                                                         <div>
-                                                            <strong>{{ application.applicant.get_full_name|default:application.applicant.username }}</strong>
+                                                            <strong>{{ application.applicant.get_full_name|default:application.applicant.username }}</strong><br>
+                                                            {{ application.applicant.email }}
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td>{{ application.applicant.email }}</td>
-                                                <td>{{ application.qualification|default:"-" }}</td>
+                                                <td style="word-break: break-word;">{{ application.qualification|default:"-" }}</td>
+                                                <td style="word-break: break-word;">{{ application.communication_skills|default:"-" }}</td>
+                                                <td style="word-break: break-word;">{{  application.technical_skills|default:"-" }}</td>
                                                 <td>{{ application.experience|default:"0" }} yrs</td>
-                                                <td>
-                                                    <span class="badge bg-info">{{ application.job_match_percentage }}%</span>
-                                                </td>
+                                                <td><span class="badge bg-info">{{ application.job_match_percentage|default:"50" }}%</span></td>
                                                 <td>
                                                     <span class="badge 
-                                                        {% if application.status == 'shortlisted' %}bg-warning
-                                                        {% elif application.status == 'hired' %}bg-success
-                                                        {% elif application.status == 'rejected' %}bg-danger
-                                                        {% else %}bg-secondary{% endif %}">
+                    {% if application.status == 'shortlisted' %}bg-warning
+                    {% elif application.status == 'hired' %}bg-success
+                    {% elif application.status == 'rejected' %}bg-danger
+                    {% else %}bg-secondary{% endif %}">
                                                         {{ application.get_status_display }}
                                                     </span>
                                                 </td>
-                                                <td>{{ application.applied_at|date:"M d, Y" }}</td>
                                                 <td>
-                                                    <div class="btn-group btn-group-sm">
-                                                        <button class="btn btn-outline-info view-application" 
-                                                                data-application-id="{{ application.id }}"
-                                                                title="View Application">
-                                                            <i class="fas fa-eye"></i>
-                                                        </button>
-                                                        
-                                                        <!-- Shortlist Button with Django Form -->
-                                                        <form method="post" action="{% url 'add_to_shortlist' job.id application.applicant.id %}" class="d-inline">
-                                                            {% csrf_token %}
-                                                            {% if application.applicant.id in job_wrapper.shortlisted_user_ids %}
-                                                                <button type="submit" class="btn btn-warning btn-sm" title="Remove from Shortlist">
-                                                                    <i class="fas fa-star"></i>
-                                                                </button>
-                                                            {% else %}
-                                                                <button type="submit" class="btn btn-outline-warning btn-sm" title="Add to Shortlist">
-                                                                    <i class="fas fa-star"></i>
-                                                                </button>
-                                                            {% endif %}
-                                                        </form>
-
-                                                        {% if application.cover_letter %}
-                                                        <button class="btn btn-outline-dark view-cover-letter"
-                                                                data-cover-letter="{{ application.cover_letter }}"
-                                                                data-applicant-name="{{ application.applicant.get_full_name }}"
-                                                                title="View Cover Letter">
-                                                            <i class="fas fa-file-alt"></i>
-                                                        </button>
+                                                    <form method="post"
+                                                        action="{% url 'add_to_shortlist' job.id application.applicant.id %}">
+                                                        {% csrf_token %}
+                                                        {% if application.applicant.id in job_wrapper.shortlisted_user_ids %}
+                                                            <button type="submit" class="btn btn-warning btn-sm">Unshortlist</button>
+                                                        {% else %}
+                                                            <button type="submit" class="btn btn-outline-warning btn-sm">Shortlist</button>
                                                         {% endif %}
-                                                    </div>
+                                                    </form>
                                                 </td>
                                             </tr>
                                             {% endfor %}
@@ -202,44 +159,32 @@
                                     </table>
                                 </div>
                                 {% else %}
-                                <div class="text-center py-5">
-                                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
-                                    <h5 class="text-muted">No Applications Yet</h5>
-                                    <p class="text-muted">No one has applied for this job yet.</p>
-                                </div>
+                                <p class="text-center text-muted my-3">No applications yet.</p>
                                 {% endif %}
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Shortlist Modal -->
-                <div class="modal fade" id="shortlistModal{{ job.id }}" tabindex="-1"
-                    aria-labelledby="shortlistModalLabel{{ job.id }}" aria-hidden="true">
-                    <div class="modal-dialog modal-xl modal-dialog-scrollable w-50">
-                        <div class="modal-content">
-                            <div class="modal-header bg-warning bg-opacity-10">
-                                <h5 class="modal-title" id="shortlistModalLabel{{ job.id }}">
-                                    <i class="fas fa-star text-warning me-2"></i>
-                                    Shortlisted Candidates for {{ job.title }}
-                                    <span class="badge bg-warning text-dark ms-2">{{ job_wrapper.shortlisted_count }}</span>
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
+                    <!-- Shortlist -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="shortlistHeading{{ job.id }}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#shortlistCollapse{{ job.id }}" aria-expanded="false"
+                                aria-controls="shortlistCollapse{{ job.id }}">
+                                <i class="fas fa-star text-warning me-2"></i> Shortlisted ({{  job_wrapper.shortlisted_count }})
+                            </button>
+                        </h2>
+                        <div id="shortlistCollapse{{ job.id }}" class="accordion-collapse collapse"
+                            aria-labelledby="shortlistHeading{{ job.id }}" data-bs-parent="#jobAccordion{{ job.id }}">
+                            <div class="accordion-body p-0">
                                 {% if job_wrapper.shortlisted_candidates %}
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover align-middle">
+                                    <table class="table table-hover align-middle mb-0">
                                         <thead class="table-warning">
                                             <tr>
                                                 <th>Candidate</th>
                                                 <th>Email</th>
                                                 <th>Phone</th>
-                                                <th>Skills</th>
-                                                <th>Shortlisted On</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
@@ -250,194 +195,76 @@
                                                     <div class="d-flex align-items-center">
                                                         {% if candidate.profile_picture %}
                                                         <img src="{{ candidate.profile.profile_picture.url }}"
-                                                            alt="{{ candidate.get_full_name }}"
-                                                            class="rounded-circle me-2" width="45" height="45">
+                                                            class="rounded-circle me-2" width="35" height="35">
                                                         {% else %}
                                                         <img src="{% static 'assets/img/default-avatar.png' %}"
-                                                            alt="Default Avatar" class="rounded-circle me-2" width="45" height="45">
+                                                            class="rounded-circle me-2" width="35" height="35">
                                                         {% endif %}
-                                                        <div>
-                                                            <strong>{{ candidate.get_full_name|default:candidate.username }}</strong>
-                                                            {% if candidate.profile.current_company %}
-                                                            <br><small class="text-muted">{{ candidate.profile.current_company }}</small>
-                                                            {% endif %}
-                                                        </div>
+                                                        <strong>{{ candidate.get_full_name|default:candidate.username  }}</strong>
                                                     </div>
                                                 </td>
                                                 <td>{{ candidate.email }}</td>
                                                 <td>{{ candidate.phone|default:"-" }}</td>
                                                 <td>
-                                                    {% if candidate.skill %}
-                                                    <div class="d-flex flex-wrap gap-1">
-                                                        {% for skil in candidate.skill %}
-                                                            <span class="badge bg-light text-dark border">{{ skil.name }}</span>
-                                                        {% endfor %}
-                                                        {% if candidate.profile.skills.count > 3 %}
-                                                            <span class="badge bg-secondary">+{{ candidate.profile.skills.count|add:"-3" }}</span>
-                                                        {% endif %}
-                                                    </div>
-                                                    {% else %}
-                                                    <span class="text-muted">-</span>
-                                                    {% endif %}
-                                                </td>
-                                                <td>
-                                                    {% if job_wrapper.shortlist_info %}
-                                                        {{ job_wrapper.shortlist_info.timestamp|date:"M d, Y" }}
-                                                    {% else %}
-                                                        {{ job.timestamp|date:"M d, Y" }}
-                                                    {% endif %}
-                                                </td>
-                                                <td>
-                                                    <div class="btn-group btn-group-sm">                                                        
-                                                        <!-- Remove from Shortlist Form -->
-                                                        <form method="post" action="{% url 'add_to_shortlist' job.id candidate.id %}" class="d-inline">
-                                                            {% csrf_token %}
-                                                            <button type="submit" class="btn btn-outline-danger" 
-                                                                    onclick="return confirm('Are you sure you want to remove {{ candidate.get_full_name }} from shortlist?')"
-                                                                    title="Remove from Shortlist">
-                                                                <i class="fas fa-times"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
+                                                    <form method="post"
+                                                        action="{% url 'add_to_shortlist' job.id candidate.id %}">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm">Unshortlist</button>
+                                                    </form>
                                                 </td>
                                             </tr>
                                             {% endfor %}
                                         </tbody>
                                     </table>
                                 </div>
-
-                                <!-- Bulk Actions -->
-                                <div class="row mt-4">
-                                    <div class="col-md-12 text-end">
-                                        <p class="text-muted mb-0">
-                                            <strong>{{ job_wrapper.shortlisted_count }}</strong> candidate(s) shortlisted
-                                        </p>
-                                    </div>
-                                </div>
                                 {% else %}
-                                <div class="text-center py-5">
-                                    <i class="fas fa-star fa-3x text-muted mb-3"></i>
-                                    <h5 class="text-muted">No Shortlisted Candidates</h5>
-                                    <p class="text-muted mb-4">You haven't shortlisted any candidates for this job yet.</p>
-                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-                                        <i class="fas fa-users me-1 fs-6 "></i> View Applications to Shortlist
-                                    </button>
-                                </div>
+                                <p class="text-center text-muted my-3">No shortlisted candidates yet.</p>
                                 {% endif %}
                             </div>
                         </div>
                     </div>
+
                 </div>
-                {% endwith %}
-                {% endfor %}
-                {% else %}
-                <div class="alert alert-info text-center py-5">
-                    <i class="fas fa-briefcase fa-3x mb-3"></i>
-                    <h4>No Jobs Found</h4>
-                    <p class="mb-3">You haven't posted any jobs yet.</p>
-                    <a href="#" class="btn btn-primary">
-                        <i class="fas fa-plus me-1"></i> Post a Job
-                    </a>
-                </div>
-                {% endif %}
             </div>
         </div>
 
-        <!-- Pagination -->
+        {% endwith %}
+        {% endfor %}
+
+        <!-- Jobs Pagination -->
         {% if page_obj.has_other_pages %}
         <div class="pagination-area pt-3 text-center">
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                    {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
-                            <i class="fas fa-chevron-left"></i>
-                        </a>
-                    </li>
-                    {% endif %}
-                    {% for i in page_obj.paginator.page_range %}
-                    {% if page_obj.number == i %}
-                    <li class="page-item active">
-                        <span class="page-link">{{ i }}</span>
-                    </li>
-                    {% else %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
-                    </li>
-                    {% endif %}
-                    {% endfor %}
-                    {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">
-                            <i class="fas fa-chevron-right"></i>
-                        </a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </nav>
-            </div>
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}"><i
+                            class="fas fa-chevron-left"></i></a>
+                </li>
+                {% endif %}
+                {% for i in page_obj.paginator.page_range %}
+                {% if page_obj.number == i %}
+                <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}"><i
+                            class="fas fa-chevron-right"></i></a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="alert alert-info text-center py-5">
+            <i class="fas fa-briefcase fa-3x mb-3"></i>
+            <h4>No Jobs Found</h4>
+            <p class="mb-3">You haven't posted any jobs yet.</p>
+            <a href="#" class="btn btn-primary"><i class="fas fa-plus me-1"></i> Post a Job</a>
+        </div>
         {% endif %}
     </div>
 </main>
-
-<!-- Cover Letter Modal -->
-<div class="modal fade" id="coverLetterModal" tabindex="-1" aria-labelledby="coverLetterModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-light">
-                <h5 class="modal-title" id="coverLetterModalLabel">Cover Letter</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p id="coverLetterContent"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // View Cover Letter
-        document.querySelectorAll('.view-cover-letter').forEach(button => {
-            button.addEventListener('click', function () {
-                const coverLetter = this.dataset.coverLetter;
-                const applicantName = this.dataset.applicantName;
-                
-                document.getElementById('coverLetterModalLabel').textContent = `Cover Letter - ${applicantName}`;
-                document.getElementById('coverLetterContent').textContent = coverLetter;
-                
-                const coverLetterModal = new bootstrap.Modal(document.getElementById('coverLetterModal'));
-                coverLetterModal.show();
-            });
-        });
-
-        // View Application Details
-        document.querySelectorAll('.view-application').forEach(button => {
-            button.addEventListener('click', function () {
-                const applicationId = this.dataset.applicationId;
-                alert('View application details feature coming soon');
-            });
-        });
-
-        // View Candidate Profile
-        document.querySelectorAll('.view-profile').forEach(button => {
-            button.addEventListener('click', function () {
-                const candidateId = this.dataset.candidateId;
-                alert('View candidate profile feature coming soon');
-            });
-        });
-
-        // Send Message
-        document.querySelectorAll('.send-message').forEach(button => {
-            button.addEventListener('click', function () {
-                const candidateId = this.dataset.candidateId;
-                const candidateName = this.dataset.candidateName;
-                alert(`Send message to ${candidateName} feature coming soon`);
-            });
-        });
-    });
-</script>
 {% endblock content %}

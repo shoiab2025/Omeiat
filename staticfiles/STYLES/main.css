@@ -1,7 +1,7 @@
 :root {
     /* Colors */
     --primary-blue: #017414;
-    --primary-gradient: #e15954 !important;
+    --primary-gradient: #cdaf2c !important;
     --primary-purple: #9C27B0;
     --primary-purple-light: #9A9FF6;
     --primary_blue: #353745;
@@ -101,13 +101,13 @@ h2 {
     padding: 0.5rem 1rem  !important;
     border: none  !important;
     border-radius: var(--border-radius)  !important;
-    background: #e15954 !important;
+    background: #cdaf2c !important;
     color: var(--white) !important;
     transition: background-color 0.3s ease !important;
 }
 
 .bg-primary {
-    background: #e15954 !important;
+    background: #cdaf2c !important;
 }
 
 .btn-outline-primary {
@@ -122,12 +122,12 @@ h2 {
     transition: background-color 0.3s ease !important;
 }
 .btn-outline-primary:hover {
-    background: #e15954 !important;
+    background: #cdaf2c !important;
     border: none !important;
     color: var(--white) !important;
 }
 .ins-login:hover {
-    background: #e15954 !important;
+    background: #cdaf2c !important;
     border: none !important;
     color: var(--black) !important;
 }
@@ -161,11 +161,11 @@ h2 {
     border-bottom: none !important;
 }
 .bg-primary {    
-    background: #e15954 !important;
+    background: #cdaf2c !important;
 }
 
 .text-primary {
-    color: #e15954 !important;
+    color: #cdaf2c !important;
 }
 
 /* Mobile first approach */

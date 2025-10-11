@@ -475,7 +475,7 @@ input[type="text"]
 }
 
 .selector-chosen h2 {
-    background: #007bff;
+    background: #20609a;
     color: #fff;
 }
 
@@ -756,7 +756,7 @@ body.no-sidebar .main-header {
 }
 
 #jazzy-collapsible .collapsible-header:hover {
-    background: #007bff;
+    background: #20609a;
     color: white;
 }
 

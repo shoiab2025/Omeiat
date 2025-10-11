@@ -1424,7 +1424,7 @@ textarea {
 }
 
 a {
-    color: #e15954;
+    color: #cdaf2c;
     text-decoration: none
 }
 
@@ -1703,7 +1703,7 @@ mark {
 }
 
 .text-primary {
-    color: #e15954
+    color: #cdaf2c
 }
 
 a.text-primary:focus,
@@ -1749,7 +1749,7 @@ a.text-danger:hover {
 
 .bg-primary {
     color: #fff;
-    background-color: #e15954
+    background-color: #cdaf2c
 }
 
 a.bg-primary:focus,
@@ -3985,7 +3985,7 @@ fieldset[disabled] .btn-default:hover {
 
 .btn-primary {
     color: #fff;
-    background-color: #e15954;
+    background-color: #cdaf2c;
     border-color: #2e6da4
 }
 
@@ -4034,12 +4034,12 @@ fieldset[disabled] .btn-default:hover {
 fieldset[disabled] .btn-primary.focus,
 fieldset[disabled] .btn-primary:focus,
 fieldset[disabled] .btn-primary:hover {
-    background-color: #e15954;
+    background-color: #cdaf2c;
     border-color: #2e6da4
 }
 
 .btn-primary .badge {
-    color: #e15954;
+    color: #cdaf2c;
     background-color: #fff
 }
 
@@ -4285,7 +4285,7 @@ fieldset[disabled] .btn-danger:hover {
 
 .btn-link {
     font-weight: 400;
-    color: #e15954;
+    color: #cdaf2c;
     border-radius: 0
 }
 
@@ -4479,7 +4479,7 @@ tbody.collapse.in {
 .dropdown-menu>.active>a:hover {
     color: #fff;
     text-decoration: none;
-    background-color: #e15954;
+    background-color: #cdaf2c;
     outline: 0
 }
 
@@ -4998,7 +4998,7 @@ textarea.input-group-sm>.input-group-btn>.btn {
 .nav .open>a:focus,
 .nav .open>a:hover {
     background-color: #eee;
-    border-color: #e15954
+    border-color: #cdaf2c
 }
 
 .nav .nav-divider {
@@ -5112,7 +5112,7 @@ textarea.input-group-sm>.input-group-btn>.btn {
 .nav-pills>li.active>a:focus,
 .nav-pills>li.active>a:hover {
     color: #fff;
-    background-color: #e15954
+    background-color: #cdaf2c
 }
 
 .nav-stacked>li {
@@ -5874,7 +5874,7 @@ fieldset[disabled] .navbar-inverse .btn-link:hover {
     padding: 6px 12px;
     margin-left: -1px;
     line-height: 1.42857143;
-    color: #e15954;
+    color: #cdaf2c;
     text-decoration: none;
     background-color: #fff;
     border: 1px solid #ddd
@@ -5912,8 +5912,8 @@ fieldset[disabled] .navbar-inverse .btn-link:hover {
     z-index: 3;
     color: #fff;
     cursor: default;
-    background-color: #e15954;
-    border-color: #e15954
+    background-color: #cdaf2c;
+    border-color: #cdaf2c
 }
 
 .pagination>.disabled>a,
@@ -6050,7 +6050,7 @@ a.label:hover {
 }
 
 .label-primary {
-    background-color: #e15954
+    background-color: #cdaf2c
 }
 
 .label-primary[href]:focus,
@@ -6133,7 +6133,7 @@ a.badge:hover {
 
 .list-group-item.active>.badge,
 .nav-pills>.active>a>.badge {
-    color: #e15954;
+    color: #cdaf2c;
     background-color: #fff
 }
 
@@ -6223,7 +6223,7 @@ a.badge:hover {
 a.thumbnail.active,
 a.thumbnail:focus,
 a.thumbnail:hover {
-    border-color: #e15954
+    border-color: #cdaf2c
 }
 
 .thumbnail .caption {
@@ -6373,7 +6373,7 @@ a.thumbnail:hover {
     line-height: 20px;
     color: #fff;
     text-align: center;
-    background-color: #e15954;
+    background-color: #cdaf2c;
     -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .15);
     box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .15);
     -webkit-transition: width .6s ease;
@@ -6548,8 +6548,8 @@ a.thumbnail:hover {
 .list-group-item.active:hover {
     z-index: 2;
     color: #fff;
-    background-color: #e15954;
-    border-color: #e15954
+    background-color: #cdaf2c;
+    border-color: #cdaf2c
 }
 
 .list-group-item.active .list-group-item-heading,
@@ -7038,26 +7038,26 @@ button.list-group-item-danger.active:hover {
 }
 
 .panel-primary {
-    border-color: #e15954
+    border-color: #cdaf2c
 }
 
 .panel-primary>.panel-heading {
     color: #fff;
-    background-color: #e15954;
-    border-color: #e15954
+    background-color: #cdaf2c;
+    border-color: #cdaf2c
 }
 
 .panel-primary>.panel-heading+.panel-collapse>.panel-body {
-    border-top-color: #e15954
+    border-top-color: #cdaf2c
 }
 
 .panel-primary>.panel-heading .badge {
-    color: #e15954;
+    color: #cdaf2c;
     background-color: #fff
 }
 
 .panel-primary>.panel-footer+.panel-collapse>.panel-body {
-    border-bottom-color: #e15954
+    border-bottom-color: #cdaf2c
 }
 
 .panel-success {

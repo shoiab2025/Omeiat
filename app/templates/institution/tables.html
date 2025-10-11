@@ -37,8 +37,8 @@
                   </tr>
                 </thead>
                 <tbody>
-                  {% if jobs %}
-                  {% for job in jobs %}
+                  {% if page_obj %}
+                  {% for job in page_obj %}
                   <tr>
                     <td>
                       <div class="d-flex px-2 py-1">

@@ -50,7 +50,7 @@
 }
 
 .login-options a.active {
-  background: #e15954;
+  background: #cdaf2c;
   color: #fff;
   font-weight: 600;
 }
@@ -73,7 +73,7 @@
 }
 
 .login-form input:focus {
-  border-color: #e15954;
+  border-color: #cdaf2c;
   box-shadow: 0 0 8px rgba(225, 89, 84, 0.2);
 }
 
@@ -84,7 +84,7 @@
   color: white;
   border-radius: 12px;
   border: none;
-  background-color: #e15954;
+  background-color: #cdaf2c;
   padding: 12px;
   margin-top: 10px;
   cursor: pointer;
@@ -107,7 +107,7 @@
 }
 
 .fp:hover {
-  color: #e15954;
+  color: #cdaf2c;
 }
 
 /* Footer */
@@ -125,7 +125,7 @@
 }
 
 .login-footer a {
-  color: #e15954;
+  color: #cdaf2c;
   font-weight: 600;
   text-decoration: none;
 }

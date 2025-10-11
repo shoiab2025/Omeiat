@@ -59,7 +59,7 @@
                             <i class="fas {{ cat.icon }} fa-3x text-primary"></i>
                         </div>
                         <div class="services-cap">
-                            <h5><a href="job_listing.html"> {{ cat.name }}</a></h5>
+                            <h5>{{ cat.name }}</h5>
                             <span>({{cat.count}})</span>
                         </div>
                     </div>
@@ -105,15 +105,12 @@
                     <!-- single-job-content -->
                     <div class="single-job-items mb-30">
                         <div class="job-items">
-                            <div class="company-img">
-                                <img src="{% static job.posted_by.logo %}" alt="{{ job.posted_by.name }}">
-                            </div>
                             <div class="job-tittle">
                                 <a href="{% url 'job_detail' job.id %}">
                                     <h4>{{job.title}}</h4>
                                 </a>
                                 <ul>
-                                    <li>{{job.posted_by}}</li>
+                                    <li>{{job.posted_by}}</li><br>
                                     <li><i class="fas fa-map-marker-alt"></i>{{job.location}}</li>
                                     <li>₹{{ job.min_salary|floatformat:0 }} - ₹{{ job.max_salary|floatformat:0 }}
                                     </li>
@@ -138,8 +135,8 @@
             <!-- Section Tittle -->
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="section-tittle white-text text-center">
-                        <span>Apply process</span>
+                    <div class="section-tittle white-text text-center text-white">
+                        <span class="text-white fw-bold text-unerline">Apply process</span>
                         <h2> How it works</h2>
                     </div>
                 </div>

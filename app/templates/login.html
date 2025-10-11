@@ -9,19 +9,19 @@
                 <div class="text-center mb-4">
                     <h2 id="login-title" class="fw-bold">
                         {% if request.resolver_match.url_name == 'institution_login' %}
-                            Institution Login
+                            Employer Login
                         {% else %}
-                            User Login
+                            Employee Login
                         {% endif %}
                     </h2>
                     <div class="btn-group mt-2">
                         <a href="{% url 'user_login' %}" 
                            class="btn btn-outline-primary {% if request.resolver_match.url_name == 'user_login' %}active{% endif %}">
-                            User
+                            Employee
                         </a>
                         <a href="{% url 'institution_login' %}" 
                            class="btn btn-outline-primary {% if request.resolver_match.url_name == 'institution_login' %}active{% endif %}">
-                            Institution
+                            Employer
                         </a>
                     </div>
                 </div>

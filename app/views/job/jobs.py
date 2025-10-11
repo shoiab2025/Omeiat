@@ -186,41 +186,43 @@ def get_time_ago(timestamp):
 def job_list_ins(request):
     today = timezone.localdate()
     
-    # Base queryset
-    jobs = Job.objects.filter(is_active=True, posted_by = request.institution)
+    # Base queryset: active jobs posted by the institution
+    jobs = Job.objects.filter(is_active=True, posted_by=request.institution)
     
     # Apply filters
     job_filter = JobFilter(request.GET, queryset=jobs)
     filtered_jobs = job_filter.qs.order_by("-timestamp")
     
-    # Add time_ago to each job
-    job_types = ['Full Time', 'Part Time', 'Remote', 'Freelance']
-    experience_levels = ['1-2 Years', '2-3 Years', '3-6 Years', '6+ Years']
-    posted_options = ['Today', 'Last 2 days', 'Last 5 days', 'Last 10 days', 'Last 15 days']
-    # Pagination
-    paginator = Paginator(filtered_jobs, 10)
+    # Pagination for jobs
+    paginator = Paginator(filtered_jobs, 10)  # 10 jobs per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
-    # Get filter options for template
+    # Paginate applications for each job
+    for job in page_obj:
+        applications = job.applications.all().order_by('-applied_at')
+        app_page_number = request.GET.get(f'app_page_{job.id}', 1)
+        app_paginator = Paginator(applications, 5)  # 5 applications per page
+        job.applications_paginated = app_paginator.get_page(app_page_number)
+    
+    # Filter options for template
+    job_types = ['Full Time', 'Part Time', 'Remote', 'Freelance']
+    experience_levels = ['1-2 Years', '2-3 Years', '3-6 Years', '6+ Years']
+    posted_options = ['Today', 'Last 2 days', 'Last 5 days', 'Last 10 days', 'Last 15 days']
     zones = getZones()
     categories = getJobsOpeningsByCategories()
     
     context = {
         'filter': job_filter,
-        'jobs': page_obj,
-        'categories': categories,
-        'zones': zones,
-    }
-    
-    return render(request, "institution/tables.html", {
+        'page_obj': page_obj,  # paginated jobs
         'job_types': job_types,
         'experience_levels': experience_levels,
-        'jobs': jobs,
         'categories': categories,
         'zones': zones,
-        'posted_options' : posted_options
-    })
+        'posted_options': posted_options,
+    }
+    
+    return render(request, "institution/tables.html", context)
 
 def ins_applications(request):
     # Get all jobs posted by this institution
@@ -408,8 +410,6 @@ def my_jobs(request):
 # Institution: Create Job
 # ----------------------------
 @institution_required
-
-
 def create_or_update_job(request):
     job_id = request.POST.get('job_id')
     job = None
@@ -598,6 +598,23 @@ def delete_job(request, job_id):
 
     return render(request, "jobs/delete_job.html", {"job": job})
 
+@institution_required
+def job_applications_view(request, job_id):
+    """
+    Display all applications for a specific job.
+    Accessible to the job poster (institution/employer).
+    """
+    job = get_object_or_404(Job, id=job_id)
+    
+    # ✅ Fetch all applications for this job
+    applications = JobApplication.objects.filter(
+        job=job
+    ).select_related('applicant').order_by('-applied_at')
+    
+    return render(request, 'institution/application_details.html', {
+        'job': job,
+        'applications': applications
+    })
 # ----------------------------
 # Admin: List All Applications
 # ----------------------------
@@ -686,6 +703,7 @@ def add_to_shortlist(request, job_id, user_id):
         else:
             messages.error(request, error_msg)
             return redirect('ins_applications')
+
 @institution_required
 def remove_from_shortlist(request, job_id, user_id):
     """
