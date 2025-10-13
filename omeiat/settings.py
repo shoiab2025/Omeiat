@@ -108,24 +108,24 @@ MESSAGE_TAGS = {
 #     )
 # }
 
-if config('MYSQL_HOST', default='') == 'localhost' or config('DATABASE_URL', '').startswith('mysql://root:root@localhost'):
-    # GitHub Actions/local testing
+if os.environ.get('GITHUB_ACTIONS') == 'true':
+    # GitHub Actions MySQL configuration
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': config('MYSQL_DATABASE', 'omeiat_db'),
-            'USER': config('MYSQL_USER', 'root'),
-            'PASSWORD': config('MYSQL_PASSWORD', 'root'),
-            'HOST': config('MYSQL_HOST', 'localhost'),
-            'PORT': config('MYSQL_PORT', '3306'),
+            'NAME': 'omeiat_database',
+            'USER': 'root',
+            'PASSWORD': 'root',
+            'HOST': '127.0.0.1',
+            'PORT': '3306',
         }
     }
 else:
-    # Production/docker environment
+    # Local/Docker development
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': config('MYSQL_DATABASE', 'omeiat_db'),
+            'NAME': config('MYSQL_DATABASE', 'omeiat_database'),
             'USER': config('MYSQL_USER', 'root'),
             'PASSWORD': config('MYSQL_PASSWORD', 'root'),
             'HOST': config('MYSQL_HOST', 'db'),
