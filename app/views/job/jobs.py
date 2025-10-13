@@ -186,8 +186,8 @@ def get_time_ago(timestamp):
 def job_list_ins(request):
     today = timezone.localdate()
     
-    # Base queryset: active jobs posted by the institution
-    jobs = Job.objects.filter(is_active=True, posted_by=request.institution)
+    # Base queryset
+    jobs = Job.objects.filter(is_active=True, posted_by = request.institution)
     
     # Apply filters
     job_filter = JobFilter(request.GET, queryset=jobs)

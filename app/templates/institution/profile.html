@@ -18,7 +18,7 @@
 
       <h4 class="mb-4">Institution Profile</h4>
 
-      <form method="POST" enctype="multipart/form-data" action="{ url 'ins_profile'}">
+      <form method="POST" enctype="multipart/form-data" action="{% url 'ins_profile' %}">
         {% csrf_token %}
         <div class="row">
 

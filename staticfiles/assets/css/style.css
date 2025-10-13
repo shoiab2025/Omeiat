@@ -6258,6 +6258,12 @@ form.search-box .search-form a {
 }
 
 .our-services .single-services {
+    background: rgba(255, 255, 255, 0.2); /* translucent white */
+    backdrop-filter: blur(10px); /* apply blur */
+    -webkit-backdrop-filter: blur(10px); /* for Safari */
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: 1px solid #dafcef;
     padding: 44px 0;
     -webkit-transition: .4s;
@@ -7580,4 +7586,38 @@ form.search-box .search-form a {
 
 .text-primary {
      color: #cdaf2c !important;
+}
+
+.single-job-items {
+    transition: all 0.3s ease;
+}
+
+.single-job-items:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.job-items {
+    display: flex;
+    align-items: center;
+}
+
+.company-img img {
+    border-radius: 50%;
+    background-color: #f8f9fa;
+}
+
+.job-tittle h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.job-tittle ul li {
+    display: inline-flex;
+    align-items: center;
+}
+
+.job-tittle i {
+    color: #007bff;
 }

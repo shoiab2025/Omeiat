@@ -9,81 +9,56 @@
         <!-- Mobile Menu -->
         <div class="slider-active">
             <div class="single-slider slider-height d-flex align-items-center"
-                data-background="static/assets/img/hero/h1_hero1.png">
+                data-background="static/assets/img/hero/home_banner1.png">
                 <div class="container">
                     <div class="row">
-                        <div class="col-xl-6 col-lg-9 col-md-10">
-                            <div class="hero__caption">
-                                <h1>Step Into a World of Educational Opportunities</h1>
+                        <div class="col-lg-12">
+                            <div class="section-tittle text-center">
+                                <span class="text-white">Discover Featured Careers</span>
+                                <h2>Browse Job Categories </h2>
                             </div>
                         </div>
                     </div>
-                    <!-- Search Box -->
-                    <div class="row">
-                        <div class="col-xl-8">
-                            <!-- form -->
-                            <form action="#" class="search-box">
-
-                                <div class="search-form mx-2">
-                                    <a href="{% url 'jobs'%}">Browse jobs</a>
+                    <div class="row d-flex justify-content-center our-services">
+                        {% if categories %}
+                        {% for cat in categories %}
+                        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
+                            <div class="single-services text-center mb-30">
+                                <div class="services-ion mb-3">
+                                    <i class="fas {{ cat.icon }} fa-3x text-primary"></i>
                                 </div>
-                                <div class="search-form mx-2">
-                                    <a href="{% url 'dashboard' %}">Post Job</a>
+                                <div class="services-cap">
+                                    <h5 class="text-white">{{ cat.name }}</h5>
+                                    <span class="text-white">({{cat.count}})</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                    <!-- Search Box -->
+                    <div class="row mx-auto">
+                        <div class="col-xl-12 col-lg-12">
+                            <!-- form -->
+                            <form action="#" class="search-box d-flex justify-content-center align-items-center gap-3">
+                                <div class="search-form">
+                                    <a href="{% url 'jobs' %}" class="btn btn-outline-primary px-4">Browse Jobs</a>
+                                </div>
+                                <div class="search-form">
+                                    <a href="{% url 'dashboard' %}" class="btn btn-primary px-4">Post Job</a>
                                 </div>
                             </form>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
-    <!-- slider Area End-->
-    <!-- Our Services Start -->
-    <div class="our-services py-5">
-        <div class="container">
-            <!-- Section Tittle -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-tittle text-center">
-                        <span>Discover Featured Careers</span>
-                        <h2>Browse Job Categories </h2>
-                    </div>
-                </div>
-            </div>
-            <div class="row d-flex justify-content-center">
-                {% if categories %}
-                {% for cat in categories %}
-                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-                    <div class="single-services text-center mb-30">
-                        <div class="services-ion mb-3">
-                            <i class="fas {{ cat.icon }} fa-3x text-primary"></i>
-                        </div>
-                        <div class="services-cap">
-                            <h5>{{ cat.name }}</h5>
-                            <span>({{cat.count}})</span>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-                {% endif %}
-            </div>
-        </div>
-    </div>
+
     <!-- Our Services End -->
     <!-- Online CV Area Start -->
-    <div class="online-cv cv-bg section-overly pt-90 pb-120" data-background="static/assets/img/gallery/cv_bg.jpg"">
-            <div class=" container">
-        <div class="row justify-content-center">
-            <div class="col-xl-10">
-                <div class="cv-caption text-center">
-                    <p class="pera1">FEATURED OPPORTUNITIES</p>
-                    <p class="pera2">Kickstart Your Career with the Right Education and Jobs!</p>
-                    <a href="{% url 'profile'%}" class="border-btn2 border-btn4">Complete Your Profile</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
+
 
     <!-- Online CV Area End-->
     <!-- Featured_job_start -->
@@ -105,6 +80,10 @@
                     <!-- single-job-content -->
                     <div class="single-job-items mb-30">
                         <div class="job-items">
+                            <div class="company-img border-0">
+                                <img src="{% static job.posted_by.logo %}" alt="{{ job.posted_by.name }}" height="auto"
+                                    width="100%" />
+                            </div>
                             <div class="job-tittle">
                                 <a href="{% url 'job_detail' job.id %}">
                                     <h4>{{job.title}}</h4>
@@ -187,6 +166,21 @@
             </div>
 
         </div>
+    </div>
+
+
+    <div class="online-cv cv-bg section-overly pt-90 pb-120" data-background="static/assets/img/gallery/cv_bg.jpg"">
+            <div class=" container">
+        <div class="row justify-content-center">
+            <div class="col-xl-10">
+                <div class="cv-caption text-center">
+                    <p class="pera1">FEATURED OPPORTUNITIES</p>
+                    <p class="pera2">Kickstart Your Career with the Right Education and Jobs!</p>
+                    <a href="{% url 'profile'%}" class="border-btn2 border-btn4">Complete Your Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
     </div>
     <!-- How  Apply Process End-->
 

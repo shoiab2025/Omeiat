@@ -100,13 +100,28 @@ MESSAGE_TAGS = {
 # ----------------------
 # Database
 # ----------------------
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default=config("DATABASE_URL"),
+#         conn_max_age=600,
+#         ssl_require=True
+#     )
+# }
+
 DATABASES = {
-    'default': dj_database_url.config(
-        default=config("DATABASE_URL"),
-        conn_max_age=600,
-        ssl_require=True
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': config('MYSQL_DATABASE', default='omeiat_db'),
+        'USER': config('MYSQL_USER', default='root'),
+        'PASSWORD': config('MYSQL_PASSWORD', default='password'),
+        'HOST': config('MYSQL_HOST', default='db'),
+        'PORT': config('MYSQL_PORT', default='3306'),
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
+    }
 }
+
 
 # ----------------------
 # Password Validation
