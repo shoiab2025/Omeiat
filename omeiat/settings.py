@@ -108,20 +108,30 @@ MESSAGE_TAGS = {
 #     )
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': config('MYSQL_DATABASE', default='omeiat_db'),
-        'USER': config('MYSQL_USER', default='root'),
-        'PASSWORD': config('MYSQL_PASSWORD', default='password'),
-        'HOST': config('MYSQL_HOST', default='db'),
-        'PORT': config('MYSQL_PORT', default='3306'),
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-        },
+if config('MYSQL_HOST', default='') == 'localhost' or config('DATABASE_URL', '').startswith('mysql://root:root@localhost'):
+    # GitHub Actions/local testing
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': config('MYSQL_DATABASE', 'omeiat_db'),
+            'USER': config('MYSQL_USER', 'root'),
+            'PASSWORD': config('MYSQL_PASSWORD', 'root'),
+            'HOST': config('MYSQL_HOST', 'localhost'),
+            'PORT': config('MYSQL_PORT', '3306'),
+        }
     }
-}
-
+else:
+    # Production/docker environment
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': config('MYSQL_DATABASE', 'omeiat_db'),
+            'USER': config('MYSQL_USER', 'root'),
+            'PASSWORD': config('MYSQL_PASSWORD', 'root'),
+            'HOST': config('MYSQL_HOST', 'db'),
+            'PORT': config('MYSQL_PORT', '3306'),
+        }
+    }
 
 # ----------------------
 # Password Validation

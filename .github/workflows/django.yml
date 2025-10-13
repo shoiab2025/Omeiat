@@ -2,9 +2,9 @@ name: Django CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [ OmeiatColumn-Changes, main ]
   pull_request:
-    branches: [ main ]
+    branches: [ OmeiatColumn-Changes, main ]
 
 jobs:
   test:
@@ -43,20 +43,30 @@ jobs:
         
     - name: Run migrations
       env:
-        SECRET_KEY: your-secret-key-for-testing
+        SECRET_KEY: dummy-secret-key-for-testing-123
         DEBUG: True
+        MYSQL_HOST: localhost
+        MYSQL_PORT: 3306
+        MYSQL_DATABASE: omeiat_db
+        MYSQL_USER: root
+        MYSQL_PASSWORD: root
         DATABASE_URL: mysql://root:root@localhost:3306/omeiat_db
         DJANGO_SETTINGS_MODULE: omeiat.settings
-        ALLOWED_HOSTS: localhost,127.0.0.1
+        ALLOWED_HOSTS: localhost,127.0.0.1,testserver
       run: |
         python manage.py migrate
         
     - name: Run tests
       env:
-        SECRET_KEY: jkjkjkioioiojkjkio
+        SECRET_KEY: dummy-secret-key-for-testing-123
         DEBUG: True
+        MYSQL_HOST: localhost
+        MYSQL_PORT: 3306
+        MYSQL_DATABASE: omeiat_db
+        MYSQL_USER: root
+        MYSQL_PASSWORD: root
         DATABASE_URL: mysql://root:root@localhost:3306/omeiat_db
         DJANGO_SETTINGS_MODULE: omeiat.settings
-        ALLOWED_HOSTS: localhost,127.0.0.1
+        ALLOWED_HOSTS: localhost,127.0.0.1,testserver
       run: |
         python manage.py test
