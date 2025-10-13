@@ -128,7 +128,7 @@ else:
             'NAME': config('MYSQL_DATABASE', 'omeiat_database'),
             'USER': config('MYSQL_USER', 'root'),
             'PASSWORD': config('MYSQL_PASSWORD', 'root'),
-            'HOST': config('MYSQL_HOST', 'db'),
+            'HOST': config('MYSQL_HOST', 'localhost'),
             'PORT': config('MYSQL_PORT', '3306'),
         }
     }

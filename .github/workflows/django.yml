@@ -50,7 +50,7 @@ jobs:
         MYSQL_DATABASE: omeiat_database
         MYSQL_USER: root
         MYSQL_PASSWORD: root
-        DATABASE_URL: mysql://root:root@localhost:3306/omeiat_db
+        DATABASE_URL: mysql://root:root@localhost:3306/omeiat_database
         DJANGO_SETTINGS_MODULE: omeiat.settings
         ALLOWED_HOSTS: localhost,127.0.0.1,testserver
       run: |
@@ -65,7 +65,7 @@ jobs:
         MYSQL_DATABASE: omeiat_database
         MYSQL_USER: root
         MYSQL_PASSWORD: root
-        DATABASE_URL: mysql://root:root@localhost:3306/omeiat_db
+        DATABASE_URL: mysql://root:root@localhost:3306/omeiat_database
         DJANGO_SETTINGS_MODULE: omeiat.settings
         ALLOWED_HOSTS: localhost,127.0.0.1,testserver
       run: |
