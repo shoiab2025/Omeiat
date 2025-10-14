@@ -4,8 +4,9 @@ from django.conf import settings
 from django.utils import timezone
 
 # ----------------------------
-# Omeiat Zones Model
+# Core Models (No Dependencies)
 # ----------------------------
+
 class OmeiatZone(models.Model):
     name = models.CharField(max_length=100, unique=True)
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -18,9 +19,68 @@ class OmeiatZone(models.Model):
         return self.name
 
 
+class Role(models.Model):
+    """
+    Defines main roles: JobSeeker, Institution, Admin
+    """
+    ROLE_CHOICES = [
+        ('job_seeker', 'Job Seeker'),
+        ('institution', 'Institution'),
+        ('admin', 'Admin'),
+    ]
+    name = models.CharField(max_length=50, choices=ROLE_CHOICES, unique=True)
+    description = models.TextField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Roles"
+
+    def __str__(self):
+        return self.get_name_display()
+
+
+class Permission(models.Model):
+    """
+    Atomic permissions that can be assigned to roles
+    """
+    code = models.CharField(max_length=50, unique=True)
+    description = models.TextField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Permissions"
+
+    def __str__(self):
+        return self.code
+
+
 # ----------------------------
-# Institution Model
+# User Model (Depends on Role)
 # ----------------------------
+
+class User(AbstractUser):
+    dob = models.DateField(null=True, blank=True)
+    age = models.PositiveIntegerField(null=True, blank=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    father_name = models.CharField(max_length=100, blank=True, null=True)
+    spouse_name = models.CharField(max_length=100, blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='profiles/', blank=True, null=True)
+    profile_percentage = models.PositiveIntegerField(default=0)
+    profile_visibility = models.BooleanField(default=True)
+    otp = models.CharField(max_length=6, blank=True, null=True)
+    otp_created_at = models.DateTimeField(blank=True, null=True)
+    is_otp_verified = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True, related_name='users')
+
+
+# ----------------------------
+# Institution Models (Depends on OmeiatZone)
+# ----------------------------
+
 class Institution(models.Model):
     CATEGORY_CHOICES = [
         ('Kindergarten', 'Kindergarten'),
@@ -45,7 +105,7 @@ class Institution(models.Model):
     is_omeiat_member = models.BooleanField(default=False)
     omeiat_member_since = models.PositiveIntegerField(blank=True, null=True)
     otp = models.CharField(max_length=6, blank=True, null=True)
-    otp_created_at = models.DateTimeField(blank=True, null=True)   # 🔹 added
+    otp_created_at = models.DateTimeField(blank=True, null=True)
     is_otp_verified = models.BooleanField(default=False)
     password = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
@@ -55,9 +115,6 @@ class Institution(models.Model):
         return self.name
 
 
-# ----------------------------
-# Institution Address (1:1)
-# ----------------------------
 class InstitutionAddress(models.Model):
     institution = models.OneToOneField(Institution, on_delete=models.CASCADE, related_name="address")
     building_no = models.CharField(max_length=50, blank=True, null=True)
@@ -70,9 +127,6 @@ class InstitutionAddress(models.Model):
     pincode = models.CharField(max_length=10)
 
 
-# ----------------------------
-# Institution Strength (1:1)
-# ----------------------------
 class InstitutionStrength(models.Model):
     institution = models.OneToOneField(Institution, on_delete=models.CASCADE, related_name="strength")
     students_male = models.PositiveIntegerField(default=0)
@@ -82,9 +136,6 @@ class InstitutionStrength(models.Model):
     non_teaching_staff = models.PositiveIntegerField(default=0)
 
 
-# ----------------------------
-# Institution Contacts (1:N)
-# ----------------------------
 class InstitutionContact(models.Model):
     CONTACT_TYPE_CHOICES = [
         ("HR", "HR"),
@@ -102,27 +153,9 @@ class InstitutionContact(models.Model):
 
 
 # ----------------------------
-# User Model
+# User Profile Models (Depends on User)
 # ----------------------------
-class User(AbstractUser):
-    dob = models.DateField(null=True, blank=True)
-    age = models.PositiveIntegerField(null=True, blank=True)
-    phone = models.CharField(max_length=20, blank=True, null=True)
-    father_name = models.CharField(max_length=100, blank=True, null=True)
-    spouse_name = models.CharField(max_length=100, blank=True, null=True)
-    profile_picture = models.ImageField(upload_to='profiles/', blank=True, null=True)
-    profile_percentage = models.PositiveIntegerField(default=0)
-    profile_visibility = models.BooleanField(default=True)
-    otp = models.CharField(max_length=6, blank=True, null=True)
-    otp_created_at = models.DateTimeField(blank=True, null=True)   # 🔹 added
-    is_otp_verified = models.BooleanField(default=False)
-    is_deleted = models.BooleanField(default=False)
-    timestamp = models.DateTimeField(auto_now_add=True)
 
-
-# ----------------------------
-# User Address (1:1)
-# ----------------------------
 class UserAddress(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="address")
     building_no = models.CharField(max_length=50, blank=True, null=True)
@@ -133,9 +166,6 @@ class UserAddress(models.Model):
     pincode = models.CharField(max_length=10, blank=True, null=True)
 
 
-# ----------------------------
-# Education (1:N)
-# ----------------------------
 class Education(models.Model):
     LEVEL_CHOICES = [
         ("SSLC", "SSLC"),
@@ -154,12 +184,9 @@ class Education(models.Model):
     certificate = models.FileField(upload_to="certificates/", blank=True, null=True)
 
 
-# ----------------------------
-# Work Experience (1:N)
-# ----------------------------
 class WorkExperience(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="experiences")
-    company = models.CharField(max_length=255,blank=True, null=True)
+    company = models.CharField(max_length=255, blank=True, null=True)
     role = models.CharField(max_length=200)
     start_date = models.DateField()
     end_date = models.DateField(blank=True, null=True)
@@ -167,9 +194,6 @@ class WorkExperience(models.Model):
     description = models.TextField(blank=True, null=True)
 
 
-# ----------------------------
-# Skill (1:N)
-# ----------------------------
 class Skill(models.Model):
     LEVEL_CHOICES = [
         ("Beginner", "Beginner"),
@@ -181,9 +205,6 @@ class Skill(models.Model):
     level = models.CharField(max_length=50, choices=LEVEL_CHOICES, blank=True, null=True)
 
 
-# ----------------------------
-# Language (1:N)
-# ----------------------------
 class Language(models.Model):
     PROFICIENCY_CHOICES = [
         ("Basic", "Basic"),
@@ -196,8 +217,9 @@ class Language(models.Model):
 
 
 # ----------------------------
-# Job Model
+# Job Models (Depends on User, Institution, Skill, Education)
 # ----------------------------
+
 class Job(models.Model):
     JOB_TYPE_CHOICES = [
         ('Full-time', 'Full-time'),
@@ -289,8 +311,6 @@ class Job(models.Model):
         )),
     ]
 
-
-
     title = models.CharField(max_length=200)
     post = models.CharField(max_length=100)
     category = models.CharField(max_length=100)
@@ -318,9 +338,6 @@ class Job(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
 
-# ----------------------------
-# Job Application (1:N)
-# ----------------------------
 class JobApplication(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
@@ -345,7 +362,7 @@ class JobApplication(models.Model):
     communication_skills = models.CharField(max_length=50, null=True, blank=True)
     technical_skills = models.CharField(max_length=50, null=True, blank=True)
     experience = models.PositiveIntegerField(blank=True, null=True)
-    joining_availability = models.CharField(max_length=50,blank=True, null=True)
+    joining_availability = models.CharField(max_length=50, blank=True, null=True)
     qualification = models.CharField(max_length=50, null=True, blank=True)
     commute_distance_km = models.PositiveIntegerField(blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
@@ -356,9 +373,6 @@ class JobApplication(models.Model):
         unique_together = ('applicant', 'job')
 
 
-# ----------------------------
-# Job Shortlist (M:N)
-# ----------------------------
 class JobShortlist(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     institution = models.ForeignKey(Institution, on_delete=models.CASCADE)
@@ -367,8 +381,9 @@ class JobShortlist(models.Model):
 
 
 # ----------------------------
-# Notification
+# Notification & Other Models (Depends on User, Institution)
 # ----------------------------
+
 class Notification(models.Model):
     NOTIFICATION_TYPES = [
         ('job_posted', 'Job Posted'),
@@ -387,13 +402,11 @@ class Notification(models.Model):
     url = models.URLField(blank=True, null=True)
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    
     class Meta:
         ordering = ['-created_at']
 
 
-# ----------------------------
-# Institution Approval
-# ----------------------------
 class InstitutionApproval(models.Model):
     institution = models.ForeignKey(Institution, on_delete=models.CASCADE, related_name="approvals")
     approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -401,11 +414,12 @@ class InstitutionApproval(models.Model):
     remarks = models.TextField(blank=True, null=True)
     approved_at = models.DateTimeField(auto_now_add=True)
 
+
 class EmployerReviews(models.Model):
     institution = models.ForeignKey('Institution', on_delete=models.CASCADE, related_name="reviews")
-    rating = models.PositiveSmallIntegerField()  # e.g., 1–5 rating
-    review = models.TextField(blank=True, null=True)  # optional text review
-    posted_at = models.DateTimeField(auto_now_add=True)  # timestamp when review is posted
+    rating = models.PositiveSmallIntegerField()
+    review = models.TextField(blank=True, null=True)
+    posted_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name_plural = "Employer Reviews"
@@ -413,53 +427,8 @@ class EmployerReviews(models.Model):
 
     def __str__(self):
         return f"Review for {self.institution} - {self.rating}/5"
-    
-# ----------------------------
-# Role Model
-# ----------------------------
-class Role(models.Model):
-    """
-    Defines main roles: JobSeeker, Institution, Admin
-    """
-    ROLE_CHOICES = [
-        ('job_seeker', 'Job Seeker'),
-        ('institution', 'Institution'),
-        ('admin', 'Admin'),
-    ]
-    name = models.CharField(max_length=50, choices=ROLE_CHOICES, unique=True)
-    description = models.TextField(blank=True, null=True)
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name_plural = "Roles"
-
-    def __str__(self):
-        return self.get_name_display()
 
 
-# ----------------------------
-# Permission Model
-# ----------------------------
-class Permission(models.Model):
-    """
-    Atomic permissions that can be assigned to roles
-    """
-    code = models.CharField(max_length=50, unique=True)
-    description = models.TextField(blank=True, null=True)
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name_plural = "Permissions"
-
-    def __str__(self):
-        return self.code
-
-
-# ----------------------------
-# Role-Permission Mapping (M:N)
-# ----------------------------
 class RolePermission(models.Model):
     role = models.ForeignKey(Role, on_delete=models.CASCADE, related_name="permissions")
     permission = models.ForeignKey(Permission, on_delete=models.CASCADE, related_name="roles")
@@ -470,12 +439,3 @@ class RolePermission(models.Model):
 
     def __str__(self):
         return f"{self.role.name} -> {self.permission.code}"
-
-
-# ----------------------------
-# Add Role to User
-# ----------------------------
-User.add_to_class(
-    'role',
-    models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True, related_name='users')
-)
