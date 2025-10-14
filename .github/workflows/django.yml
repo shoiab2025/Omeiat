@@ -51,7 +51,7 @@ jobs:
         MYSQL_USER: root
         MYSQL_PASSWORD: root
         DATABASE_URL: mysql://root:root@localhost:3306/omeiat_db
-        DJANGO_SETTINGS_MODULE: Omeiat.settings
+        DJANGO_SETTINGS_MODULE: omeiat.settings
         ALLOWED_HOSTS: localhost,127.0.0.1,testserver
       run: |
         python manage.py migrate
@@ -66,7 +66,7 @@ jobs:
         MYSQL_USER: root
         MYSQL_PASSWORD: root
         DATABASE_URL: mysql://root:root@localhost:3306/omeiat_db
-        DJANGO_SETTINGS_MODULE: Omeiat.settings
+        DJANGO_SETTINGS_MODULE: omeiat.settings
         ALLOWED_HOSTS: localhost,127.0.0.1,testserver
       run: |
         python manage.py test
