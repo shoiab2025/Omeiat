@@ -14,7 +14,7 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: omeiat_database
+          MYSQL_DATABASE: omeiat_db
         options: >-
           --health-cmd="mysqladmin ping"
           --health-interval=10s
@@ -47,10 +47,10 @@ jobs:
         DEBUG: True
         MYSQL_HOST: localhost
         MYSQL_PORT: 3306
-        MYSQL_DATABASE: omeiat_database
+        MYSQL_DATABASE: omeiat_db
         MYSQL_USER: root
         MYSQL_PASSWORD: root
-        DATABASE_URL: mysql://root:root@localhost:3306/omeiat_database
+        DATABASE_URL: mysql://root:root@localhost:3306/omeiat_db
         DJANGO_SETTINGS_MODULE: omeiat.settings
         ALLOWED_HOSTS: localhost,127.0.0.1,testserver
       run: |
@@ -62,10 +62,10 @@ jobs:
         DEBUG: True
         MYSQL_HOST: localhost
         MYSQL_PORT: 3306
-        MYSQL_DATABASE: omeiat_database
+        MYSQL_DATABASE: omeiat_db
         MYSQL_USER: root
         MYSQL_PASSWORD: root
-        DATABASE_URL: mysql://root:root@localhost:3306/omeiat_database
+        DATABASE_URL: mysql://root:root@localhost:3306/omeiat_db
         DJANGO_SETTINGS_MODULE: omeiat.settings
         ALLOWED_HOSTS: localhost,127.0.0.1,testserver
       run: |

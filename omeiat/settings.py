@@ -113,7 +113,7 @@ if os.environ.get('GITHUB_ACTIONS') == 'true':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'omeiat_database',
+            'NAME': 'omeiat_db',
             'USER': 'root',
             'PASSWORD': 'root',
             'HOST': '127.0.0.1',
@@ -125,7 +125,7 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': config('MYSQL_DATABASE', 'omeiat_database'),
+            'NAME': config('MYSQL_DATABASE', 'omeiat_db'),
             'USER': config('MYSQL_USER', 'root'),
             'PASSWORD': config('MYSQL_PASSWORD', 'root'),
             'HOST': config('MYSQL_HOST', 'localhost'),
