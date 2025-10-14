@@ -51,7 +51,7 @@ jobs:
         MYSQL_USER: root
         MYSQL_PASSWORD: root
         DATABASE_URL: mysql://root:root@localhost:3306/omeiat_db
-        DJANGO_SETTINGS_MODULE: omeiat.settings
+        DJANGO_SETTINGS_MODULE: omeiat.settings  # CHANGED: lowercase 'omeiat'
         ALLOWED_HOSTS: localhost,127.0.0.1,testserver
       run: |
         python manage.py migrate
@@ -66,7 +66,7 @@ jobs:
         MYSQL_USER: root
         MYSQL_PASSWORD: root
         DATABASE_URL: mysql://root:root@localhost:3306/omeiat_db
-        DJANGO_SETTINGS_MODULE: omeiat.settings
+        DJANGO_SETTINGS_MODULE: omeiat.settings  # CHANGED: lowercase 'omeiat'
         ALLOWED_HOSTS: localhost,127.0.0.1,testserver
       run: |
         python manage.py test
@@ -80,7 +80,12 @@ jobs:
     
     - name: Create deployment package
       run: |
-        tar -czf deployment-package.tar.gz .
+        # Create tar with exclusions to avoid "file changed as we read it" error
+        tar --exclude='__pycache__' \
+            --exclude='*.pyc' \
+            --exclude='.git' \
+            --exclude='.github' \
+            -czf deployment-package.tar.gz .
         
     - name: Upload artifact
       uses: actions/upload-artifact@v4
@@ -108,13 +113,17 @@ jobs:
         script: |
           echo "🚀 Starting deployment..."
           
-          # Navigate to project directory
+          # Navigate to project directory - use correct case
           cd /var/www/Omeiat
           
           # Create backup of current deployment
-          tar -czf ../backup-$(date +%Y%m%d-%H%M%S).tar.gz .
+          tar --exclude='venv' --exclude='*.tar.gz' --exclude='*.log' --exclude='__pycache__' \
+              -czf ../backup-$(date +%Y%m%d-%H%M%S).tar.gz .
           
-          # Extract new deployment package
+          # Stop services to prevent file conflicts during extraction
+          sudo systemctl stop gunicorn || true
+          
+          # Extract new deployment package with overwrite
           tar -xzf deployment-package.tar.gz --overwrite
           
           # Activate virtual environment
@@ -129,13 +138,11 @@ jobs:
           # Collect static files
           python manage.py collectstatic --noinput
           
-          # Restart Gunicorn
+          # Restart services
           sudo systemctl restart gunicorn
-          
-          # Restart Nginx
           sudo systemctl reload nginx
           
-          # Clean up
+          # Clean up deployment package
           rm -f deployment-package.tar.gz
           
           echo "✅ Deployment completed successfully!"
