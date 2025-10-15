@@ -1,76 +1,3 @@
-name: Django CI/CD
-
-on:
-  push:
-    branches: [OmeiatColumn-Changes, main]
-  pull_request:
-    branches: [OmeiatColumn-Changes, main]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: omeiat_db
-        options: >-
-          --health-cmd="mysqladmin ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
-        ports:
-          - 3306:3306
-
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-        
-    - name: Install system dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y pkg-config default-libmysqlclient-dev
-        
-    - name: Install Python dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        
-    - name: Run migrations
-      env:
-        SECRET_KEY: omeiatjobportalandfreeapp
-        DEBUG: True
-        MYSQL_HOST: localhost
-        MYSQL_PORT: 3306
-        MYSQL_DATABASE: omeiat_db
-        MYSQL_USER: root
-        MYSQL_PASSWORD: root
-        DATABASE_URL: mysql://root:root@localhost:3306/omeiat_db
-        DJANGO_SETTINGS_MODULE: omeiat.settings  # CHANGED: lowercase 'omeiat'
-        ALLOWED_HOSTS: localhost,127.0.0.1,testserver
-      run: |
-        python manage.py migrate
-        
-    - name: Run tests
-      env:
-        SECRET_KEY: omeiatjobportalandfreeapp
-        DEBUG: True
-        MYSQL_HOST: localhost
-        MYSQL_PORT: 3306
-        MYSQL_DATABASE: omeiat_db
-        MYSQL_USER: root
-        MYSQL_PASSWORD: root
-        DATABASE_URL: mysql://root:root@localhost:3306/omeiat_db
-        DJANGO_SETTINGS_MODULE: omeiat.settings  # CHANGED: lowercase 'omeiat'
-        ALLOWED_HOSTS: localhost,127.0.0.1,testserver
-      run: |
-        python manage.py test
-
   build:
     runs-on: ubuntu-latest
     needs: test
@@ -78,14 +5,28 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Create deployment package
+    - name: Create stable deployment package
       run: |
-        # Create tar with exclusions to avoid "file changed as we read it" error
-        tar --exclude='__pycache__' \
-            --exclude='*.pyc' \
-            --exclude='.git' \
-            --exclude='.github' \
-            -czf deployment-package.tar.gz .
+        # Create a clean copy first to avoid file change issues
+        mkdir -p temp_build
+        rsync -av \
+          --exclude='.git/' \
+          --exclude='__pycache__/' \
+          --exclude='*.pyc' \
+          --exclude='.github/' \
+          --exclude='node_modules/' \
+          --exclude='*.log' \
+          --exclude='deployment-package.tar.gz' \
+          ./ temp_build/
+        
+        # Create tar from the stable copy
+        cd temp_build
+        tar -czf ../deployment-package.tar.gz .
+        cd ..
+        
+        # Clean up
+        rm -rf temp_build
+        echo "✅ Deployment package created successfully"
         
     - name: Upload artifact
       uses: actions/upload-artifact@v4
@@ -113,36 +54,30 @@ jobs:
         script: |
           echo "🚀 Starting deployment..."
           
-          # Navigate to project directory - use correct case
           cd /var/www/Omeiat
           
-          # Create backup of current deployment
-          tar --exclude='venv' --exclude='*.tar.gz' --exclude='*.log' --exclude='__pycache__' \
-              -czf ../backup-$(date +%Y%m%d-%H%M%S).tar.gz .
+          # Stop service during deployment
+          sudo systemctl stop omeiat || true
           
-          # Stop services to prevent file conflicts during extraction
-          sudo systemctl stop gunicorn || true
-          
-          # Extract new deployment package with overwrite
+          # Extract deployment package
           tar -xzf deployment-package.tar.gz --overwrite
           
-          # Activate virtual environment
+          # Install MySQL if needed
+          if ! systemctl is-active --quiet mysql; then
+            sudo apt-get update
+            sudo apt-get install -y mysql-server
+            sudo systemctl start mysql
+            sudo systemctl enable mysql
+          fi
+          
           source venv/bin/activate
-          
-          # Install dependencies
           pip install -r requirements.txt
-          
-          # Run database migrations
+          mkdir -p static
           python manage.py migrate
-          
-          # Collect static files
           python manage.py collectstatic --noinput
           
-          # Restart services
-          sudo systemctl restart gunicorn
-          sudo systemctl reload nginx
+          sudo systemctl daemon-reload
+          sudo systemctl start omeiat
           
-          # Clean up deployment package
           rm -f deployment-package.tar.gz
-          
           echo "✅ Deployment completed successfully!"
