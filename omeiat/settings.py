@@ -23,6 +23,12 @@ ALLOWED_HOSTS = config(
     default="www.nexgen-e.com nexgen-e.com localhost 127.0.0.1 omeiat-g04t.onrender.com omeiat.onrender.com"
 ).split()
 
+# ----------------------
+# Application root under /omeiat
+# ----------------------
+FORCE_SCRIPT_NAME = '/omeiat'  # ensures Django knows it's running under /omeiat
+STATIC_URL = '/omeiat/static/'
+MEDIA_URL = '/omeiat/media/'
 
 # ----------------------
 # Installed Apps
@@ -86,9 +92,9 @@ TEMPLATES = [
 # ----------------------
 AUTH_USER_MODEL = 'app.User'
 AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/login/'
-LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/omeiat/'  # redirect after login
+LOGOUT_REDIRECT_URL = '/omeiat/login/'
+LOGIN_URL = '/omeiat/login/'
 
 # ----------------------
 # Messages
@@ -104,16 +110,7 @@ MESSAGE_TAGS = {
 # ----------------------
 # Database
 # ----------------------
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         default=config("DATABASE_URL"),
-#         conn_max_age=600,
-#         ssl_require=True
-#     )
-# }
-
 if os.environ.get('GITHUB_ACTIONS') == 'true':
-    # GitHub Actions MySQL configuration
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -125,7 +122,6 @@ if os.environ.get('GITHUB_ACTIONS') == 'true':
         }
     }
 else:
-    # Local/Docker development
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -156,14 +152,12 @@ USE_I18N = True
 USE_TZ = True
 
 # ----------------------
-# Static Files
+# Static and Media Files
 # ----------------------
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / "static"]  # Local development
-STATIC_ROOT = BASE_DIR / "staticfiles"    # Production (Render)
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_DIRS = [BASE_DIR / "static"]  # Local dev
+STATIC_ROOT = BASE_DIR / "staticfiles"    # Production
+MEDIA_ROOT = BASE_DIR / "mediafiles"      # Media files
 
-# Enable WhiteNoise for static file compression & caching
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # ----------------------
@@ -179,21 +173,6 @@ JAZZMIN_SETTINGS = {
     "theme": "cerulean",
     "show_sidebar": True,
     "navigation_expanded": True,
-    "topmenu_links": [
-        {"name": "Home", "url": "/", "permissions": ["auth.view_user"]},
-        {"model": "auth.User"},
-        {"app": "your_app"},
-    ],
-    "icons": {
-        "auth": "fas fa-users-cog",
-        "auth.user": "fas fa-user",
-        "auth.group": "fas fa-users",
-        "your_app.ModelName": "fas fa-briefcase",
-    },
-    "side_menu": [
-        {"app": "auth", "models": ["user", "group"]},
-        {"app": "your_app", "models": ["jobpost", "organization"]},
-    ],
 }
 
 # ----------------------
