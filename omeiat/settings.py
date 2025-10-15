@@ -18,7 +18,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ----------------------
 SECRET_KEY = config("SECRET_KEY", default="insecure-secret-key")
 DEBUG = config("DEBUG", default=False, cast=bool)
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="*").split(",")
+ALLOWED_HOSTS = [
+    'www.nexgen-e.com',
+    'nexgen-e.com',
+    'localhost',
+    '127.0.0.1',
+    'omeiat-g04t.onrender.com',
+    'omeiat.onrender.com'
+]
 
 # ----------------------
 # Installed Apps
