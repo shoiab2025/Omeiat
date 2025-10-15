@@ -2,9 +2,9 @@ name: Django CI/CD
 
 on:
   push:
-    branches: [OmeiatColumn-Changes, main]
+    branches: [main]
   pull_request:
-    branches: [OmeiatColumn-Changes, main]
+    branches: [main]
 
 jobs:
   test:
@@ -75,9 +75,6 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
     - name: Deploy to VPS
       uses: appleboy/ssh-action@v1.0.3
       with:
@@ -90,7 +87,7 @@ jobs:
           
           cd /var/www/Omeiat
           
-          # Install MySQL if not installed
+          # Install MySQL if needed
           if ! systemctl is-active --quiet mysql; then
             echo "Installing MySQL..."
             sudo apt-get update
@@ -99,21 +96,16 @@ jobs:
             sudo systemctl enable mysql
           fi
           
-          # Pull latest changes using Git
+          # Pull latest changes
           git fetch origin
           git reset --hard origin/main
           
           source venv/bin/activate
-          pip install --upgrade pip
           pip install -r requirements.txt
-          
-          # Create static directory if it doesn't exist
           mkdir -p static
-          
           python manage.py migrate
           python manage.py collectstatic --noinput
           
-          # Restart the omeiat service (not gunicorn)
           sudo systemctl daemon-reload
           sudo systemctl restart omeiat
           
