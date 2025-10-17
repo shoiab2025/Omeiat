@@ -20,7 +20,7 @@ SECRET_KEY = config("SECRET_KEY", default="insecure-secret-key")
 DEBUG = config("DEBUG", default=False, cast=bool)
 ALLOWED_HOSTS = config(
     "DJANGO_ALLOWED_HOSTS",
-    default="www.nexgen-e.com nexgen-e.com localhost 127.0.0.1 omeiat-g04t.onrender.com omeiat.onrender.com"
+    default="www.omeiat.nexgen-e.com omeiat.nexgen-e.com localhost 127.0.0.1 omeiat-g04t.onrender.com omeiat.onrender.com"
 ).split()
 
 # ----------------------
