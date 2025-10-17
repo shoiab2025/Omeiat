@@ -6258,7 +6258,7 @@ form.search-box .search-form a {
 }
 
 .our-services .single-services {
-    background: rgba(255, 255, 255, 0.2); /* translucent white */
+    background: rgba(0, 0, 0, 0.4); /* translucent white */
     backdrop-filter: blur(10px); /* apply blur */
     -webkit-backdrop-filter: blur(10px); /* for Safari */
     border-radius: 15px;
@@ -6309,6 +6309,8 @@ form.search-box .search-form a {
 
 .our-services .single-services:hover {
    border: 1px solid #cdaf2c;
+   transform: translateY(-5px);
+   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 
 }
 

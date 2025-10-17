@@ -17,13 +17,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Security
 # ----------------------
 SECRET_KEY = config("SECRET_KEY", default="insecure-secret-key")
-DEBUG = config("DEBUG", default=False, cast=bool)
+DEBUG = config("DEBUG", default=True, cast=bool)  # Set to True for development
 ALLOWED_HOSTS = config(
     "DJANGO_ALLOWED_HOSTS",
-    default="www.omeiat.nexgen-e.com omeiat.nexgen-e.com localhost 127.0.0.1 omeiat-g04t.onrender.com omeiat.onrender.com"
+    default="localhost 127.0.0.1 [::1]"
 ).split()
 
+# ----------------------
+# Static Files Configuration (FIXED)
+# ----------------------
+STATIC_URL = '/static/'  # This must be defined
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # For production
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',  # Your source static files
+]
 
+# Media files configuration
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'mediafiles'
 
 # ----------------------
 # Installed Apps
@@ -38,7 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.staticfiles',  # This app requires STATIC_URL
 ]
 
 # ----------------------
@@ -46,14 +57,14 @@ INSTALLED_APPS = [
 # ----------------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # for static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'app.middleware.InstitutionMiddleware',  # custom middleware
+    'app.middleware.InstitutionMiddleware',
 ]
 
 # ----------------------
@@ -87,7 +98,7 @@ TEMPLATES = [
 # ----------------------
 AUTH_USER_MODEL = 'app.User'
 AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
-LOGIN_REDIRECT_URL = '/'  # redirect after login
+LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login/'
 LOGIN_URL = '/login/'
 
@@ -99,7 +110,7 @@ MESSAGE_TAGS = {
     messages.INFO: 'info',
     messages.SUCCESS: 'success',
     messages.WARNING: 'warning',
-    messages.ERROR: 'danger',  # Bootstrap danger class
+    messages.ERROR: 'danger',
 }
 
 # ----------------------
@@ -147,40 +158,6 @@ USE_I18N = True
 USE_TZ = True
 
 # ----------------------
-# Static and Media Files
-# ----------------------
-STATICFILES_DIRS = [BASE_DIR / "static"]  # Local dev
-STATIC_ROOT = BASE_DIR / "staticfiles"    # Production
-MEDIA_ROOT = BASE_DIR / "mediafiles"      # Media files
-
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-# ----------------------
-# Jazzmin Admin
-# ----------------------
-JAZZMIN_SETTINGS = {
-    "site_title": "Omeiat Admin",
-    "site_header": "Omeiat Dashboard",
-    "site_brand": "Omeiat",
-    "site_logo": "app/images/logo.png",
-    "welcome_sign": "Welcome to the Omeiat Admin",
-    "copyright": "Omeiat © 2025",
-    "theme": "cerulean",
-    "show_sidebar": True,
-    "navigation_expanded": True,
-}
-
-# ----------------------
-# Logging
-# ----------------------
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {"console": {"class": "logging.StreamHandler"}},
-    "root": {"handlers": ["console"], "level": "WARNING"},
-}
-
-# ----------------------
 # Default primary key field type
 # ----------------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -203,7 +180,22 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # ----------------------
-# Security Recommendations (Production)
+# Jazzmin Admin
+# ----------------------
+JAZZMIN_SETTINGS = {
+    "site_title": "Omeiat Admin",
+    "site_header": "Omeiat Dashboard",
+    "site_brand": "Omeiat",
+    "site_logo": "app/images/logo.png",
+    "welcome_sign": "Welcome to the Omeiat Admin",
+    "copyright": "Omeiat © 2025",
+    "theme": "cerulean",
+    "show_sidebar": True,
+    "navigation_expanded": True,
+}
+
+# ----------------------
+# Security (Production)
 # ----------------------
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
