@@ -25,10 +25,8 @@ ALLOWED_HOSTS = config(
 
 # ----------------------
 # Application root under /omeiat
-# ----------------------
-FORCE_SCRIPT_NAME = '/omeiat'  # ensures Django knows it's running under /omeiat
-STATIC_URL = '/omeiat/static/'
-MEDIA_URL = '/omeiat/media/'
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 
 # ----------------------
 # Installed Apps
