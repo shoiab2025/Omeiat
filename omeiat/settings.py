@@ -23,11 +23,7 @@ ALLOWED_HOSTS = config(
     default="www.omeiat.nexgen-e.com omeiat.nexgen-e.com localhost 127.0.0.1 omeiat-g04t.onrender.com omeiat.onrender.com"
 ).split()
 
-# ----------------------
-# Application URLs at root level
-# ----------------------
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
+
 
 # ----------------------
 # Installed Apps
@@ -91,7 +87,7 @@ TEMPLATES = [
 # ----------------------
 AUTH_USER_MODEL = 'app.User'
 AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
-LOGIN_REDIRECT_URL = '/'  # redirect to home after login
+LOGIN_REDIRECT_URL = '/'  # redirect after login
 LOGOUT_REDIRECT_URL = '/login/'
 LOGIN_URL = '/login/'
 

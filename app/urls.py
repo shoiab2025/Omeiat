@@ -1,18 +1,36 @@
 from django.urls import path
 from django.views.generic import TemplateView
 from app.views.job.jobs import (
-    job_list_ins, job_list, job_detail, apply_job, my_applications,
-    ins_applications, withdraw_application, my_jobs, update_job,
-    delete_job, all_applications, create_or_update_job,
-    add_to_shortlist, remove_from_shortlist, toggle_shortlist,
-    bulk_add_to_shortlist, clear_shortlist, get_shortlist_status,
-    get_shortlist_count, job_applications_view
+    job_list_ins,
+    job_list,
+    job_detail,
+    apply_job,
+    my_applications,
+    ins_applications,
+    withdraw_application,
+    my_jobs,
+    update_job,
+    delete_job,
+    all_applications,
+    create_or_update_job
+)
+from app.views.job.jobs import (
+    add_to_shortlist,
+    remove_from_shortlist,
+    toggle_shortlist,
+    bulk_add_to_shortlist,
+    clear_shortlist,
+    get_shortlist_status,
+    get_shortlist_count,
+    job_applications_view
 )
 from app.views.dashboard.dashboard import dashboard_view, latest_jobs_views
-from app.views.index.home_view import home, about, institution_dashboard, institution_profile, profile_view
+from app.views.index.home_view import (home, about, institution_dashboard, institution_profile, profile_view)
 from app.views.authentication.authentication import (
-    register_account, login_account, logout_account, verify_otp,
-    institution_register, institution_login, institution_verify_otp, institution_logout
+    register_account,
+    login_account,
+    logout_account,
+    verify_otp
 )
 
 urlpatterns = [
@@ -67,7 +85,7 @@ urlpatterns = [
     # Profile
     # ----------------------------
     path("profile/", profile_view, name="profile"),
-    path("ins_profile/", institution_profile, name="ins_profile"),
+    path("ins_profile/", institution_profile,  name="ins_profile"),
     path("profile/update/", TemplateView.as_view(template_name="update_profile.html"), name="update_profile"),
 
     # ----------------------------
@@ -76,16 +94,13 @@ urlpatterns = [
     path("register/", register_account, name="register"),
     path("login/", login_account, name="user_login"),
     path("verify-otp/", verify_otp, name="user_verify_otp"),
-    path("logout/", logout_account, name="user_logout"),
+    path("logout/", lambda r: logout_account(r, "user"), name="user_logout"),
 
     # ----------------------------
     # Institution Authentication
     # ----------------------------
-    path("institution/register/", institution_register, name="institution_register"),
-    path("institution/login/", institution_login, name="institution_login"),
-    path("institution/verify-otp/", institution_verify_otp, name="institution_verify_otp"),
-    path("institution/logout/", institution_logout, name="institution_logout"),
+    path("institution/register/", lambda r: register_account(r, "institution"), name="institution_register"),
+    path("institution/login/", lambda r: login_account(r, "institution"), name="institution_login"),
+    path("institution/verify-otp/", lambda r: verify_otp(r, "institution"), name="institution_verify_otp"),
+    path("institution/logout/", lambda r: logout_account(r, "institution"), name="institution_logout"),
 ]
-
-# Optional: Add app namespace
-app_name = 'app'
