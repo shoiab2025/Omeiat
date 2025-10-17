@@ -24,7 +24,8 @@ ALLOWED_HOSTS = config(
 ).split()
 
 # ----------------------
-# Application root under /omeiat
+# Application URLs at root level
+# ----------------------
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
@@ -90,9 +91,9 @@ TEMPLATES = [
 # ----------------------
 AUTH_USER_MODEL = 'app.User'
 AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
-LOGIN_REDIRECT_URL = '/omeiat/'  # redirect after login
-LOGOUT_REDIRECT_URL = '/omeiat/login/'
-LOGIN_URL = '/omeiat/login/'
+LOGIN_REDIRECT_URL = '/'  # redirect to home after login
+LOGOUT_REDIRECT_URL = '/login/'
+LOGIN_URL = '/login/'
 
 # ----------------------
 # Messages
