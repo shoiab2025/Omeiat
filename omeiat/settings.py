@@ -29,8 +29,9 @@ ALLOWED_HOSTS = config(
 STATIC_URL = '/static/'  # This must be defined
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # For production
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',  # Your source static files
+    BASE_DIR / 'app' / 'static',  # Your actual static files location
 ]
+
 
 # Media files configuration
 MEDIA_URL = '/media/'
