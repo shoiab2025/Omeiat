@@ -15,11 +15,38 @@ from django.shortcuts import redirect
 def generate_otp():
     return str(random.randint(100000, 999999))
 
-def send_otp_email(email, otp):
+def send_otp_email(email, otp, user_name="User"):
+    """Send a styled HTML OTP email to the user."""
     subject = "Your OTP Verification Code"
-    message = f"Your OTP code is {otp}. It expires in 10 minutes."
-    send_mail(subject, message, None, [email])
+    from_email = getattr(settings, "DEFAULT_FROM_EMAIL", settings.EMAIL_HOST_USER)
+    to = [email]
 
+    # Context for the HTML template
+    context = {
+        "user_name": user_name,
+        "otp_code": otp,
+        "expiry_minutes": 10,
+        "site_name": "My Django App",
+        "year": timezone.now().year,
+    }
+
+    # Render email templates
+    html_content = render_to_string("emails/otp_email.html", context)
+    text_content = (
+        f"Hello {user_name},\n\n"
+        f"Your OTP code is {otp}. It will expire in 10 minutes.\n\n"
+        f"Thank you,\nMy Django App Team"
+    )
+
+    # Create and send the email
+    email_message = EmailMultiAlternatives(subject, text_content, from_email, to)
+    email_message.attach_alternative(html_content, "text/html")
+
+    try:
+        email_message.send()
+        print(f"✅ OTP email sent successfully to {email}")
+    except Exception as e:
+        print(f"❌ Failed to send OTP email to {email}: {e}")
 
 def getJobsOpeningsByCategories():
     category_choices = Job.CATEGORY_CHOICES

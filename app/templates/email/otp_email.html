@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your OTP Code</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f7f7f7;
+        margin: 0;
+        padding: 0;
+      }
+      .email-container {
+        max-width: 600px;
+        margin: 40px auto;
+        background: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      }
+      .header {
+        background-color: #2563eb;
+        color: white;
+        padding: 20px;
+        text-align: center;
+      }
+      .content {
+        padding: 30px;
+        color: #333;
+      }
+      .otp {
+        display: inline-block;
+        background-color: #f3f4f6;
+        border: 1px dashed #2563eb;
+        color: #2563eb;
+        font-size: 24px;
+        letter-spacing: 4px;
+        font-weight: bold;
+        padding: 10px 20px;
+        border-radius: 6px;
+        margin: 20px 0;
+      }
+      .footer {
+        text-align: center;
+        color: #888;
+        font-size: 13px;
+        padding: 15px;
+        border-top: 1px solid #eee;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-container">
+      <div class="header">
+        <h2>Verify Your Email</h2>
+      </div>
+      <div class="content">
+        <p>Hi {{ user_name|default:"User" }},</p>
+        <p>Use the following One-Time Password (OTP) to verify your email address:</p>
+
+        <div class="otp">{{ otp_code }}</div>
+
+        <p>This OTP will expire in <strong>{{ expiry_minutes|default:"5" }}</strong> minutes. Please do not share this code with anyone.</p>
+
+        <p>Thank you,<br>
+        <strong>The {{ site_name|default:"Your Website" }} Team</strong></p>
+      </div>
+      <div class="footer">
+        © {{ year|default:"2025" }} {{ site_name|default:"Your Website" }}. All rights reserved.
+      </div>
+    </div>
+  </body>
+</html>

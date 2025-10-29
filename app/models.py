@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.utils import timezone
-
 # ----------------------------
 # Core Models (No Dependencies)
 # ----------------------------
@@ -76,6 +75,10 @@ class User(AbstractUser):
     timestamp = models.DateTimeField(auto_now_add=True)
     role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True, related_name='users')
 
+    def save(self, *args, **kwargs):
+        from app.utils import calculate_profile_completion
+        self.profile_percentage = calculate_profile_completion(self)
+        super().save(*args, **kwargs)
 
 # ----------------------------
 # Institution Models (Depends on OmeiatZone)

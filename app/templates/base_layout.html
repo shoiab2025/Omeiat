@@ -92,7 +92,7 @@
                                 <div class="position-relative" style="width: 60px; height: 60px;">
                                     {% with percent=profile_percentage|default:0 %}
                                     <div class="rounded-circle border d-flex justify-content-center align-items-center"
-                                        style="width: 60px; height: 60px; padding: 5px; background: conic-gradient(#cdaf2c {{ percent }}%, #e9ecef 0%); border-radius: 50%; position: relative;">
+                                        style="width: 60px; height: 60px; padding: 5px; background: conic-gradient(#cdaf2c {{ user.profile_percentage }}%, #e9ecef 0%); border-radius: 50%; position: relative;">
                                         {% if user.profile_picture %}
                                          <img src="{% static 'assets/img/logo/avatar.png' %}" alt="Default Profile"
                                             class="rounded-circle mx-2" width="50" height="50"
@@ -106,7 +106,7 @@
                                             class="position-absolute top-50 start-50 translate-middle 
          d-flex align-items-center justify-content-center 
          text-white fw-bold bg-dark rounded-circle"
-                                            style="width: 30px; height: 30px; font-size: 0.7rem">{{ percent }}%</span>
+                                            style="width: 30px; height: 30px; font-size: 0.7rem">{{ user.profile_percentage }}%</span>
                                     </div>
                                     {% endwith %}
                                 </div>

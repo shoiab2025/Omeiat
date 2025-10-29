@@ -1,6 +1,9 @@
 import random
 from django.core.mail import send_mail
 from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -12,20 +15,47 @@ from app.utils import institution_required, get_institution_choices
 from django.utils.html import strip_tags
 import pdb
 User = get_user_model()
-
+from django.utils import timezone
 # ----------------------------
 # OTP Helpers
 # ----------------------------
 def generate_otp():
-    """Generate a 6-digit OTP"""
+    """Generate a 6-digit numeric OTP as a string."""
     return str(random.randint(100000, 999999))
 
-def send_otp_email(email, otp):
-    """Send OTP to user's email"""
-    subject = "Your OTP Verification Code"
-    message = f"Dear User,\n\nYour OTP code is: {otp}\n\nUse this to verify your account."
-    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [email])
 
+def send_otp_email(email, otp, user_name="User"):
+    """Send a styled HTML OTP email to the user."""
+    subject = "Your OTP Verification Code"
+    from_email = getattr(settings, "DEFAULT_FROM_EMAIL", settings.EMAIL_HOST_USER)
+    to = [email]
+
+    # Context for the HTML template
+    context = {
+        "user_name": user_name,
+        "otp_code": otp,
+        "expiry_minutes": 10,
+        "site_name": "Careers in Omeiat Institutions",
+        "year": timezone.now().year,
+    }
+
+    # Render email templates
+    html_content = render_to_string("email/otp_email.html", context)
+    text_content = (
+        f"Hello {user_name},\n\n"
+        f"Your OTP code is {otp}. It will expire in 10 minutes.\n\n"
+        f"Thank you,\nMy Django App Team"
+    )
+
+    # Create and send the email
+    email_message = EmailMultiAlternatives(subject, text_content, from_email, to)
+    email_message.attach_alternative(html_content, "text/html")
+
+    try:
+        email_message.send()
+        print(f"✅ OTP email sent successfully to {email}")
+    except Exception as e:
+        print(f"❌ Failed to send OTP email to {email}: {e}")
 
 # ==========================
 # REGISTER FUNCTION
@@ -72,7 +102,7 @@ def register_account(request, account_type="user"):
             user.is_otp_verified = False
             user.otp = generate_otp()
             user.save()
-            send_otp_email(user.email, user.otp)
+            send_otp_email(user.email, user.otp, user.username)
             request.session["pending_user_email"] = email
             messages.success(request, "Registration successful! Please verify OTP.")
             return redirect("user_verify_otp")
@@ -124,7 +154,7 @@ def register_account(request, account_type="user"):
             address.save()
 
             # Send OTP
-            send_otp_email(institution.email, institution.otp)
+            send_otp_email(institution.email, institution.otp, institution.name)
             request.session["pending_institution_email"] = email
             messages.success(request, "Institution registered! Please verify OTP.")
             return redirect("institution_verify_otp")
@@ -152,7 +182,7 @@ def login_account(request, account_type="user"):
                     if not account.is_otp_verified:
                         account.otp = generate_otp()
                         account.save()
-                        send_otp_email(account.email, account.otp)
+                        send_otp_email(account.email, account.otp, account.username)
                         request.session["pending_user_email"] = email
                         messages.info(request, "OTP sent to your email. Please verify to login.")
                         return redirect("user_verify_otp")
@@ -166,7 +196,7 @@ def login_account(request, account_type="user"):
                     if not account.is_otp_verified:
                         account.otp = generate_otp()
                         account.save()
-                        send_otp_email(account.email, account.otp)
+                        send_otp_email(account.email, account.otp, account.name)
                         request.session["pending_institution_email"] = email
                         messages.info(request, "OTP sent to your email. Please verify to login.")
                         return redirect("institution_verify_otp")

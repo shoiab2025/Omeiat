@@ -631,40 +631,39 @@ def all_applications(request):
 
 
 @institution_required
-@institution_required
 def add_to_shortlist(request, job_id, user_id):
     """
-    Add a candidate to job shortlist
+    Add or remove (toggle) a candidate in a job shortlist.
     """
     try:
         with transaction.atomic():
             # Get job and verify ownership
             job = get_object_or_404(Job, id=job_id, posted_by=request.institution)
             candidate = get_object_or_404(User, id=user_id)
-            
+
             # Get or create shortlist for this job
             shortlist, created = JobShortlist.objects.get_or_create(
                 job=job,
                 institution=request.institution
             )
-            
-            # Check if user is already in shortlist
+
+            # Toggle candidate in shortlist
             if shortlist.users.filter(id=user_id).exists():
-                # If already exists, remove it (toggle behavior)
                 shortlist.users.remove(candidate)
+                candidate.status = "rejected"
                 action = 'removed'
                 message = f'{candidate.get_full_name()} removed from shortlist'
             else:
-                # Add user to shortlist
                 shortlist.users.add(candidate)
+                candidate.status = "shortlisted"
                 action = 'added'
                 message = f'{candidate.get_full_name()} added to shortlist'
-            
-            shortlist.save()
-            
+
+            candidate.save()
+
             # Get updated count
             shortlisted_count = shortlist.users.count()
-            
+
             response_data = {
                 'status': 'success',
                 'message': message,
@@ -673,69 +672,58 @@ def add_to_shortlist(request, job_id, user_id):
                 'candidate_name': candidate.get_full_name(),
                 'job_title': job.title
             }
-            
-            # For AJAX requests, return JSON
+
+            # Return appropriate response type
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse(response_data)
             else:
-                # For regular form submissions, redirect back to jobs page
-                messages.success(request, response_data['message'])
-                return redirect('ins_applications')  # Redirect to institution jobs list
-                
+                messages.success(request, message)
+                return redirect('ins_applications')
+
     except Job.DoesNotExist:
-        error_msg = 'Job not found or you do not have permission'
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return JsonResponse({'status': 'error', 'message': error_msg}, status=404)
-        else:
-            messages.error(request, error_msg)
-            return redirect('ins_applications')
+        error_msg = 'Job not found or you do not have permission.'
     except User.DoesNotExist:
-        error_msg = 'Candidate not found'
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return JsonResponse({'status': 'error', 'message': error_msg}, status=404)
-        else:
-            messages.error(request, error_msg)
-            return redirect('ins_applications')
+        error_msg = 'Candidate not found.'
     except Exception as e:
         error_msg = f'Error updating shortlist: {str(e)}'
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return JsonResponse({'status': 'error', 'message': error_msg}, status=500)
-        else:
-            messages.error(request, error_msg)
-            return redirect('ins_applications')
+
+    # Handle errors
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'status': 'error', 'message': error_msg}, status=500)
+    else:
+        messages.error(request, error_msg)
+        return redirect('ins_applications')
+
 
 @institution_required
 def remove_from_shortlist(request, job_id, user_id):
     """
-    Remove a candidate from job shortlist
+    Remove a candidate from the job shortlist.
     """
     try:
         with transaction.atomic():
-            # Get job and verify ownership
             job = get_object_or_404(Job, id=job_id, posted_by=request.institution)
             candidate = get_object_or_404(User, id=user_id)
-            
-            # Get shortlist
+
             shortlist = get_object_or_404(
-                JobShortlist, 
-                job=job, 
+                JobShortlist,
+                job=job,
                 institution=request.institution
             )
-            
-            # Check if user is in shortlist
+
             if not shortlist.users.filter(id=user_id).exists():
                 return JsonResponse({
                     'status': 'error',
-                    'message': 'Candidate is not in shortlist',
+                    'message': 'Candidate is not in shortlist.',
                     'action': 'not_found'
                 }, status=400)
-            
-            # Remove user from shortlist
+
             shortlist.users.remove(candidate)
-            
-            # Get updated count
+            candidate.status = "rejected"
+            candidate.save()
+
             shortlisted_count = shortlist.users.count()
-            
+
             response_data = {
                 'status': 'success',
                 'message': f'{candidate.get_full_name()} removed from shortlist',
@@ -743,25 +731,23 @@ def remove_from_shortlist(request, job_id, user_id):
                 'shortlisted_count': shortlisted_count,
                 'candidate_name': candidate.get_full_name()
             }
-            
+
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse(response_data)
             else:
                 messages.success(request, response_data['message'])
                 return redirect('job_shortlist', job_id=job_id)
-                
-    except JobShortlist.DoesNotExist:
-        error_msg = 'Shortlist not found for this job'
-        return handle_error(request, error_msg, job_id, 404)
-    except Job.DoesNotExist:
-        error_msg = 'Job not found or you do not have permission'
-        return handle_error(request, error_msg, job_id, 404)
-    except User.DoesNotExist:
-        error_msg = 'Candidate not found'
-        return handle_error(request, error_msg, job_id, 404)
+
+    except (JobShortlist.DoesNotExist, Job.DoesNotExist, User.DoesNotExist) as e:
+        error_msg = 'Record not found or invalid permissions.'
     except Exception as e:
         error_msg = f'Error removing from shortlist: {str(e)}'
-        return handle_error(request, error_msg, job_id, 500)
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'status': 'error', 'message': error_msg}, status=500)
+    else:
+        messages.error(request, error_msg)
+        return redirect('job_shortlist', job_id=job_id)
 
 @institution_required
 def toggle_shortlist(request, job_id, user_id):
