@@ -424,7 +424,7 @@ hr {
     top: 0;
     width: 101%;
     height: 101%;
-    background: #20609a;
+    background: #cdaf2c;
     z-index: 1;
     border-radius: 5px;
     transition: transform 0.5s;
@@ -513,7 +513,7 @@ hr {
     top: 0;
     width: 120%;
     height: 105%;
-    background: #20609a;
+    background: #cdaf2c;
     z-index: -1;
     transition: transform 0.5s;
     transition-timing-function: ease;
@@ -7605,7 +7605,6 @@ form.search-box .search-form a {
 }
 
 .company-img img {
-    border-radius: 50%;
     background-color: #f8f9fa;
 }
 
