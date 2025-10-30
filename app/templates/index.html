@@ -8,21 +8,20 @@
     <div class="slider-area ">
         <!-- Mobile Menu -->
         <div class="slider-active">
-            <div class="single-slider slider-height d-flex align-items-center py-5"
-                data-background="static/assets/img/hero/home_banner1.png">
+            <div class="single-slider slider-height d-flex align-items-center py-5 bg-dark">
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="section-tittle text-center">
                                 <span class="text-white">Discover Featured Careers</span>
-                                <h2>Browse Job Categories </h2>
+                                <h2 class="text-primary">Browse Job Categories </h2>
                             </div>
                         </div>
                     </div>
                     <div class="row d-flex justify-content-center our-services">
                         {% if categories %}
                         {% for cat in categories %}
-                        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
                             <div class="single-services text-center mb-30">
                                 <div class="services-ion mb-3">
                                     <i class="fas {{ cat.icon }} fa-3x text-primary"></i>
@@ -108,14 +107,14 @@
     </section>
     <!-- Featured_job_end -->
     <!-- How  Apply Process Start-->
-    <div class="apply-process-area apply-bg py-5" data-background="static/assets/img/gallery/howto_apply_bg.png">
+    <div class="apply-process-area apply-bg py-5 bg-dark">
         <div class="container">
             <!-- Section Tittle -->
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-tittle white-text text-center text-white">
                         <span class="text-white fw-bold text-unerline">Apply process</span>
-                        <h2> How it works</h2>
+                        <h2 class="text-primary"> How it works</h2>
                     </div>
                 </div>
             </div>
@@ -128,7 +127,7 @@
                         </div>
                         <div class="process-cap">
                             <h5>1. Search a job</h5>
-                            <p class="text-white">Explore a wide range of teaching and administrative positions in
+                            <p class="text-black">Explore a wide range of teaching and administrative positions in
                                 schools, colleges, and educational institutions. Filter jobs by role, location, and
                                 specialization to find the perfect fit for your skills. Take the next step in your
                                 educational career and connect with leading institutions today.</p>
@@ -136,13 +135,13 @@
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 d-flex">
-                    <div class="single-process text-center mb-30 flex-fill">
-                        <div class="process-ion">
-                            <span class="flaticon-curriculum-vitae"></span>
+                    <div class="single-process text-center mb-30 flex-fill bg-white">
+                        <div class="process-ion text-primary">
+                            <span class="flaticon-curriculum-vitae text-primary"></span>
                         </div>
                         <div class="process-cap">
-                            <h5>2. Apply for job</h5>
-                            <p class="text-white">Submit your application to teaching, administrative, or support
+                            <h5 class="text-primary">2. Apply for job</h5>
+                            <p class="text-dark">Submit your application to teaching, administrative, or support
                                 roles at top educational institutions. Complete your profile, attach your
                                 credentials, and apply with just a few clicks. Take the next step in your
                                 educational career and make a difference today.</p>
@@ -150,12 +149,12 @@
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 d-flex">
-                    <div class="single-process text-center mb-30 flex-fill">
+                    <div class="single-process text-center mb-30 flex-fill bg-black">
                         <div class="process-ion">
-                            <span class="flaticon-tour"></span>
+                            <span class="flaticon-tour text-primary"></span>
                         </div>
                         <div class="process-cap">
-                            <h5>3. Get your job</h5>
+                            <h5 class="text-primary">3. Get your job</h5>
                             <p class="text-white">Find and secure your ideal teaching or administrative position at
                                 leading schools and institutions. Browse listings, match your skills, and apply
                                 easily to start your journey toward a fulfilling career in education.</p>
@@ -175,7 +174,13 @@
                 <div class="cv-caption text-center">
                     <p class="pera1">FEATURED OPPORTUNITIES</p>
                     <p class="pera2">Kickstart Your Career with the Right Education and Jobs!</p>
-                    <a href="{% url 'profile'%}" class="border-btn2 border-btn4">Complete Your Profile</a>
+                    <a href="{% url 'profile'%}" class="border-btn2 border-btn4">
+                       {% if request.user.is_authenticated %}
+                         Complete Your Profile
+                       {% else %}
+                         Register Now
+                       {% endif %}
+                    </a>
                 </div>
             </div>
         </div>

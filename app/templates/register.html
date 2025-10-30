@@ -4,38 +4,79 @@
 
 <div class="container my-5">
     <div class="row">
-        <div class="col-lg-6 col-md-6 col-12 mx-auto">
-            <h2>User Registration</h2>
-            <form method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
+        <div class="col-lg-6 col-md-8 col-12 mx-auto">
+            <div class="card shadow-sm p-4">
+                <div class="text-center mb-4">
+                    <h2 id="register-title" class="fw-bold">
+                        {% if request.resolver_match.url_name == 'institution_register' %}
+                            Employer Registration
+                        {% else %}
+                            Employee Registration
+                        {% endif %}
+                    </h2>
 
-                <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text" class="form-control" id="username" name="username" required>
+                    <!-- Toggle Buttons -->
+                    <div class="btn-group mt-2">
+                        <a href="{% url 'register' %}" 
+                           class="btn btn-outline-primary {% if request.resolver_match.url_name == 'register' %}active{% endif %}">
+                            Employee
+                        </a>
+                        <a href="{% url 'institution_register' %}" 
+                           class="btn btn-outline-primary {% if request.resolver_match.url_name == 'institution_register' %}active{% endif %}">
+                            Employer
+                        </a>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
-                </div>
+                <!-- Registration Form -->
+                <form method="POST" 
+                      action="{% if request.resolver_match.url_name == 'institution_register' %}
+                                {% url 'institution_register' %}
+                              {% else %}
+                                {% url 'register' %}
+                              {% endif %}">
+                    {% csrf_token %}
 
-                <div class="mb-3">
-                    <label for="phone" class="form-label">Phone</label>
-                    <input type="text" class="form-control" id="phone" name="phone" required>
-                </div>
+                    <div class="mb-3">
+                        <label for="username" class="form-label fw-semibold">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" required>
+                    </div>
 
-                <div class="mb-3">
-                    <label for="password1" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password1" name="password1" required>
-                </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-semibold">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                    </div>
 
-                <div class="mb-3">
-                    <label for="password2" class="form-label">Confirm Password</label>
-                    <input type="password" class="form-control" id="password2" name="password2" required>
-                </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label fw-semibold">Phone</label>
+                        <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter phone number" required>
+                    </div>
 
-                <button type="submit" class="btn btn-primary">Register</button>
-            </form>
+                    <div class="mb-3">
+                        <label for="password1" class="form-label fw-semibold">Password</label>
+                        <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter password" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password2" class="form-label fw-semibold">Confirm Password</label>
+                        <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm password" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Register</button>
+
+                    <div class="text-center mt-3">
+                        <small>
+                            {% if request.resolver_match.url_name == 'register' %}
+                                Already have an account?
+                                <a href="{% url 'user_login' %}" class="text-primary fw-semibold">Login here</a>
+                            {% else %}
+                                Already have an account?
+                                <a href="{% url 'institution_login' %}" class="text-primary fw-semibold">Login here</a>
+                            {% endif %}
+                        </small>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
