@@ -86,12 +86,11 @@ class User(AbstractUser):
 
 class Institution(models.Model):
     CATEGORY_CHOICES = [
-        ('Kindergarten', 'Kindergarten'),
-        ('Nursery & Primary', 'Nursery & Primary'),
-        ('High School', 'High School'),
-        ('College', 'College'),
         ('University', 'University'),
-        ('Vocational', 'Vocational'),
+        ('College', 'College'),
+        ('Higher Secondary', 'Higher Secondary'),
+        ('Nursery & Primary', 'Nursery & Primary'),
+        ('Middle School', 'Middle School'),
         ('Other', 'Other'),
     ]
 

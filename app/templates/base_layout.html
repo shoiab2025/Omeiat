@@ -80,7 +80,7 @@
                                         {% if request.user.is_authenticated %}
                                             <li><a href="{% url 'my_applications' %}">My Jobs</a></li>
                                         {% endif %}
-                                        <li><a href="{% url 'about' %}">Omeiat About</a></li>
+                                        <li><a href="https://omeiat.in/" target="_blank">About OMEIAT</a></li>
                                     </ul>
                                 </nav>
                             </div>
@@ -94,7 +94,7 @@
                                     <div class="rounded-circle border d-flex justify-content-center align-items-center"
                                         style="width: 60px; height: 60px; padding: 5px; background: conic-gradient(#cdaf2c {{ user.profile_percentage }}%, #e9ecef 0%); border-radius: 50%; position: relative;">
                                         {% if user.profile_picture %}
-                                         <img src="{% static 'assets/img/logo/avatar.png' %}" alt="Default Profile"
+                                         <img src="{{ user.profile_picture.url }}" alt="Default Profile"
                                             class="rounded-circle mx-2" width="50" height="50"
                                             style="object-fit: cover;">
                                         {% else %}
