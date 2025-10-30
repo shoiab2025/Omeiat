@@ -80,15 +80,18 @@
                     <div class="single-job-items mb-30">
                         <div class="job-items">
                             <div class="company-img border-2">
-                               <img src="{{ job.posted_by.logo.url }}" alt="{{ job.posted_by.name }}" style="height:100PX; max-height:100px;" />
+                                <img src="{% if job.posted_by.logo %}{{ job.posted_by.logo.url }}{% else %}https://example.com/path/to/default-logo.png{% endif %}"
+                                    alt="{{ job.posted_by.name }}" style="height:100px; max-height:100px;" />
                             </div>
+
                             <div class="job-tittle">
                                 <a href="{% url 'job_detail' job.id %}">
                                     <h4 class="text-capitalize">{{job.title}}</h4>
                                 </a>
                                 <ul>
                                     <li><i class="fas fa-university"></i>{{job.posted_by}}</li><br>
-                                    <li class="text-capitalize"><i class="fas fa-map-marker-alt"></i>{{job.location}}</li>
+                                    <li class="text-capitalize"><i class="fas fa-map-marker-alt"></i>{{job.location}}
+                                    </li>
                                     <li>₹{{ job.min_salary|floatformat:0 }} - ₹{{ job.max_salary|floatformat:0 }}
                                     </li>
                                 </ul>
@@ -175,11 +178,11 @@
                     <p class="pera1">FEATURED OPPORTUNITIES</p>
                     <p class="pera2">Kickstart Your Career with the Right Education and Jobs!</p>
                     <a href="{% url 'profile'%}" class="border-btn2 border-btn4">
-                       {% if request.user.is_authenticated %}
-                         Complete Your Profile
-                       {% else %}
-                         Register Now
-                       {% endif %}
+                        {% if request.user.is_authenticated %}
+                        Complete Your Profile
+                        {% else %}
+                        Register Now
+                        {% endif %}
                     </a>
                 </div>
             </div>
