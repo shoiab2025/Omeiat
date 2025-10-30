@@ -420,8 +420,15 @@ def create_or_update_job(request):
         job_types = [choice[0] for choice in Job.JOB_TYPE_CHOICES]
         categories_list = [{'key': key, 'name': name} for key, name in Job.CATEGORY_CHOICES]
         skills = Skill.objects.all()
-        certifications = Education.objects.all()
-
+        certifications =[
+        ("SSLC", "SSLC"),
+        ("HSS", "HSS"),
+        ("Diploma", "Diploma"),
+        ("Bachelor", "Bachelor"),
+        ("Master", "Master"),
+        ("PhD", "PhD"),
+        ("Other", "Other"),
+    ]
         context = {
             'jobs': jobs,
             'job_types': job_types,
@@ -521,11 +528,11 @@ def create_or_update_job(request):
             if certifications_required:
                 job.certifications_required.set(Education.objects.filter(id__in=certifications_required))
 
-            return redirect('job_create_or_update')
+            return redirect('ins_jobs')
 
         except Exception as e:
             messages.error(request, f"Error saving job: {str(e)}")
-            return redirect('job_create_or_update')
+            return redirect('ins_jobs')
 
 # Institution: Update Job
 # ----------------------------
