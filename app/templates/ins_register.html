@@ -2,6 +2,13 @@
 {% load static %}
 {% block content %}
 
+<style>
+    .required-label::after {
+        content: " *";
+        color: red;
+    }
+</style>
+
 <div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-lg-9 col-md-10 col-12">
@@ -20,13 +27,13 @@
                     <div class="card-body">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label for="name" class="form-label">Institution Name</label>
+                                <label for="name" class="form-label required-label">Institution Name</label>
                                 <input type="text" class="form-control" id="name" name="name"
                                        value="{{ institution.name|default_if_none:'' }}" required>
                             </div>
 
                             <div class="col-md-6">
-                                <label for="category" class="form-label">Category</label>
+                                <label for="category" class="form-label required-label">Category</label>
                                 <select class="form-control w-100" id="category" name="category" required>
                                     {% for cat in categories %}
                                         <option value="{{ cat }}" {% if institution.category == cat %}selected{% endif %}>{{ cat }}</option>
@@ -35,20 +42,20 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label for="email" class="form-label">Email</label>
+                                <label for="email" class="form-label required-label">Email</label>
                                 <input type="email" class="form-control" id="email" name="email"
                                        value="{{ institution.email|default_if_none:'' }}" required>
                             </div>
 
                             <div class="col-md-6">
-                                <label for="phone" class="form-label">Phone</label>
+                                <label for="phone" class="form-label required-label">Phone</label>
                                 <input type="text" class="form-control" id="phone" name="phone"
                                        value="{{ institution.phone|default_if_none:'' }}" required>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="website" class="form-label">Website</label>
-                                <input type="url" class="form-control" id="website" name="website"
+                                <input type="text" class="form-control" id="website" name="website"
                                        value="{{ institution.website|default_if_none:'' }}">
                             </div>
 
@@ -90,12 +97,12 @@
 
                             {% if not institution %}
                                 <div class="col-md-6">
-                                    <label for="password" class="form-label">Password</label>
+                                    <label for="password1" class="form-label required-label">Password</label>
                                     <input type="password" class="form-control" id="password1" name="password1" required>
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label for="confirm_password" class="form-label">Confirm Password</label>
+                                    <label for="password2" class="form-label required-label">Confirm Password</label>
                                     <input type="password" class="form-control" id="password2" name="password2" required>
                                 </div>
                             {% endif %}
@@ -130,19 +137,19 @@
                             </div>
 
                             <div class="col-md-4">
-                                <label for="city" class="form-label">City</label>
+                                <label for="city" class="form-label required-label">City</label>
                                 <input type="text" class="form-control" id="city" name="city"
                                        value="{{ address.city|default_if_none:'' }}" required>
                             </div>
 
                             <div class="col-md-4">
-                                <label for="district" class="form-label">District</label>
+                                <label for="district" class="form-label required-label">District</label>
                                 <input type="text" class="form-control" id="district" name="district"
                                        value="{{ address.district|default_if_none:'' }}" required>
                             </div>
 
                             <div class="col-md-4">
-                                <label for="state" class="form-label">State</label>
+                                <label for="state" class="form-label required-label">State</label>
                                 <input type="text" class="form-control" id="state" name="state"
                                        value="{{ address.state|default_if_none:'' }}" required>
                             </div>
