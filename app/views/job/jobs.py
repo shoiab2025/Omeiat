@@ -657,11 +657,13 @@ def add_to_shortlist(request, job_id, user_id):
             # Toggle candidate in shortlist
             if shortlist.users.filter(id=user_id).exists():
                 shortlist.users.remove(candidate)
+                shortlist.save()
                 candidate.status = "rejected"
                 action = 'removed'
                 message = f'{candidate.get_full_name()} removed from shortlist'
             else:
                 shortlist.users.add(candidate)
+                shortlist.save()
                 candidate.status = "shortlisted"
                 action = 'added'
                 message = f'{candidate.get_full_name()} added to shortlist'

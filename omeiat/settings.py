@@ -190,12 +190,19 @@ JAZZMIN_SETTINGS = {
     "site_title": "Omeiat Admin",
     "site_header": "Omeiat Dashboard",
     "site_brand": "Omeiat",
-    "site_logo": "app/images/logo.png",
+    "site_logo": "app/images/logo.png", # your logo path
+    "login_logo": "app/images/OMIEAT.png",  # same or different
+    "custom_css": "app/css/custom_admin.css",   # 👈 important
     "welcome_sign": "Welcome to the Omeiat Admin",
     "copyright": "Omeiat © 2025",
     "theme": "cerulean",
     "show_sidebar": True,
     "navigation_expanded": True,
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "light",
+    "login_logo_size": "100px",  # 👈 custom key (you’ll apply with CSS)
 }
 
 # ----------------------

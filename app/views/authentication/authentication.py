@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-from app.models import Institution, InstitutionAddress
+from app.models import Institution, InstitutionAddress, InstitutionApproval
 from app.utils import institution_required, get_institution_choices
 from django.utils.html import strip_tags
 import pdb
@@ -56,6 +56,87 @@ def send_otp_email(email, otp, user_name="User"):
         print(f"✅ OTP email sent successfully to {email}")
     except Exception as e:
         print(f"❌ Failed to send OTP email to {email}: {e}")
+
+def send_institution_pending_approval_email(email, institution_name):
+    """
+    Send a styled HTML email to the institution when registration is complete
+    and waiting for admin approval.
+    """
+    subject = "Your Institution Registration is Pending Approval"
+    from_email = getattr(settings, "DEFAULT_FROM_EMAIL", settings.EMAIL_HOST_USER)
+    to = [email]
+
+    # Context for the HTML email
+    context = {
+        "institution_name": institution_name,
+        "site_name": "Careers in Omeiat Institutions",
+        "year": timezone.now().year,
+    }
+
+    # Render HTML template (create templates/email/institution_pending_approval.html)
+    html_content = render_to_string("email/approval_email.html", context)
+    
+    # Fallback plain-text version
+    text_content = (
+        f"Hello {institution_name},\n\n"
+        "Thank you for registering with OMEIAT EMPLOYMENT PORTAL.\n\n"
+        "Your institution registration has been received and is currently pending "
+        "approval by our admin team. You’ll receive an email once it has been reviewed and approved.\n\n"
+        "Warm regards,\n"
+        "Omeiat Team"
+    )
+
+    # Send email
+    email_message = EmailMultiAlternatives(subject, text_content, from_email, to)
+    email_message.attach_alternative(html_content, "text/html")
+
+    try:
+        email_message.send()
+        print(f"✅ Approval pending email sent successfully to {email}")
+    except Exception as e:
+        print(f"❌ Failed to send approval pending email to {email}: {e}")
+
+def send_admin_institution_approval_notification(institution_name):
+    """
+    Send an email notification to the admin when a new institution
+    registration is pending approval.
+    Automatically uses the email(s) from settings.ADMINS.
+    """
+    subject = "New Institution Awaiting Approval"
+    from_email = getattr(settings, "DEFAULT_FROM_EMAIL", settings.EMAIL_HOST_USER)
+
+    # Get admin emails from settings.ADMINS
+    admin_emails = [email for _, email in getattr(settings, "ADMINS", [])]
+    if not admin_emails:
+        admin_emails = [from_email]  # fallback to default if ADMINS not set
+
+    # Email context
+    context = {
+        "institution_name": institution_name,
+        "approval_link": getattr(settings, "ADMIN_APPROVAL_URL", "#"),
+        "year": timezone.now().year,
+    }
+
+    # Render HTML email template
+    html_content = render_to_string("email/request_approval.html", context)
+
+    # Plain text fallback
+    text_content = (
+        f"A new institution, '{institution_name}', has registered on the "
+        "OMEIAT EMPLOYMENT PORTAL and is awaiting your approval.\n\n"
+        "Please review and approve the registration in the admin dashboard.\n\n"
+        "Regards,\nOMEIAT Team"
+    )
+
+    # Compose and send email
+    email_message = EmailMultiAlternatives(subject, text_content, from_email, admin_emails)
+    email_message.attach_alternative(html_content, "text/html")
+
+    try:
+        email_message.send()
+        print(f"✅ Admin approval notification sent to: {', '.join(admin_emails)}")
+    except Exception as e:
+        print(f"❌ Failed to send admin approval email: {e}")
 
 # ==========================
 # REGISTER FUNCTION
@@ -136,6 +217,11 @@ def register_account(request, account_type="user"):
             # Password hashing
             institution.password = make_password(password)
             institution.save()
+            approval = InstitutionApproval.objects.create(
+                institution=institution,
+                is_approved=False
+            )
+            approval.save()
 
             # Address handling (assuming OneToOne or ForeignKey relationship)
             address_data = {
@@ -155,6 +241,7 @@ def register_account(request, account_type="user"):
 
             # Send OTP
             send_otp_email(institution.email, institution.otp, institution.name)
+            send_admin_institution_approval_notification(institution.name)
             request.session["pending_institution_email"] = email
             messages.success(request, "Institution registered! Please verify OTP.")
             return redirect("institution_verify_otp")
@@ -243,7 +330,10 @@ def verify_otp(request, account_type="user"):
             else:
                 request.session["institution_id"] = account.id
                 request.session["institution_name"] = account.name
+                request.session["institution_email"] = account.email
                 messages.success(request, "OTP verified successfully. You are now logged in.")
+                # After institution.save()
+                send_institution_pending_approval_email(request.session["institution_email"], request.session["institution_name"])
                 return redirect("dashboard")
         else:
             messages.error(request, "Invalid OTP. Please try again.")

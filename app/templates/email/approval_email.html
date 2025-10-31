@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Your OTP Code</title>
+    <title>Registration Pending Approval</title>
     <style>
       body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -29,17 +29,13 @@
         padding: 30px;
         color: #333;
       }
-      .otp {
-        display: inline-block;
+      .highlight-box {
         background-color: #f3f4f6;
-        border: 1px dashed #cdaf2c;
-        color: #cdaf2c;
-        font-size: 24px;
-        letter-spacing: 4px;
-        font-weight: bold;
-        padding: 10px 20px;
+        border-left: 4px solid #cdaf2c;
+        padding: 15px 20px;
         border-radius: 6px;
         margin: 20px 0;
+        line-height: 1.5;
       }
       .footer {
         text-align: center;
@@ -53,25 +49,27 @@
   <body>
     <div class="email-container">
       <div class="header">
-        <h2>Verify Your Email</h2>
+        <h2>Registration Pending Approval</h2>
       </div>
       <div class="content">
-        <p>Hi {{ user_name|default:"User" }},</p>
-        <p>Use the following One-Time Password (OTP) to verify your email address:</p>
+        <p>Dear <strong>{{ institution_name|default:"Institution" }}</strong>,</p>
+        <p>
+          Thank you for registering with <strong>OMEIAT EMPLOYMENT PORTAL</strong>.
+        </p>
 
-        <div class="row">
-            <div class="col-lg-12 col-md-12 col-12">
-             <div class="otp">{{ otp_code }}</div>
-            </div>
+        <div class="highlight-box">
+          Your registration has been successfully received and is currently pending review
+          by our super admin team. Once approved, you’ll receive an email confirmation
+          along with further instructions to access your institution dashboard.
         </div>
 
-        <p>This OTP will expire in <strong>{{ expiry_minutes|default:"5" }}</strong> minutes. Please do not share this code with anyone.</p>
-
-        <p>Thank you,<br>
-        <strong>The {{ site_name|default:"Your Website" }} Team</strong></p>
+        <p>
+          Warm regards,<br>
+          <strong>The OMEIAT EMPLOYMENT PORTAL Team</strong>
+        </p>
       </div>
       <div class="footer">
-        © {{ year|default:"2025" }} {{ site_name|default:"Your Website" }}. All rights reserved.
+        © {{ year|default:"2025" }} OMEIAT EMPLOYMENT PORTAL. All rights reserved.
       </div>
     </div>
   </body>

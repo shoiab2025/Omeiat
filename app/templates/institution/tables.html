@@ -21,8 +21,12 @@
       <div class="col-12">
         <!-- Add Job Button -->
         <div class="d-flex justify-content-end mb-3">
-          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#jobFormModal"
+          {% if request.institution.approvals.first.is_approved %}
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#jobFormModal"
             onclick="clearJobForm()">+ Create Job</button>
+          {% else %}
+           <p>Your approval is still in progress. You’ll be able to create a job once it’s approved. If you need help, please reach out to the Omeiat Team.</p>
+          {% endif %}
         </div>
 
         <!-- Jobs Table -->

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Institution Awaiting Approval</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f7f7f7;
+        margin: 0;
+        padding: 0;
+      }
+      .email-container {
+        max-width: 600px;
+        margin: 40px auto;
+        background: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      }
+      .header {
+        background-color: #cdaf2c;
+        color: white;
+        padding: 20px;
+        text-align: center;
+      }
+      .content {
+        padding: 30px;
+        color: #333;
+      }
+      .highlight-box {
+        background-color: #f3f4f6;
+        border-left: 4px solid #cdaf2c;
+        padding: 15px 20px;
+        border-radius: 6px;
+        margin: 20px 0;
+        line-height: 1.5;
+      }
+      .footer {
+        text-align: center;
+        color: #888;
+        font-size: 13px;
+        padding: 15px;
+        border-top: 1px solid #eee;
+      }
+      .btn {
+        display: inline-block;
+        background-color: #cdaf2c;
+        color: white;
+        padding: 10px 18px;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+      }
+      .btn:hover {
+        background-color: #b89c27;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-container">
+      <div class="header">
+        <h2>New Institution Awaiting Approval</h2>
+      </div>
+      <div class="content">
+        <p>Dear <strong>Admin</strong>,</p>
+
+        <p>
+          A new institution, <strong>{{ institution_name|default:"Institution" }}</strong>,
+          has registered on the <strong>OMEIAT EMPLOYMENT PORTAL</strong> and is awaiting your approval.
+        </p>
+
+        <div class="highlight-box">
+          Please review the registration details and approve or reject the institution
+          through the admin dashboard.
+        </div>
+
+        <p style="text-align: center;">
+          <a href="https://omeiat.nexgen-e.com" class="btn">Review & Approve</a>
+        </p>
+
+        <p>
+          Thank you for keeping the registration process smooth and secure.
+        </p>
+
+        <p>
+          Warm regards,<br>
+          <strong>The OMEIAT EMPLOYMENT PORTAL Team</strong>
+        </p>
+      </div>
+      <div class="footer">
+        © {{ year|default:"2025" }} OMEIAT EMPLOYMENT PORTAL. All rights reserved.
+      </div>
+    </div>
+  </body>
+</html>
