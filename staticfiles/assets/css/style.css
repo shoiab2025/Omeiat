@@ -6259,7 +6259,7 @@ form.search-box .search-form a {
 }
 
 .our-services .single-services {
-    background: rgba(0, 0, 0, 0.4); /* translucent white */
+    background: rgba(197, 197, 197, 0.4); /* translucent white */
     backdrop-filter: blur(10px); /* apply blur */
     -webkit-backdrop-filter: blur(10px); /* for Safari */
     border-radius: 15px;
