@@ -286,8 +286,9 @@
                                             <div class="col-auto">
                                                 <div class="company-logo">
                                                     {% if job.posted_by.logo %}
-                                                        <img src="{{ job.posted_by.logo.url }}" alt="{{ job.posted_by.name }}" 
-                                                             class="rounded" width="100" height="100">
+                                                        <img src="{{ job.posted_by.logo.url|default:'/static/images/default-logo.png' }}" 
+                                                            alt="{{ job.posted_by.name }}" class="rounded" width="100" height="100">
+
                                                     {% else %}
                                                         <div class="bg-light rounded d-flex align-items-center justify-content-center" 
                                                              style="width: 70px; height: 70px;">
