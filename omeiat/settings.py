@@ -68,6 +68,9 @@ MIDDLEWARE = [
     'app.middleware.InstitutionMiddleware',
 ]
 
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # ----------------------
 # URL and WSGI
 # ----------------------
