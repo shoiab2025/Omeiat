@@ -18,9 +18,11 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from app.admin_sites import super_admin_site, staff_admin_site
 
 
 urlpatterns = [
+    path("super-admin/", super_admin_site.urls),
     path('admin/', admin.site.urls),
     path('', include('app.urls')),  # Include the app's URLs
 ]

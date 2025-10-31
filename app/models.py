@@ -105,7 +105,7 @@ class Institution(models.Model):
     board = models.CharField(max_length=100, blank=True, null=True)
     omeiat_zone = models.ForeignKey(OmeiatZone, on_delete=models.SET_NULL, null=True, blank=True)
     is_omeiat_member = models.BooleanField(default=False)
-    omeiat_member_since = models.PositiveIntegerField(blank=True, null=True)
+    omeiat_member_since = models.PositiveIntegerField(blank=True, null=True, default=0)
     otp = models.CharField(max_length=6, blank=True, null=True)
     otp_created_at = models.DateTimeField(blank=True, null=True)
     is_otp_verified = models.BooleanField(default=False)
@@ -409,13 +409,45 @@ class Notification(models.Model):
         ordering = ['-created_at']
 
 
+from django.db import models
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
 class InstitutionApproval(models.Model):
-    institution = models.ForeignKey(Institution, on_delete=models.CASCADE, related_name="approvals")
-    approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    institution = models.ForeignKey(
+        "Institution",
+        on_delete=models.CASCADE,
+        related_name="approvals"
+    )
+    approved_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        limit_choices_to={'is_superuser': True},  # UI restriction (admin/forms)
+        related_name="approved_institutions"
+    )
     is_approved = models.BooleanField(default=False)
     remarks = models.TextField(blank=True, null=True)
     approved_at = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        """
+        Enforce that only superusers can be assigned as approvers.
+        """
+        if self.approved_by and not self.approved_by.is_superuser:
+            raise ValueError("Only super admins can approve institutions.")
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        status = "Approved" if self.is_approved else "Pending"
+        return f"{self.institution.name} - {status}"
+
+    class Meta:
+        verbose_name = "Institution Approval"
+        verbose_name_plural = "Institution Approvals"
+        ordering = ['-approved_at']
 
 class EmployerReviews(models.Model):
     institution = models.ForeignKey('Institution', on_delete=models.CASCADE, related_name="reviews")
