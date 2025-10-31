@@ -41,10 +41,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
 # Installed Apps
 # ----------------------
 INSTALLED_APPS = [
+    'jazzmin',
     'app',
     'django_filters',
     'rest_framework',
-    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
